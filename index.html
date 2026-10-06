@@ -135,6 +135,13 @@
   .hidden { display: none; }
   .footer { margin-top: 14px; font-size: .45rem; color: var(--muted); text-align: center; line-height: 1.8; }
 
+  .cloud-h { font-size: .55rem; color: var(--accent); margin: 12px 0 6px; }
+  .cloud-msg { font-size: .5rem; color: var(--muted-2); line-height: 1.8; margin-bottom: 8px; }
+  .cloud-form { display: grid; gap: 6px; }
+  .cloud-form input { border: 2px solid var(--line); background: var(--card-darker); color: var(--ink);
+    padding: 8px; font-family: inherit; font-size: .5rem; }
+  .cloud-ok { font-size: .5rem; color: var(--ok); margin-top: 8px; }
+  .cloud-err { font-size: .5rem; color: var(--bad); margin-top: 8px; }
   .room-panel { position: fixed; left: 50%; top: 50%; transform: translate(-50%,-50%); z-index: 21;
     background: var(--card); border: 4px solid var(--line); box-shadow: 0 6px 0 var(--line); padding: 16px; max-width: 340px; width: 92%; }
   .room-panel h3 { font-size: .6rem; color: var(--accent); margin-bottom: 10px; }
@@ -183,6 +190,7 @@
         <button class="act" id="btnRest">💤 СПАТЬ</button>
       </div>
       <div class="log" id="log"></div>
+      <div id="cloudPanel"></div>
     </div>
 
     <div id="tab-shop" class="hidden">
@@ -259,6 +267,7 @@
 
   <div class="room-panel hidden" id="roomPanel"></div>
 
+  <script src="content/config.js"></script>
   <script src="content/content.js"></script>
   <script src="content/lessons.js"></script>
   <script src="content/shop.js"></script>

@@ -51,3 +51,19 @@ node --test "tests/*.test.js"
 ### Добавление контента без кода
 
 Редактируй `content/content.json` (события, советы) или `content/lessons.json` (уроки) — затем `node tools/build-content.js` перегенерирует JS-обёртки.
+
+## ☁️ Облачная синхронизация (Supabase)
+
+Игра работает локально (localStorage). Опционально — синхронизация прогресса через Supabase:
+
+1. Создай проект на [supabase.com](https://supabase.com)
+2. В SQL Editor выполни `supabase/schema.sql` (таблица `saves` + RLS: каждый видит только своё)
+3. В Settings → Actions добавь **Variables** для репозитория:
+   - `SUPABASE_URL` = `https://<project>.supabase.co`
+   - `SUPABASE_ANON_KEY` = anon public key
+4. В Settings → Pages переключи Source на **GitHub Actions**
+5. Push в `main` — workflow `deploy-pages.yml` соберёт `content/config.js` и задеплоит сайт
+
+Без ключей игра полностью работает локально; панель покажет «синхронизация не настроена».
+
+**Безопасность:** anon-ключ публичный по дизайну, доступ к чужим данным закрыт через RLS (`auth.uid() = user_id`). service_role-ключ нигде не используется.

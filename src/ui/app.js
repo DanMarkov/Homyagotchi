@@ -3,6 +3,8 @@ import { tick, feed, play, rest, petState, PET_STATES } from '../core/pet.js';
 import { gainXP, dayCheck, addCoins, owns, buy, habitDone, toggleHabit, logMood, answerEvent, dailyGoalProgress, todayStr, moodAvg } from '../core/game.js';
 import { RoomScene, ROOM_POINTS } from '../render/scene.js';
 import { LessonUI } from './lessons.js';
+import { CloudUI } from './cloud.js';
+import { cloudSave } from '../core/cloud.js';
 import { renderMoodChart, startGrounding } from './support.js';
 
 const CONTENT = window.__CONTENT__;
@@ -294,3 +296,10 @@ document.addEventListener('keydown', (e) => {
 
 log('🐹 добро пожаловать в домик!');
 renderHabits();
+
+const cloudUI = new CloudUI({ state: S, onSave: () => save(S), onLog: log, onRender: render });
+cloudUI.init();
+
+setInterval(() => {
+  if (cloudUI.user && cloudUI.user.access_token) cloudSave(S).catch(() => {});
+}, 60000);
