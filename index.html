@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🐹 Хомягочи</title>
+<style>
+  :root { --accent: #f59e0b; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(160deg, #fef3c7 0%, #e0f2fe 100%); min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; padding: 20px; color: #1f2937; }
+  h1 { font-size: 1.6rem; margin-bottom: 4px; }
+  .tagline { color: #6b7280; margin-bottom: 16px; text-align: center; }
+  .card { background: #fff; border-radius: 20px; padding: 20px; box-shadow: 0 8px 24px rgba(0,0,0,.08);
+    width: 100%; max-width: 420px; }
+  .hamster { font-size: 90px; text-align: center; cursor: pointer; user-select: none;
+    transition: transform .15s; animation: breathe 3s ease-in-out infinite; }
+  .hamster:hover { transform: scale(1.08); }
+  @keyframes breathe { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+  .bars { margin: 12px 0; }
+  .bar-row { display: flex; align-items: center; gap: 8px; margin: 6px 0; font-size: .85rem; }
+  .bar-track { flex: 1; height: 12px; background: #f3f4f6; border-radius: 8px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 8px; transition: width .5s; }
+  .stats { display: flex; justify-content: space-between; margin-top: 12px; font-size: .9rem; flex-wrap: wrap; gap: 6px; }
+  .stats span { background: #f9fafb; padding: 4px 10px; border-radius: 10px; }
+  .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+  button { border: none; border-radius: 12px; padding: 12px; font-size: .95rem; cursor: pointer;
+    background: #fef3c7; transition: background .2s, transform .1s; }
+  button:hover { background: #fde68a; } button:active { transform: scale(.96); }
+  button.primary { background: var(--accent); color: #fff; font-weight: 600; }
+  button.primary:hover { background: #d97706; }
+  .log { margin-top: 14px; max-height: 130px; overflow-y: auto; font-size: .85rem; color: #4b5563; }
+  .log p { padding: 3px 0; border-bottom: 1px dashed #e5e7eb; }
+  .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,.5); display: flex;
+    align-items: center; justify-content: center; padding: 20px; z-index: 10; }
+  .modal { background: #fff; border-radius: 20px; padding: 24px; max-width: 400px; width: 100%; }
+  .modal h3 { margin-bottom: 8px; font-size: 1.1rem; }
+  .modal .question { margin-bottom: 16px; line-height: 1.5; }
+  .modal .btns { display: grid; gap: 8px; }
+  .modal .btns button { text-align: left; }
+  .ok { background: #dcfce7 !important; } .bad { background: #fee2e2 !important; }
+  .hidden { display: none; }
+  .footer { margin-top: 18px; font-size: .8rem; color: #9ca3af; text-align: center; }
+</style>
+</head>
+<body>
+  <h1>🐹 Хомягочи</h1>
+  <p class="tagline">Цифровой помощник для привычек: безопасность • софтскиллы • психгигиена</p>
+
+  <div class="card">
+    <div class="hamster" id="hamster">🐹</div>
+    <div class="bars">
+      <div class="bar-row">❤️ <div class="bar-track"><div class="bar-fill" id="bHealth" style="background:#f87171"></div></div><span id="tHealth"></span></div>
+      <div class="bar-row">🛡️ <div class="bar-track"><div class="bar-fill" id="bSec" style="background:#60a5fa"></div></div><span id="tSec"></span></div>
+      <div class="bar-row">🧠 <div class="bar-track"><div class="bar-fill" id="bMood" style="background:#a78bfa"></div></div><span id="tMood"></span></div>
+    </div>
+    <div class="stats">
+      <span>⭐ Уровень: <b id="lvl">1</b></span>
+      <span>🪙 Монетки: <b id="coins">0</b></span>
+      <span>🔥 Серия: <b id="streak">0</b> дн.</span>
+    </div>
+    <div class="actions">
+      <button class="primary" id="btnEvent">⚠️ Событие</button>
+      <button id="btnFeed">🥜 Покормить</button>
+      <button id="btnPlay">🎮 Поиграть</button>
+      <button id="btnRest">😴 Отдых</button>
+    </div>
+    <div class="log" id="log"></div>
+  </div>
+
+  <p class="footer">Хомягочи © 2026 — MVP-демо. Заботься о хомяке и учись распознавать цифровые угрозы!</p>
+
+  <div class="modal-bg hidden" id="modalBg">
+    <div class="modal">
+      <h3 id="mTitle">⚠️ Ловушка!</h3>
+      <p class="question" id="mQuestion"></p>
+      <div class="btns" id="mBtns"></div>
+      <p class="question hidden" id="mResult" style="margin-top:12px"></p>
+    </div>
+  </div>
+
+<script>
+var S = {
+  health: 80, sec: 60, mood: 70,
+  coins: 0, lvl: 1, xp: 0, streak: 0,
+  lastDay: '', daysPlayed: []
+};
+
+var EVENTS = [
+  {q: "Хомяку пришло SMS: «Ваша посылка задержана, перейдите по ссылке для оплаты». Что делать?", a: ["Открыть ссылку — посылка дорогая", "Игнорировать и проверить в официальном приложении", "Переслать другу, пусть посмотрит"], ok: 1, tip: "Это фишинг! Ссылки из SMS о посылках — классическая ловушка мошенников."},
+  {q: "Незнакомец в мессенджере: «Мама, это ты? У меня новый номер, скинь деньги срочно»", a: ["Сразу перевести — вдруг правда мама", "Позвонить маме на обычный номер и проверить", "Написать «ок» и ждать"], ok: 1, tip: "Взлом аккаунтов близких — частый сценарий. Всегда проверяй по другому каналу."},
+  {q: "Сайт предлагает «бесплатный» курс, но просит данные банковской карты «для верификации»", a: ["Ввести карту — курс же бесплатный", "Закрыть сайт: честные сервисы не просят карту бесплатно", "Ввести, но пустую карту"], ok: 1, tip: "Запрос карты за «бесплатное» — сигнал мошенничества."},
+  {q: "Друг просит твой код из SMS «для верификации его аккаунта»", a: ["Отправить — друг же", "Отказать: этот код открывает ТВОЙ аккаунт", "Отправить половину кода"], ok: 1, tip: "Коды из SMS — ключ от твоих аккаунтов. Их нельзя никому отправлять."},
+  {q: "Хомяк перегрузился: открыто 30 вкладок и 15 уведомлений. Как ему помочь?", a: ["Закрыть всё лишнее и сделать цифровой детокс на 15 минут", "Открыть ещё вкладок", "Пролистать ленту, чтобы расслабиться"], ok: 0, tip: "Информационная гигиена — тоже часть цифровой безопасности!"},
+  {q: "Публичный Wi-Fi в кафе просит войти через соцсеть", a: ["Войти — так быстрее", "Использовать мобильный интернет или VPN", "Ввести логин и пароль дважды"], ok: 1, tip: "Публичный Wi-Fi может перехватывать данные. Лучше VPN или мобильный интернет."},
+  {q: "Хомяк видит объявление: «Заработок 5000₽ в день, нужны только твои паспортные данные»", a: ["Отправить данные и ждать денег", "Пройти мимо: это схема мошенников", "Отправить данные друга вместо своих"], ok: 1, tip: "Любой «лёгкий заработок» за твои документы — работа с дропперами и мошенниками."}
+];
+
+function save() { localStorage.setItem('khomyagochi', JSON.stringify(S)); }
+function load() { var d = localStorage.getItem('khomyagochi'); if (d) { try { Object.assign(S, JSON.parse(d)); } catch(e){} } }
+function log(msg) { var el = document.getElementById('log'); var p = document.createElement('p'); p.textContent = msg; el.insertBefore(p, el.firstChild); while (el.children.length > 12) el.removeChild(el.lastChild); }
+
+function render() {
+  function set(b, t, v) { document.getElementById(b).style.width = v + '%'; document.getElementById(t).textContent = v + '%'; }
+  set('bHealth','tHealth',Math.max(0,Math.round(S.health)));
+  set('bSec','tSec',Math.max(0,Math.round(S.sec)));
+  set('bMood','tMood',Math.max(0,Math.round(S.mood)));
+  document.getElementById('lvl').textContent = S.lvl;
+  document.getElementById('coins').textContent = S.coins;
+  document.getElementById('streak').textContent = S.streak;
+  var h = document.getElementById('hamster');
+  h.textContent = S.health > 60 ? '🐹' : S.health > 30 ? '🐹💨' : '🥺';
+}
+
+function gainXP(n) {
+  S.xp += n;
+  while (S.xp >= 10) { S.xp -= 10; S.lvl++; S.coins += 20; log('🎉 Хомяк вырос до уровня ' + S.lvl + '! +20 🪙'); }
+}
+
+function dayCheck() {
+  var today = new Date().toDateString();
+  if (S.lastDay !== today) {
+    if (S.lastDay) S.streak++;
+    else S.streak = 1;
+    S.lastDay = today;
+    log('📅 Новый день! Серия: ' + S.streak + ' дн. Хомяк рад тебя видеть!');
+  }
+}
+
+function tick() {
+  S.health -= 0.3; S.mood -= 0.25; S.sec -= 0.1;
+  if (Math.random() < 0.015) spawnEvent();
+  render(); save();
+}
+
+function spawnEvent() {
+  var e = EVENTS[Math.floor(Math.random() * EVENTS.length)];
+  var bg = document.getElementById('modalBg');
+  document.getElementById('mTitle').textContent = '⚠️ Событие!';
+  document.getElementById('mQuestion').textContent = e.q;
+  var res = document.getElementById('mResult'); res.classList.add('hidden');
+  var btns = document.getElementById('mBtns'); btns.innerHTML = '';
+  e.a.forEach(function(opt, i) {
+    var b = document.createElement('button');
+    b.textContent = opt;
+    b.onclick = function() {
+      Array.prototype.forEach.call(btns.children, function(c, j) { c.classList.add(j === e.ok ? 'ok' : 'bad'); });
+      if (i === e.ok) {
+        S.sec = Math.min(100, S.sec + 10); S.mood += 5; S.coins += 10; gainXP(5);
+        res.textContent = '✅ Верно! +10 🛡️ +10 🪙. ' + e.tip;
+      } else {
+        S.sec = Math.max(0, S.sec - 12); S.health -= 5;
+        res.textContent = '❌ Ой! ' + e.tip;
+      }
+      res.classList.remove('hidden');
+      render(); save();
+      setTimeout(function(){ bg.classList.add('hidden'); }, 3500);
+    };
+    btns.appendChild(b);
+  });
+  bg.classList.remove('hidden');
+}
+
+document.getElementById('btnEvent').onclick = spawnEvent;
+document.getElementById('btnFeed').onclick = function() { S.health = Math.min(100, S.health + 12); S.mood += 3; S.coins = Math.max(0, S.coins - 2); log('🥜 Хомяк хрустит орешком! +❤️'); render(); save(); };
+document.getElementById('btnPlay').onclick = function() { S.mood = Math.min(100, S.mood + 12); S.health -= 2; gainXP(3); log('🎮 Игра в колесе! Хомяк доволен +🧠'); render(); save(); };
+document.getElementById('btnRest').onclick = function() { S.health = Math.min(100, S.health + 8); S.mood = Math.min(100, S.mood + 5); log('😴 Хомяк отдохнул.'); render(); save(); };
+document.getElementById('hamster').onclick = function() { S.mood = Math.min(100, S.mood + 2); log(' squeak! 🐹'); render(); save(); };
+
+load(); dayCheck(); render(); log('🐹 Добро пожаловать в Хомягочи!');
+setInterval(tick, 4000);
+</script>
+</body>
+</html>
