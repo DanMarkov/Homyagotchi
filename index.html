@@ -14,10 +14,47 @@
   .tagline { color: #6b7280; margin-bottom: 16px; text-align: center; }
   .card { background: #fff; border-radius: 20px; padding: 20px; box-shadow: 0 8px 24px rgba(0,0,0,.08);
     width: 100%; max-width: 420px; }
-  .hamster { font-size: 90px; text-align: center; cursor: pointer; user-select: none;
-    transition: transform .15s; animation: breathe 3s ease-in-out infinite; }
-  .hamster:hover { transform: scale(1.08); }
-  @keyframes breathe { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+
+  .pet-stage { position: relative; width: 200px; height: 200px; margin: 0 auto; cursor: pointer; user-select: none; }
+  .pet-stage:active .pet { transform: scale(.95); }
+  .pet { width: 100%; height: 100%; transform-origin: 50% 90%;
+    animation: breathe 3s ease-in-out infinite; transition: transform .15s; }
+  .pet-stage:hover .pet { transform: scale(1.05); }
+  @keyframes breathe { 0%,100% { transform: scale(1) } 50% { transform: scale(1.04,1.03) } }
+
+  .eye { animation: blink 4.2s infinite; transform-origin: center; }
+  @keyframes blink { 0%,92%,100% { transform: scaleY(1) } 95% { transform: scaleY(.08) } }
+
+  .ear-l { animation: earWiggle 5s ease-in-out infinite; transform-origin: 60% 90%; }
+  .ear-r { animation: earWiggle 5s ease-in-out .6s infinite; transform-origin: 40% 90%; }
+  @keyframes earWiggle { 0%,88%,100% { transform: rotate(0) } 92% { transform: rotate(-8deg) } 96% { transform: rotate(5deg) } }
+
+  .cheek-glow { opacity: 0; transition: opacity .4s; }
+  .mood-happy .cheek-glow { opacity: 1; }
+
+  .pet-stage.jumping .pet { animation: jump .6s ease; }
+  @keyframes jump { 0%,100% { transform: translateY(0) } 30% { transform: translateY(-26px) } 55% { transform: translateY(0) } 70% { transform: translateY(-10px) } 85% { transform: translateY(0) } }
+
+  .pet-stage.eating .pet { animation: munch .8s ease-in-out 2; }
+  @keyframes munch { 0%,100% { transform: scale(1) } 50% { transform: scale(1.08,.94) } }
+
+  .pet-stage.sleeping .pet { animation: sleep 3s ease-in-out infinite; }
+  @keyframes sleep { 0%,100% { transform: scale(1,1) translateY(0) } 50% { transform: scale(1.05,.96) translateY(4px) } }
+  .pet-stage.sleeping .eye { animation: blink 1.2s infinite; }
+
+  .pet-stage.sad .pet { animation: shiver 2.4s ease-in-out infinite; }
+  @keyframes shiver { 0%,100% { transform: translateX(0) } 20% { transform: translateX(-3px) } 40% { transform: translateX(3px) } 60% { transform: translateX(-2px) } 80% { transform: translateX(2px) } }
+
+  .float { position: absolute; left: 50%; bottom: 60%; font-size: 22px; pointer-events: none;
+    animation: floatUp 1.4s ease-out forwards; }
+  @keyframes floatUp { 0% { opacity: 1; transform: translate(-50%,0) } 100% { opacity: 0; transform: translate(-50%,-70px) scale(1.3) } }
+
+  .zzz { position: absolute; font-size: 16px; color: #93c5fd; font-weight: 700; opacity: 0; pointer-events: none; }
+  .pet-stage.sleeping .zzz { opacity: 1; animation: zfloat 3s ease-in-out infinite; }
+  .zzz:nth-child(2) { left: 68%; bottom: 55%; animation-delay: .8s; }
+  .zzz:nth-child(3) { left: 76%; bottom: 70%; animation-delay: 1.6s; }
+  @keyframes zfloat { 0% { transform: translate(0,0); opacity: 0 } 30% { opacity: 1 } 100% { transform: translate(24px,-40px); opacity: 0 } }
+
   .bars { margin: 12px 0; }
   .bar-row { display: flex; align-items: center; gap: 8px; margin: 6px 0; font-size: .85rem; }
   .bar-track { flex: 1; height: 12px; background: #f3f4f6; border-radius: 8px; overflow: hidden; }
@@ -49,7 +86,34 @@
   <p class="tagline">Цифровой помощник для привычек: безопасность • софтскиллы • психгигиена</p>
 
   <div class="card">
-    <div class="hamster" id="hamster">🐹</div>
+    <div class="pet-stage" id="petStage" title="Погладить хомяка">
+      <span class="zzz">z</span><span class="zzz">z</span><span class="zzz">z</span>
+      <svg class="pet" id="petSvg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="100" cy="182" rx="62" ry="10" fill="#000" opacity=".08"/>
+        <g id="hamsterBody">
+          <path class="ear-l" d="M62 52 C50 28 34 30 38 46 C41 58 52 64 62 68 Z" fill="#f4b9c4" stroke="#d99aa8" stroke-width="2"/>
+          <path class="ear-r" d="M138 52 C150 28 166 30 162 46 C159 58 148 64 138 68 Z" fill="#f4b9c4" stroke="#d99aa8" stroke-width="2"/>
+          <ellipse cx="100" cy="115" rx="70" ry="62" fill="#fcd9a0" stroke="#eab308" stroke-width="3"/>
+          <ellipse cx="100" cy="132" rx="52" ry="42" fill="#fff7e6"/>
+          <ellipse cx="56" cy="120" rx="16" ry="11" fill="#f9b4b4" class="cheek-glow"/>
+          <ellipse cx="144" cy="120" rx="16" ry="11" fill="#f9b4b4" class="cheek-glow"/>
+          <g id="face">
+            <g class="eye"><circle cx="76" cy="100" r="8" fill="#1f2937"/><circle cx="79" cy="97" r="2.5" fill="#fff"/></g>
+            <g class="eye"><circle cx="124" cy="100" r="8" fill="#1f2937"/><circle cx="127" cy="97" r="2.5" fill="#fff"/></g>
+            <ellipse cx="100" cy="114" rx="7" ry="5" fill="#e898a3"/>
+            <path id="mouth" d="M88 128 Q100 138 112 128" stroke="#b45309" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <g stroke="#c99b5f" stroke-width="2" stroke-linecap="round">
+              <line x1="60" y1="112" x2="38" y2="106"/><line x1="60" y1="120" x2="36" y2="122"/>
+              <line x1="140" y1="112" x2="162" y2="106"/><line x1="140" y1="120" x2="164" y2="122"/>
+            </g>
+          </g>
+          <g id="paws">
+            <ellipse cx="72" cy="172" rx="14" ry="8" fill="#f4b9c4" stroke="#d99aa8" stroke-width="2"/>
+            <ellipse cx="128" cy="172" rx="14" ry="8" fill="#f4b9c4" stroke="#d99aa8" stroke-width="2"/>
+          </g>
+        </g>
+      </svg>
+    </div>
     <div class="bars">
       <div class="bar-row">❤️ <div class="bar-track"><div class="bar-fill" id="bHealth" style="background:#f87171"></div></div><span id="tHealth"></span></div>
       <div class="bar-row">🛡️ <div class="bar-track"><div class="bar-fill" id="bSec" style="background:#60a5fa"></div></div><span id="tSec"></span></div>
@@ -69,7 +133,7 @@
     <div class="log" id="log"></div>
   </div>
 
-  <p class="footer">Хомягочи © 2026 — MVP-демо. Заботься о хомяке и учись распознавать цифровые угрозы!</p>
+  <p class="footer">Хомягочи © 2026 — MVP-демо. Заботься о хомяке и учись распознавать цифровые угрози!</p>
 
   <div class="modal-bg hidden" id="modalBg">
     <div class="modal">
@@ -101,6 +165,26 @@ function save() { localStorage.setItem('khomyagochi', JSON.stringify(S)); }
 function load() { var d = localStorage.getItem('khomyagochi'); if (d) { try { Object.assign(S, JSON.parse(d)); } catch(e){} } }
 function log(msg) { var el = document.getElementById('log'); var p = document.createElement('p'); p.textContent = msg; el.insertBefore(p, el.firstChild); while (el.children.length > 12) el.removeChild(el.lastChild); }
 
+var stage = document.getElementById('petStage');
+var mouth = document.getElementById('mouth');
+
+function petAnim(cls, ms) {
+  stage.classList.remove('jumping', 'eating', 'sleeping', 'sad');
+  if (cls) { stage.classList.add(cls); if (ms) setTimeout(function(){ stage.classList.remove(cls); syncMood(); }, ms); }
+}
+function syncMood() {
+  stage.classList.remove('mood-happy', 'sad');
+  if (S.health <= 30) { stage.classList.add('sad'); mouth.setAttribute('d', 'M88 134 Q100 124 112 134'); }
+  else if (S.mood >= 60) { stage.classList.add('mood-happy'); mouth.setAttribute('d', 'M86 126 Q100 142 114 126'); }
+  else mouth.setAttribute('d', 'M88 128 Q100 138 112 128');
+}
+function floatEmoji(ch) {
+  var s = document.createElement('span');
+  s.className = 'float'; s.textContent = ch;
+  stage.appendChild(s);
+  setTimeout(function(){ s.remove(); }, 1400);
+}
+
 function render() {
   function set(b, t, v) { document.getElementById(b).style.width = v + '%'; document.getElementById(t).textContent = v + '%'; }
   set('bHealth','tHealth',Math.max(0,Math.round(S.health)));
@@ -109,8 +193,7 @@ function render() {
   document.getElementById('lvl').textContent = S.lvl;
   document.getElementById('coins').textContent = S.coins;
   document.getElementById('streak').textContent = S.streak;
-  var h = document.getElementById('hamster');
-  h.textContent = S.health > 60 ? '🐹' : S.health > 30 ? '🐹💨' : '🥺';
+  syncMood();
 }
 
 function gainXP(n) {
@@ -149,9 +232,11 @@ function spawnEvent() {
       if (i === e.ok) {
         S.sec = Math.min(100, S.sec + 10); S.mood += 5; S.coins += 10; gainXP(5);
         res.textContent = '✅ Верно! +10 🛡️ +10 🪙. ' + e.tip;
+        petAnim('jumping', 700); floatEmoji('✅');
       } else {
         S.sec = Math.max(0, S.sec - 12); S.health -= 5;
         res.textContent = '❌ Ой! ' + e.tip;
+        floatEmoji('❓');
       }
       res.classList.remove('hidden');
       render(); save();
@@ -163,10 +248,10 @@ function spawnEvent() {
 }
 
 document.getElementById('btnEvent').onclick = spawnEvent;
-document.getElementById('btnFeed').onclick = function() { S.health = Math.min(100, S.health + 12); S.mood += 3; S.coins = Math.max(0, S.coins - 2); log('🥜 Хомяк хрустит орешком! +❤️'); render(); save(); };
-document.getElementById('btnPlay').onclick = function() { S.mood = Math.min(100, S.mood + 12); S.health -= 2; gainXP(3); log('🎮 Игра в колесе! Хомяк доволен +🧠'); render(); save(); };
-document.getElementById('btnRest').onclick = function() { S.health = Math.min(100, S.health + 8); S.mood = Math.min(100, S.mood + 5); log('😴 Хомяк отдохнул.'); render(); save(); };
-document.getElementById('hamster').onclick = function() { S.mood = Math.min(100, S.mood + 2); log(' squeak! 🐹'); render(); save(); };
+document.getElementById('btnFeed').onclick = function() { S.health = Math.min(100, S.health + 12); S.mood += 3; S.coins = Math.max(0, S.coins - 2); petAnim('eating', 1600); floatEmoji('🥜'); log('🥜 Хомяк хрустит орешком! +❤️'); render(); save(); };
+document.getElementById('btnPlay').onclick = function() { S.mood = Math.min(100, S.mood + 12); S.health -= 2; gainXP(3); petAnim('jumping', 700); floatEmoji('🎮'); log('🎮 Игра в колесе! Хомяк доволен +🧠'); render(); save(); };
+document.getElementById('btnRest').onclick = function() { S.health = Math.min(100, S.health + 8); S.mood = Math.min(100, S.mood + 5); petAnim('sleeping', 3000); floatEmoji('💤'); log('😴 Хомяк отдохнул.'); render(); save(); };
+stage.onclick = function() { S.mood = Math.min(100, S.mood + 2); floatEmoji('💗'); petAnim('jumping', 700); log(' squeak! 🐹'); render(); save(); };
 
 load(); dayCheck(); render(); log('🐹 Добро пожаловать в Хомягочи!');
 setInterval(tick, 4000);
