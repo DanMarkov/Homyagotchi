@@ -1,4 +1,5 @@
 import { sprite } from './engine.js';
+import { SKIES } from './daynight.js';
 
 export const WALL_COLORS = {
   wall_rose: { top: '#e8a0b8', bot: '#d98ba0', dot: '#f4c2d4', line: '#b8627f' },
@@ -72,24 +73,15 @@ export function makeRoomSprites(wallId) {
     rect(-1, -1, 62, 60, '#171225');
     rect(0, 0, 58, 56, '#7a4a1d');
     rect(1, 1, 56, 54, '#2b1d0e');
-    rect(3, 3, 52, 48, '#7fd8f8');
-    rect(3, 3, 52, 20, '#a8ecff');
-    rect(3, 23, 52, 26, '#5ab8e8');
-    rect(3, 45, 52, 6, '#48a8d8');
-    for (let c = 0; c < 5; c++) {
-      const cx = 8 + c * 10, cy = 6 + c * 4;
-      px(cx, cy, '#fff', 5, 2); px(cx + 1, cy - 1, '#fff', 3, 1); px(cx + 1, cy + 2, '#fff', 3, 1);
-    }
-    for (let s = 0; s < 3; s++) {
-      const sx = 40 + (s % 2) * 8, sy = 8 + s * 4;
-      px(sx, sy, '#fff', 3, 3); px(sx - 2, sy + 2, '#e8f6ff', 2, 1); px(sx + 4, sy + 2, '#e8f6ff', 2, 1);
-    }
-    ell(12, 16, 5, 5, '#ffd166'); px(11, 14, '#ffe9a8', 2, 2);
-    ell(44, 38, 7, 5, '#2e7d4f'); ell(38, 41, 5, 4, '#4ec97a'); ell(50, 42, 4, 3, '#66d18f');
-    px(40, 35, '#2e7d4f', 2, 4); px(50, 37, '#2e7d4f', 2, 5);
-    rect(28, 3, 3, 48, '#7a4a1d'); rect(28, 24, 31, 3, '#7a4a1d');
+    rect(28, 3, 3, 48, '#7a4a1d');
+    rect(28, 24, 31, 3, '#7a4a1d');
     px(29, 24, '#a3703f', 1, 1);
-    rect(0, 54, 60, 4, '#7a4a1d'); rect(0, 54, 60, 1, '#a3703f');
+    rect(0, 54, 60, 4, '#7a4a1d');
+    rect(0, 54, 60, 1, '#a3703f');
+    ell(44, 40, 8, 5, '#1d4a2e');
+    ell(38, 42, 6, 4, '#2e7d4f');
+    ell(50, 43, 5, 3, '#246b40');
+    px(40, 34, '#2e7d4f', 2, 5); px(50, 36, '#2e7d4f', 2, 5);
   });
 
   const poster = sprite(56, 60, (d0) => {
@@ -221,6 +213,49 @@ export function makeRoomSprites(wallId) {
   });
 
   return { background, windowSpr, poster, shelf, lamp, bed, bowl, flower, wheel };
+}
+
+export function makeSkySprites() {
+  const phases = ['dawn', 'day', 'dusk', 'night'];
+  const spritesByPhase = {};
+  phases.forEach((phase) => {
+    spritesByPhase[phase] = sprite(62, 60, (d0) => {
+      const { px, rect, ell } = shade(d0);
+      const sky = SKIES[phase];
+      rect(3, 3, 52, 19, sky.top);
+      rect(3, 22, 52, 14, sky.mid);
+      rect(3, 36, 52, 15, sky.bot);
+      if (sky.star) {
+        for (let i = 0; i < 9; i++) {
+          const sx = 6 + (i * 11) % 46, sy = 5 + (i * 7) % 18;
+          px(sx, sy, '#fff', 1, 1);
+          if (i % 3 === 0) { px(sx - 1, sy, '#e8f0ff', 1, 1); px(sx + 1, sy, '#e8f0ff', 1, 1); }
+        }
+      } else {
+        for (let c = 0; c < 4; c++) {
+          const cx = 8 + c * 12, cy = 8 + (c % 2) * 4;
+          px(cx, cy, '#fff', 5, 2); px(cx + 1, cy - 1, '#fff', 3, 1);
+        }
+      }
+      if (phase === 'day' || phase === 'dawn') {
+        const sx = phase === 'day' ? 24 : 8, sy = phase === 'day' ? 7 : 14;
+        ell(sx, sy, 5, 5, '#ffd166');
+        px(sx - 1, sy - 2, '#ffe9a8', 2, 2);
+        if (phase === 'day') { px(sx - 8, sy - 2, '#ffe9a8', 2, 2); px(sx + 6, sy + 2, '#ffe9a8', 2, 2); }
+      } else if (phase === 'night') {
+        ell(24, 10, 6, 6, '#f4f0d8');
+        ell(21, 9, 4, 4, '#2a3568');
+        px(26, 8, '#f4f0d8', 1, 1);
+      } else {
+        ell(40, 16, 5, 5, '#ff6b4d');
+        px(38, 14, '#ffb886', 3, 2);
+      }
+      rect(3, 40, 52, 8, phase === 'night' ? '#3a4a68' : phase === 'day' ? '#4ec97a' : '#2e7d4f');
+      ell(20, 46, 9, 4, phase === 'night' ? '#2a3a55' : '#246b40');
+      ell(40, 48, 7, 3, phase === 'night' ? '#33465e' : '#2e7d4f');
+    });
+  });
+  return spritesByPhase;
 }
 
 const HAM = {

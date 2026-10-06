@@ -5,6 +5,7 @@ import { RoomScene, ROOM_POINTS } from '../render/scene.js';
 import { LessonUI } from './lessons.js';
 import { CloudUI } from './cloud.js';
 import { cloudSave } from '../core/cloud.js';
+import { sfx } from './audio.js';
 import { renderMoodChart, startGrounding } from './support.js';
 
 const CONTENT = window.__CONTENT__;
@@ -77,13 +78,13 @@ cv.addEventListener('mousemove', (e) => {
 cv.addEventListener('click', (e) => {
   const p = scenePos(e);
   const pt = scene.hitTest(p.x, p.y);
-  if (pt) roomAction(pt.id);
+  if (pt) { sfx.click(); roomAction(pt.id); }
   else { S.mood = Math.min(100, S.mood + 2); S._jumping = 16; scene.puff('♥', '#ff8fa3'); log('пип! хомяк рад ♥'); persist(); }
 });
 
 function roomAction(id) {
   if (id === 'book') showPanel('📖 ДНЕВНИК ХОМЯКА', statsHtml());
-  else if (id === 'bowl') { feed(S); scene.puff('⚡', '#e8b46e'); log('🥣 хомяк поел! +❤'); persist(); }
+  else if (id === 'bowl') { feed(S); scene.puff('⚡', '#e8b46e'); sfx.feed(); log('🥣 хомяк поел! +❤'); persist(); }
   else if (id === 'poster') showPanel('🛡 СОВЕТ ОТ ХОМЯКА', '<p class="panel-text">' + CONTENT.tips[Math.floor(Math.random() * CONTENT.tips.length)] + '</p>');
   else if (id === 'window') {
     const hr = new Date().getHours();
@@ -91,15 +92,15 @@ function roomAction(id) {
     showPanel('🪟 ЗА ОКНОМ', '<p class="panel-text">' + g + ' Хомяк здесь для тебя ♥</p>');
     S.mood = Math.min(100, S.mood + 2); persist();
   } else if (id === 'flower') {
-    S.mood = Math.min(100, S.mood + 4); gainXP(S, 1); scene.puff('♥', '#7fae90');
+    S.mood = Math.min(100, S.mood + 4); gainXP(S, 1); scene.puff('♥', '#7fae90'); sfx.heart();
     log('🌱 ты полил цветок — забота возвращается!'); persist();
-  } else if (id === 'bed') { rest(S); log('💤 хомяк приснул на лежанке.'); persist(); }
+  } else if (id === 'bed') { rest(S); sfx.sleep(); log('💤 хомяк приснул на лежанке.'); persist(); }
   else if (id === 'wheel') {
     scene.spinWheel();
     S.mood = Math.min(100, S.mood + 10); gainXP(S, 3); S._jumping = 12;
-    scene.puff('♪', '#ffd166'); log('🎡 хомяк гоняет в колесе! +🧠'); persist();
+    scene.puff('♪', '#ffd166'); sfx.wheel(); log('🎡 хомяк гоняет в колесе! +🧠'); persist();
   }
-  else if (id === 'ham') { S.mood = Math.min(100, S.mood + 6); S._jumping = 16; scene.puff('♥', '#ff8fa3'); log('🐹 пип! хомяк рад!'); persist(); }
+  else if (id === 'ham') { S.mood = Math.min(100, S.mood + 6); S._jumping = 16; scene.puff('♥', '#ff8fa3'); sfx.pet(); log('🐹 пип! хомяк рад!'); persist(); }
 }
 
 function showPanel(title, bodyHtml) {
@@ -137,7 +138,7 @@ function spawnEvent() {
       Array.prototype.forEach.call(btns.children, (c, j) => c.classList.add(j === ev.ok ? 'ok' : 'bad'));
       const ok = answerEvent(S, ev, i);
       res.textContent = ok ? '✅ ВЕРНО! +10🛡 +10🪙 ' + ev.tip : '❌ ОЙ! ' + ev.tip;
-      if (ok) { S._jumping = 16; scene.puff('★', '#ffd166'); } else scene.puff('?', '#e5484d');
+      if (ok) { S._jumping = 16; scene.puff('★', '#ffd166'); sfx.correct(); } else { scene.puff('?', '#e5484d'); sfx.wrong(); }
       res.classList.remove('hidden');
       persist();
       setTimeout(() => bg.classList.add('hidden'), 4000);
@@ -147,9 +148,9 @@ function spawnEvent() {
   bg.classList.remove('hidden');
 }
 
-els('btnFeed').onclick = () => { feed(S); scene.puff('⚡', '#e8b46e'); log('🥜 хомяк хрустит! +❤'); persist(); };
-els('btnPlay').onclick = () => { play(S); gainXP(S, 3); scene.puff('♪', '#a78bfa'); log('🎮 игра! +🧠'); persist(); };
-els('btnRest').onclick = () => { rest(S); log('💤 хомяк поспал.'); persist(); };
+els('btnFeed').onclick = () => { feed(S); scene.puff('⚡', '#e8b46e'); sfx.feed(); log('🥜 хомяк хрустит! +❤'); persist(); };
+els('btnPlay').onclick = () => { play(S); gainXP(S, 3); scene.puff('♪', '#a78bfa'); sfx.play(); log('🎮 игра! +🧠'); persist(); };
+els('btnRest').onclick = () => { rest(S); sfx.sleep(); log('💤 хомяк поспал.'); persist(); };
 
 const SHOP = window.__SHOP__;
 function renderShop() {
@@ -203,7 +204,7 @@ function renderHabits() {
     cb.checked = !!habitDone(S, h.id);
     cb.onchange = () => {
       toggleHabit(S, h.id, cb.checked);
-      if (cb.checked) { S._jumping = 16; scene.puff('★', '#ffd166'); log('✅ серия ' + S.habitState[h.id].streak + '!'); }
+      if (cb.checked) { S._jumping = 16; scene.puff('★', '#ffd166'); sfx.correct(); log('✅ серия ' + S.habitState[h.id].streak + '!'); }
       renderHabits(); persist();
     };
     const label = document.createElement('span');
@@ -221,6 +222,7 @@ function renderLessons() { lessonUI.renderList(els('lessonList')); }
 
 document.querySelectorAll('.tabs button').forEach((btn) => {
   btn.onclick = () => {
+    sfx.tab();
     document.querySelectorAll('.tabs button').forEach((b) => b.classList.remove('active'));
     btn.classList.add('active');
     ['home', 'shop', 'habits', 'lessons', 'support'].forEach((t) => {
@@ -249,7 +251,7 @@ document.querySelectorAll('#moodScale button').forEach((b) => {
     const msg = els('moodMsg');
     msg.textContent = CONTENT.moodMsgs[m];
     msg.classList.remove('hidden');
-    if (m >= 4) { S.mood = Math.min(100, S.mood + 6); S._jumping = 16; scene.puff('♥', '#ff8fa3'); }
+    if (m >= 4) { S.mood = Math.min(100, S.mood + 6); S._jumping = 16; scene.puff('♥', '#ff8fa3'); sfx.heart(); }
     else S.mood = Math.min(100, S.mood + 3);
     gainXP(S, 1);
     log('💙 чек-ин записан');

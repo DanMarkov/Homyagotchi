@@ -1,5 +1,6 @@
-import { makeRoomSprites, makeHamsterSprites } from './sprites.js';
+import { makeRoomSprites, makeHamsterSprites, makeSkySprites } from './sprites.js';
 import { petState, PET_STATES } from '../core/pet.js';
+import { dayPhase, SKIES } from './daynight.js';
 
 export const ROOM_POINTS = [
   { id: 'book', x: 136, y: 130, r: 34, label: '📖 дневник — статистика' },
@@ -24,6 +25,8 @@ export class RoomScene {
     this.hatId = null;
     this.wheelSpin = 0;
     this.wheelActive = 0;
+    this.skySprites = makeSkySprites();
+    this.phase = null;
   }
 
   rebuild(state) {
@@ -35,6 +38,7 @@ export class RoomScene {
       this.ham = makeHamsterSprites(state.equipped.hat);
       this.hatId = state.equipped.hat;
     }
+    this.phase = dayPhase(new Date().getHours());
   }
 
   puff(ch, color) {
@@ -51,16 +55,28 @@ export class RoomScene {
     ctx.imageSmoothingEnabled = false;
     ctx.drawImage(this.sprites.background, 0, 0);
 
-    const sunA = 0.5 + 0.5 * Math.sin(this.t * 0.8);
-    ctx.save();
-    ctx.globalAlpha = 0.10 + sunA * 0.06;
-    ctx.fillStyle = '#ffe9a8';
-    ctx.beginPath();
-    ctx.moveTo(24, 24); ctx.lineTo(78, 24); ctx.lineTo(150, 240); ctx.lineTo(60, 240);
-    ctx.closePath(); ctx.fill();
-    ctx.restore();
-
     ctx.drawImage(this.sprites.windowSpr, 20, 20);
+    ctx.drawImage(this.skySprites[this.phase], 20, 20);
+
+    const sky = SKIES[this.phase];
+    if (this.phase === 'day' || this.phase === 'dawn') {
+      const sunA = 0.5 + 0.5 * Math.sin(this.t * 0.8);
+      ctx.save();
+      ctx.globalAlpha = 0.10 + sunA * 0.06;
+      ctx.fillStyle = '#ffe9a8';
+      ctx.beginPath();
+      ctx.moveTo(24, 24); ctx.lineTo(78, 24); ctx.lineTo(150, 240); ctx.lineTo(60, 240);
+      ctx.closePath(); ctx.fill();
+      ctx.restore();
+    }
+
+    if (sky.tint) {
+      ctx.save();
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = sky.tint;
+      ctx.fillRect(0, 0, 320, 154);
+      ctx.restore();
+    }
     ctx.drawImage(this.sprites.poster, 135, 16);
     ctx.drawImage(this.sprites.shelf, 98, 100);
     ctx.drawImage(this.sprites.lamp, 14, 80);
@@ -83,11 +99,16 @@ export class RoomScene {
     ctx.drawImage(this.sprites.bed, 90, 214);
     ctx.drawImage(this.sprites.bowl, 208, 210);
 
-    if (Math.floor(this.t * 2) % 2 === 0) {
-      ctx.fillStyle = 'rgba(255,209,102,.4)';
+    const isNight = this.phase === 'night';
+    if (Math.floor(this.t * 2) % 2 === 0 || isNight) {
+      ctx.fillStyle = isNight ? 'rgba(255,209,102,.6)' : 'rgba(255,209,102,.4)';
       ctx.fillRect(38, 106, 12, 8);
-      ctx.fillStyle = 'rgba(255,240,200,.25)';
+      ctx.fillStyle = isNight ? 'rgba(255,240,200,.45)' : 'rgba(255,240,200,.25)';
       ctx.fillRect(26, 92, 24, 12);
+    }
+    if (isNight) {
+      ctx.fillStyle = 'rgba(255,209,102,.15)';
+      ctx.fillRect(10, 82, 48, 44);
     }
 
     for (let d = 0; d < 5; d++) {

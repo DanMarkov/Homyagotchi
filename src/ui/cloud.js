@@ -10,10 +10,8 @@ export class CloudUI {
   }
 
   async init() {
-    if (!isCloudConfigured()) {
-      this.renderPanel('<p class="cloud-msg">☁️ Облачная синхронизация не настроена — играем локально.</p>');
-      return;
-    }
+    if (!isCloudConfigured()) return;
+    if (!document.getElementById('cloudPanel')) return;
     try {
       this.user = await initAuth();
     } catch (e) { this.user = null; }
