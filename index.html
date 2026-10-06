@@ -27,6 +27,19 @@
   canvas { width: 100%; image-rendering: pixelated; image-rendering: crisp-edges; }
   .pix-hint { position: absolute; right: 4px; bottom: 4px; font-size: .45rem; color: rgba(255,255,255,.55); }
 
+  .room-overlay { position: fixed; inset: 0; background: rgba(10,7,18,.94); display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 10px; padding: 12px; z-index: 20; }
+  #bigScene { width: min(96vw, calc(88vh * 4 / 3)); image-rendering: pixelated; image-rendering: crisp-edges;
+    border: 4px solid #171225; box-shadow: 0 6px 0 #171225; background: #000; }
+  .room-tip { font-size: .5rem; color: #c9c0e0; text-align: center; line-height: 1.8; max-width: min(96vw, 640px); }
+  .room-tip b { color: #ffd166; }
+  .room-panel { position: fixed; left: 50%; top: 50%; transform: translate(-50%,-50%); z-index: 21;
+    background: #3a3350; border: 4px solid #171225; box-shadow: 0 6px 0 #171225; padding: 16px; max-width: 340px; width: 92%; }
+  .room-panel h3 { font-size: .6rem; color: #ffd166; margin-bottom: 10px; }
+  .room-panel p { font-size: .5rem; line-height: 1.9; }
+  .room-panel .row { font-size: .5rem; line-height: 2.2; display: flex; justify-content: space-between; border-bottom: 1px dashed #544a75; }
+  .room-panel .row span:last-child { color: #ffd166; }
+
   .bars { margin: 12px 0; }
   .bar-row { display: flex; align-items: center; gap: 8px; margin: 6px 0; font-size: .55rem; }
   .bar-track { flex: 1; height: 14px; background: #241d35; border: 2px solid #171225; overflow: hidden; }
@@ -122,6 +135,7 @@
         <button class="act" id="btnFeed">🥜 КОРМИТЬ</button>
         <button class="act" id="btnPlay">🎮 ИГРАТЬ</button>
         <button class="act" id="btnRest">💤 СПАТЬ</button>
+        <button class="act" id="btnRoom" style="grid-column:1/-1">🔍 РАЗГЛЯДЕТЬ КОМНАТУ</button>
       </div>
       <div class="log" id="log"></div>
     </div>
@@ -181,6 +195,13 @@
       <div class="btns" id="mBtns"></div>
       <p class="question hidden" id="mResult" style="margin-top:12px"></p>
     </div>
+  </div>
+
+  <div class="room-overlay hidden" id="roomOverlay">
+    <canvas id="bigScene" width="320" height="240"></canvas>
+    <div class="room-tip">🔍 <b>наведи</b> на предмет и <b>кликни</b>:
+      📖 дневник — статистика • 🥣 миска — покормить • 🛡 плакат — совет • 🪟 окно — привет • 🌱 цветок — забота • 💤 лежанка — сон • хомяк — играть</div>
+    <div class="room-panel hidden" id="roomPanel"></div>
   </div>
 
 <script>
@@ -366,6 +387,7 @@ setInterval(function() {
   if (jumping > 0) jumping--;
   if (eating > 0) eating--;
   drawScene();
+  if (!document.getElementById('roomOverlay').classList.contains('hidden')) drawBigScene();
 }, 250);
 
 cv.addEventListener('click', function() {
@@ -591,6 +613,295 @@ if (!S.owned) S.owned = ['hat_none', 'wall_rose'];
 dayCheck(); render(); renderHabits(); drawScene();
 log('🐹 добро пожаловать в домик!');
 setInterval(tick, 4000);
+
+/* ============ FULLSCREEN ROOM ============ */
+var bcv = document.getElementById('bigScene');
+var bctx = bcv.getContext('2d');
+var BW = 320, BH = 240;
+var bigAnimT = 0, hot = null;
+
+function bpx(x, y, c, w, h) { bctx.fillStyle = c; bctx.fillRect(Math.round(x), Math.round(y), w || 1, h || 1); }
+function brect(x, y, w, h, c) { bpx(x, y, c, w, h); }
+function bell(cx, cy, rx, ry, c) {
+  bctx.fillStyle = c;
+  for (var y = -ry; y <= ry; y++) {
+    var hw = Math.floor(rx * Math.sqrt(Math.max(0, 1 - (y * y) / (ry * ry))));
+    if (hw >= 0) bctx.fillRect(Math.round(cx - hw), Math.round(cy + y), hw * 2 + 1, 1);
+  }
+}
+function ellBig(cx, cy, rx, ry, c) { bell(cx, cy, rx, ry, c); }
+
+var TIPS = [
+  "⚡ Пароль для разных сайтов — разный. Если один утечёт — все не утечут.",
+  "🔗 Перед кликом по ссылке остановись на 3 секунды и подумай: от кого она и куда ведёт?",
+  "📱 Смс-код из сообщения нельзя никому давать — даже лучшему другу.",
+  "🗂 Любое доброе дело для себя можно начать с 15 минут в день. Маленькие прыжки всегда выигрывают у больших планов.",
+  "🧴 Когда тяжело — не забывай простые вещи: вода, сон и дыхание вдох — пауза — выдох."
+];
+var ROOM_POINTS = [
+  { id: 'book', x: 104, y: 132, r: 30, label: '📖 дневник — статистика' },
+  { id: 'bowl', x: 224, y: 212, r: 16, label: '🥣 миска — покормить' },
+  { id: 'poster', x: 160, y: 44, r: 26, label: '🛡 плакат — совет' },
+  { id: 'window', x: 48, y: 48, r: 30, label: '🪟 окно — привет' },
+  { id: 'flower', x: 286, y: 176, r: 16, label: '🌱 цветок — забота' },
+  { id: 'bed', x: 112, y: 204, r: 26, label: '💤 лежанка — спать' },
+  { id: 'ham', x: 160, y: 180, r: 30, label: '🐹 погладить' }
+];
+
+function drawBigScene() {
+  var wc = WALL_COLORS[S.equipped.wall] || WALL_COLORS.wall_rose;
+  brect(0, 0, BW, 148, wc[0]);
+  for (var y = 6; y < 148; y += 12) for (var x = (y % 24 === 6 ? 6 : 18); x < BW; x += 24) bpx(x, y, wc[1]);
+  brect(0, 146, BW, 2, '#5e3d1f');
+  brect(0, 148, BW, BH - 148, '#a3703f');
+  for (var i = 0; i < 15; i++) {
+    brect(0, 152 + i * 6, BW, 1, '#8a5c32');
+    bpx(24 + i * 24, 148, '#8a5c32', 1, BH - 148);
+    bpx(12 + i * 24, 148, '#96653a', 1, 4);
+  }
+
+  /* window */
+  brect(20, 20, 58, 54, '#5e3d1f');
+  brect(23, 23, 52, 48, '#8fd0f0');
+  brect(23, 56, 52, 15, '#b8e4f8');
+  bpx(23, 23, '#e8f6ff', 52, 4);
+  for (var c1 = 0; c1 < 5; c1++) bpx(28 + c1 * 10, 26 + c1 * 4, '#fff', 4, 2);
+  for (var s = 0; s < 4; s++) {
+    var sx = 62 + (s % 2) * 8, sy = 27 + s * 3;
+    bpx(sx, sy, '#fff', 2, 2); bpx(sx - 2, sy + 2, '#fff', 1, 1); bpx(sx + 3, sy + 2, '#fff', 1, 1);
+  }
+  bell(33, 62, 6, 5, '#2e7d4f'); bell(31, 66, 3, 3, '#4ec97a'); bell(40, 64, 4, 3, '#1d7a43');
+  bpx(26, 34, '#ffd166', 5, 5); bpx(27, 32, 3, 9); bpx(24, 36, 9, 2);
+  brect(48, 44, 2, 46, '#5e3d1f'); brect(23, 66, 52, 2, '#5e3d1f');
+
+  /* poster */
+  brect(134, 16, 52, 56, '#171225');
+  brect(136, 18, 48, 52, '#2a2440');
+  bpx(145, 24, '#4cc3f7', 30, 2); bpx(145, 28, '#4cc3f7', 22, 2);
+  bpx(145, 34, '#ffd166', 30, 2); bpx(145, 38, '#ffd166', 26, 2);
+  bpx(145, 44, '#ff8fa3', 18, 2); bpx(145, 48, '#ff8fa3', 24, 2);
+  bpx(145, 55, '#a78bfa', 30, 2); bpx(145, 59, '#a78bfa', 14, 2);
+  bell(160, 44, 5, 5, '#5e3d1f'); bpx(158, 44, '#4cc3f7', 2, 2); bpx(161, 44, '#4cc3f7', 2, 2);
+  bpx(149, 51, '#f5cd8f', 2, 1); bpx(165, 52, '#f5cd8f', 2, 1);
+
+  /* bookshelf */
+  brect(96, 100, 76, 52, '#5e3d1f');
+  brect(100, 104, 68, 44, '#3a2a55');
+  brect(100, 140, 68, 4, '#8a5c32');
+  brect(100, 118, 68, 4, '#8a5c32');
+  var spineC = ['#e5484d', '#4cc3f7', '#ffd166', '#4ec97a', '#a78bfa', '#ff8fa3'];
+  for (var b = 0; b < 6; b++) {
+    var bx = 102 + b * 11;
+    brect(bx, 122, 9, 18, spineC[b]);
+    bpx(bx + 1, 125, '#fff', 7, 1); bpx(bx + 1, 129, '#fff', 7, 1); bpx(bx + 3, 133, '#2b1d0e', 3, 3);
+  }
+  brect(102, 124, 9, 16, '#f5e6c8'); bpx(104, 128, '#2b1d0e', 5, 1); bpx(104, 131, '#2b1d0e', 5, 1); bpx(104, 134, '#2b1d0e', 5, 1);
+  brect(116, 124, 12, 18, '#d98ba0'); bpx(122, 126, '#fff', 2, 2);
+  brect(132, 124, 8, 16, '#ffd166'); bpx(134, 128, '#b8860b', 4, 2);
+  var lean = bigAnimT % 8 < 4 ? 1 : 0;
+  brect(144 + lean, 122 + (2 - lean), 9, 20 - (2 - lean), '#8f7fd9');
+  bpx(146 + lean, 126, '#fff', 5, 1); bpx(146 + lean, 130, '#fff', 5, 1);
+  brect(104, 105, 6, 13, '#c98d5a'); brect(104, 105, 6, 3, '#5aa85e'); bpx(106, 112, '#e5484d', 2, 2);
+  brect(160, 104, 4, 12, '#efe6d5'); bpx(161, 106, '#2b1d0e', 2, 8);
+  brect(96, 152, 76, 4, '#5e3d1f');
+
+  /* lamp */
+  brect(24, 116, 18, 36, '#3a2a55'); brect(22, 112, 22, 4, '#544a75');
+  bell(33, 106, 8, 7, '#ffd166'); brect(27, 98, 12, 6, '#e8b46e'); brect(29, 94, 8, 4, '#ffd166');
+  bpx(29, 84, 'rgba(255,209,102,.5)', 8, 10); bpx(25, 90, 'rgba(255,209,102,.3)', 16, 6);
+  if (bigAnimT % 4 < 2) bpx(30, 83, 'rgba(255,209,102,.35)', 6, 12);
+
+  /* bed */
+  bell(112, 204, 34, 10, '#8a5c32'); bell(112, 202, 30, 8, '#c77b8f'); bell(112, 202, 24, 5, '#e8a7bb');
+  for (var k = 0; k < 5; k++) bpx(94 + k * 12, 194 + (k % 2) * 2, '#f4c2d0', 3, 2);
+
+  /* bowl */
+  bell(224, 206, 14, 7, '#5e3d1f'); bell(224, 205, 12, 5, '#c98d5a');
+  brect(212, 206, 24, 3, '#e8b46e');
+  for (var sd = 0; sd < 6; sd++) bpx(215 + (sd * 4) % 20, 202 + (sd % 3), '#7a4a1d', 2, 2);
+
+  /* flowerpot */
+  bell(286, 200, 11, 6, '#b45a3c'); brect(278, 196, 16, 3, '#c98d5a');
+  brect(285, 172, 2, 24, '#1d7a43');
+  bpx(280, 180, '#2e7d4f', 6, 2); bpx(288, 176, '#2e7d4f', 6, 2);
+  var petal = bigAnimT % 6 < 3 ? '#ff8fa3' : '#f4a8b8';
+  bpx(283, 167, petal, 6, 6); bpx(281, 169, petal, 10, 2); bpx(285, 165, '#ffd166', 2, 2);
+
+  /* dust motes */
+  for (var d = 0; d < 3; d++) {
+    var dx = 40 + ((bigAnimT * 3 + d * 30) % 200), dy = 156 + d * 26;
+    if (dx < BW - 40) bpx(dx, dy + (bigAnimT % 2), 'rgba(255,230,180,.25)', 2, 1);
+  }
+
+  drawBigHamster();
+
+  if (hot) {
+    bctx.strokeStyle = '#ffd166'; bctx.lineWidth = 1;
+    bctx.setLineDash([3, 3]);
+    bctx.strokeRect(hot.x - hot.r + .5, hot.y - hot.r + .5, hot.r * 2, hot.r * 2);
+    bctx.setLineDash([]);
+    bctx.font = '7px monospace'; bctx.fillStyle = '#171225';
+    var tw = bctx.measureText(hot.label).width;
+    bpx(hot.x - tw / 2 - 2, hot.y + hot.r + 3, '#ffd166', tw + 4, 11);
+    bctx.fillStyle = '#2b1d0e';
+    bctx.fillText(hot.label, hot.x - tw / 2, hot.y + hot.r + 11);
+  }
+}
+
+function drawBigHamster() {
+  var bob = sleeping ? 2 : (bigAnimT % 2 === 0 ? 0 : 2);
+  var jy = jumping > 0 ? -Math.abs(Math.sin(jumping * Math.PI / 12)) * 26 : 0;
+  var cx = 160, base = 196;
+  var cy = base - 32 + bob + jy;
+  var OUT = '#7a4a1d', FUR = '#f5cd8f', FUR2 = '#e8b46e', BELLY = '#fff2d9', PINK = '#e898a3';
+  var cheekOn = S.mood >= 60;
+  ellBig(cx, cy + 16, 22, 14, OUT); ellBig(cx, cy + 16, 20, 12, FUR);
+  for (var fy = -10; fy <= 10; fy += 2) {
+    var fw = Math.floor(19 * Math.sqrt(Math.max(0, 1 - fy * fy / 121)));
+    for (var fx = -fw; fx <= fw; fx += 3) bpx(cx + fx, cy + 16 + fy, (fx + fy) % 4 === 0 ? FUR2 : FUR);
+  }
+  bell(cx - 14, cy - 20, 8, 10, OUT); bell(cx - 14, cy - 20, 6, 8, PINK);
+  bpx(cx - 16, cy - 24, '#e898a3', 3, 3); bpx(cx - 17, cy - 27, '#f4a8b8', 2, 2);
+  bell(cx + 14, cy - 20, 8, 10, OUT); bell(cx + 14, cy - 20, 6, 8, PINK);
+  bpx(cx + 14, cy - 24, '#e898a3', 3, 3); bpx(cx + 16, cy - 27, '#f4a8b8', 2, 2);
+  var hry = 16 + (sleeping ? 2 : 0);
+  ellBig(cx, cy - 4, 24, hry, OUT); ellBig(cx, cy - 4, 22, hry - 2, FUR);
+  for (var fy2 = -hry + 3; fy2 <= hry - 3; fy2 += 3) {
+    var fw2 = Math.floor(21 * Math.sqrt(Math.max(0, 1 - fy2 * fy2 / ((hry - 3) * (hry - 3)))));
+    for (var fx2 = -fw2; fx2 <= fw2; fx2 += 4) bpx(cx + fx2, cy - 4 + fy2, (fx2 - fy2) % 6 === 0 ? FUR2 : FUR);
+  }
+  ellBig(cx, cy + 8, 14, 8, BELLY);
+  bpx(cx + 2, cy + 6, '#e2d0b0', 5, 4);
+  var eyeC = sleeping ? '#7a4a1d' : '#2b1d0e';
+  if (!sleeping) {
+    bpx(cx - 10, cy - 8, '#fff', 6, 6); bpx(cx + 6, cy - 8, '#fff', 6, 6);
+    bpx(cx - 9, cy - 6, eyeC, 3, 4); bpx(cx + 8, cy - 6, eyeC, 3, 4);
+    bpx(cx - 8, cy - 7, '#fff', 2, 2); bpx(cx + 9, cy - 7, '#fff', 2, 2);
+    if (blinkT > 11) { bpx(cx - 10, cy - 6, OUT, 6, 2); bpx(cx + 6, cy - 6, OUT, 6, 2); }
+  } else {
+    bpx(cx - 10, cy - 5, eyeC, 6, 2); bpx(cx + 6, cy - 5, eyeC, 6, 2);
+  }
+  bpx(cx - 3, cy + 2, PINK, 6, 4); bpx(cx - 2, cy + 3, '#d16f80', 4, 2);
+  if (S.health <= 30) { bpx(cx - 5, cy + 9, OUT, 10, 2); bpx(cx - 5, cy + 11, OUT, 10, 2); bpx(cx - 4, cy + 8, OUT, 8, 1); }
+  else if (cheekOn) { bpx(cx - 5, cy + 8, OUT, 1, 1); bpx(cx + 5, cy + 8, OUT, 1, 1); bpx(cx - 5, cy + 9, OUT, 10, 1); }
+  else bpx(cx - 5, cy + 9, OUT, 10, 1);
+  if (cheekOn) { bell(cx - 16, cy + 2, 4, 2, '#f4a8b8'); bell(cx + 16, cy + 2, 4, 2, '#f4a8b8'); }
+  bpx(cx - 24, cy, OUT, 2, 2); bpx(cx - 27, cy + 2, OUT, 2, 2); bpx(cx - 29, cy + 5, OUT, 2, 2);
+  bpx(cx + 23, cy, OUT, 2, 2); bpx(cx + 26, cy + 2, OUT, 2, 2); bpx(cx + 28, cy + 5, OUT, 2, 2);
+  bell(cx - 12, cy + 30, 6, 4, PINK); bell(cx + 12, cy + 30, 6, 4, PINK);
+  bpx(cx - 14, cy + 33, '#d16f80', 3, 2); bpx(cx + 11, cy + 33, '#d16f80', 3, 2);
+  drawBigHat(cx, cy);
+  if (sleeping) {
+    bctx.font = '10px monospace'; bctx.fillStyle = '#8fd0f0';
+    bctx.fillText('z', cx + 28, cy - 28 - (bigAnimT % 2) * 4);
+    bctx.fillText('Z', cx + 40, cy - 40);
+  }
+  if (eating > 0) bpx(cx - 2, cy + 16, '#8a5c32', 4, 3);
+}
+
+function drawBigHat(cx, cy) {
+  var hat = S.equipped.hat, top = cy - 22;
+  if (hat === 'hat_cap') {
+    brect(cx - 14, top - 4, 28, 8, '#e5484d'); brect(cx - 18, top + 2, 24, 4, '#e5484d'); brect(cx - 6, top - 8, 12, 4, '#b23a48'); bpx(cx - 10, top + 4, '#ffd166', 4, 2);
+  } else if (hat === 'hat_bow') {
+    brect(cx - 12, top - 6, 8, 8, '#ff8fa3'); brect(cx + 4, top - 6, 8, 8, '#ff8fa3'); brect(cx - 2, top - 6, 6, 8, '#e56a85'); bpx(cx - 10, top - 4, '#fff', 2, 2); bpx(cx + 6, top - 4, '#fff', 2, 2);
+  } else if (hat === 'hat_crown') {
+    brect(cx - 12, top - 8, 24, 8, '#ffd166');
+    bpx(cx - 12, top - 14, '#ffd166', 4, 6); bpx(cx - 2, top - 16, '#ffd166', 4, 8); bpx(cx + 8, top - 14, '#ffd166', 4, 6);
+    bpx(cx - 2, top - 6, '#e5484d', 4, 4); bpx(cx - 11, top - 11, '#fff', 2, 2);
+  } else if (hat === 'hat_ph') {
+    brect(cx - 24, top + 4, 8, 10, '#544a75'); brect(cx + 16, top + 4, 8, 10, '#544a75');
+    brect(cx - 18, top, 36, 4, '#171225'); bpx(cx - 22, top + 6, '#ffd166', 4, 4); bpx(cx + 18, top + 6, '#ffd166', 4, 4);
+  }
+}
+
+function scenePos(e) {
+  var r = bcv.getBoundingClientRect();
+  return { x: (e.clientX - r.left) * BW / r.width, y: (e.clientY - r.top) * BH / r.height };
+}
+function hitPoint(p) {
+  for (var i = 0; i < ROOM_POINTS.length; i++) {
+    var pt = ROOM_POINTS[i];
+    var dx = p.x - pt.x, dy = p.y - pt.y;
+    if (dx * dx + dy * dy <= pt.r * pt.r) return pt;
+  }
+  return null;
+}
+
+bcv.addEventListener('mousemove', function(e) {
+  hot = hitPoint(scenePos(e));
+  drawBigScene();
+  bcv.style.cursor = hot ? 'pointer' : 'default';
+});
+
+function showPanel(title, bodyHtml) {
+  var panel = document.getElementById('roomPanel');
+  panel.innerHTML = '<h3>' + title + '</h3>' + bodyHtml +
+    '<button class="act primary" style="margin-top:12px;width:100%" onclick="closeRoomPanel()">ЗАКРЫТЬ</button>';
+  panel.classList.remove('hidden');
+}
+function closeRoomPanel() { document.getElementById('roomPanel').classList.add('hidden'); }
+
+function statsHtml() {
+  var habitsDone = 0;
+  if (S.habits) S.habits.forEach(function(h) { if (habitToday(h.id)) habitsDone++; });
+  var totalHabits = S.habits ? S.habits.length : 0;
+  return '<div class="row"><span>LVL</span><span>' + S.lvl + ' (XP ' + S.xp + '/10)</span></div>' +
+    '<div class="row"><span>монеты</span><span>' + S.coins + ' 🪙</span></div>' +
+    '<div class="row"><span>серия дней</span><span>' + S.streak + '</span></div>' +
+    '<div class="row"><span>привычки сегодня</span><span>' + habitsDone + '/' + totalHabits + '</span></div>' +
+    '<div class="row"><span>чек-инов настроения</span><span>' + (S.moodLog ? S.moodLog.length : 0) + '</span></div>';
+}
+
+function roomAction(id) {
+  if (id === 'book') {
+    showPanel('📖 ДНЕВНИК ХОМЯКА', statsHtml());
+  } else if (id === 'bowl') {
+    S.health = Math.min(100, S.health + 12); S.mood += 3; eating = 8; puff('⚡', '#e8b46e');
+    log('🥣 хомяк поел! +❤'); render(); save();
+  } else if (id === 'poster') {
+    showPanel('🛡 СОВЕТ ОТ ХОМЯКА', '<p>' + TIPS[Math.floor(Math.random() * TIPS.length)] + '</p>');
+  } else if (id === 'window') {
+    var hr = new Date().getHours();
+    var greet = hr < 6 ? '🌙 ночь тиха... спать пора!' : hr < 12 ? '🌅 доброе утро!' : hr < 18 ? '☀ добрый день!' : '🌓 добрый вечер!';
+    showPanel('🪟 ЗА ОКНОМ', '<p>' + greet + ' За окном светит солнце, а хомяк здесь для тебя ♥</p>');
+    S.mood = Math.min(100, S.mood + 2); render(); save();
+  } else if (id === 'flower') {
+    S.mood = Math.min(100, S.mood + 4); gainXP(1); puff('♥', '#7fae90');
+    log('🌱 ты полил цветок — забота возвращается!');
+    render(); save();
+  } else if (id === 'bed') {
+    S.health = Math.min(100, S.health + 8); S.mood = Math.min(100, S.mood + 5); sleeping = true;
+    setTimeout(function(){ sleeping = false; }, 6000);
+    log('💤 хомяк приснул на лежанке.'); render(); save();
+  } else if (id === 'ham') {
+    S.mood = Math.min(100, S.mood + 6); jumping = 16; puff('♥', '#ff8fa3');
+    log('🐹 пип! хомяк рад!'); render(); save();
+  }
+  drawBigScene();
+}
+
+bcv.addEventListener('click', function(e) {
+  var pt = hitPoint(scenePos(e));
+  if (pt) roomAction(pt.id);
+});
+
+document.getElementById('btnRoom').onclick = function() {
+  document.getElementById('roomOverlay').classList.remove('hidden');
+  document.getElementById('roomPanel').classList.add('hidden');
+  hot = null;
+  drawBigScene();
+};
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') { closeRoomPanel(); document.getElementById('roomOverlay').classList.add('hidden'); }
+});
+
+(function bigLoop() {
+  bigAnimT++;
+  if (!document.getElementById('roomOverlay').classList.contains('hidden')) drawBigScene();
+  setTimeout(bigLoop, 300);
+})();
 </script>
 </body>
 </html>
