@@ -92,6 +92,11 @@ function roomAction(id) {
     S.mood = Math.min(100, S.mood + 4); gainXP(S, 1); scene.puff('♥', '#7fae90');
     log('🌱 ты полил цветок — забота возвращается!'); persist();
   } else if (id === 'bed') { rest(S); log('💤 хомяк приснул на лежанке.'); persist(); }
+  else if (id === 'wheel') {
+    scene.spinWheel();
+    S.mood = Math.min(100, S.mood + 10); gainXP(S, 3); S._jumping = 12;
+    scene.puff('♪', '#ffd166'); log('🎡 хомяк гоняет в колесе! +🧠'); persist();
+  }
   else if (id === 'ham') { S.mood = Math.min(100, S.mood + 6); S._jumping = 16; scene.puff('♥', '#ff8fa3'); log('🐹 пип! хомяк рад!'); persist(); }
 }
 

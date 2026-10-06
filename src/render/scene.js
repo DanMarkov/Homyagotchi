@@ -1,15 +1,15 @@
 import { makeRoomSprites, makeHamsterSprites } from './sprites.js';
-import { sprite, tintSprite } from './engine.js';
 import { petState, PET_STATES } from '../core/pet.js';
 
 export const ROOM_POINTS = [
-  { id: 'book', x: 134, y: 130, r: 34, label: '📖 дневник — статистика' },
-  { id: 'bowl', x: 224, y: 216, r: 18, label: '🥣 миска — покормить' },
-  { id: 'poster', x: 160, y: 44, r: 28, label: '🛡 плакат — совет' },
-  { id: 'window', x: 49, y: 48, r: 32, label: '🪟 окно — привет' },
-  { id: 'flower', x: 299, y: 190, r: 20, label: '🌱 цветок — забота' },
-  { id: 'bed', x: 126, y: 218, r: 30, label: '💤 лежанка — спать' },
-  { id: 'ham', x: 160, y: 190, r: 32, label: '🐹 погладить' }
+  { id: 'book', x: 136, y: 130, r: 34, label: '📖 дневник — статистика' },
+  { id: 'bowl', x: 226, y: 222, r: 20, label: '🥣 миска — покормить' },
+  { id: 'poster', x: 163, y: 46, r: 30, label: '🛡 плакат — совет' },
+  { id: 'window', x: 49, y: 50, r: 34, label: '🪟 окно — привет' },
+  { id: 'flower', x: 301, y: 195, r: 22, label: '🌱 цветок — забота' },
+  { id: 'bed', x: 128, y: 230, r: 30, label: '💤 лежанка — спать' },
+  { id: 'wheel', x: 58, y: 200, r: 28, label: '🎡 колесо — играть!' },
+  { id: 'ham', x: 160, y: 196, r: 32, label: '🐹 погладить' }
 ];
 
 export class RoomScene {
@@ -22,84 +22,107 @@ export class RoomScene {
     this.particles = [];
     this.wallId = null;
     this.hatId = null;
+    this.wheelSpin = 0;
+    this.wheelActive = 0;
   }
 
   rebuild(state) {
-    const wallChanged = this.wallId !== state.equipped.wall;
-    const hatChanged = this.hatId !== state.equipped.hat;
-    if (!this.sprites || wallChanged) {
+    if (!this.sprites || this.wallId !== state.equipped.wall) {
       this.sprites = makeRoomSprites(state.equipped.wall);
       this.wallId = state.equipped.wall;
     }
-    if (!this.ham || hatChanged) {
+    if (!this.ham || this.hatId !== state.equipped.hat) {
       this.ham = makeHamsterSprites(state.equipped.hat);
       this.hatId = state.equipped.hat;
-    }
-    if (!this.glowCache) {
-      this.glowCache = {};
-      ROOM_POINTS.forEach((p) => {
-        const key = '_' + p.id;
-        this.glowCache[key] = this.glowCache[key] || null;
-      });
     }
   }
 
   puff(ch, color) {
-    this.particles.push({ ch, c: color || '#ff8fa3', x: 145 + Math.random() * 30, y: 95, vy: -0.5, life: 60 });
-    if (this.particles.length > 10) this.particles.shift();
+    this.particles.push({ ch, c: color || '#ffd166', x: 145 + Math.random() * 30, y: 110, vy: -0.6, life: 50 });
+    if (this.particles.length > 12) this.particles.shift();
   }
+
+  spinWheel() { this.wheelActive = 2; }
 
   draw(state, hot, dt) {
     this.rebuild(state);
-    const ctx = this.ctx, W = this.W, H = this.H;
+    const ctx = this.ctx;
     this.t += dt;
     ctx.imageSmoothingEnabled = false;
     ctx.drawImage(this.sprites.background, 0, 0);
 
+    const sunA = 0.5 + 0.5 * Math.sin(this.t * 0.8);
+    ctx.save();
+    ctx.globalAlpha = 0.10 + sunA * 0.06;
+    ctx.fillStyle = '#ffe9a8';
+    ctx.beginPath();
+    ctx.moveTo(24, 24); ctx.lineTo(78, 24); ctx.lineTo(150, 240); ctx.lineTo(60, 240);
+    ctx.closePath(); ctx.fill();
+    ctx.restore();
+
     ctx.drawImage(this.sprites.windowSpr, 20, 20);
-    ctx.drawImage(this.sprites.poster, 134, 16);
-    ctx.drawImage(this.sprites.shelf, 96, 100);
-    ctx.drawImage(this.sprites.lamp, 20, 84);
+    ctx.drawImage(this.sprites.poster, 135, 16);
+    ctx.drawImage(this.sprites.shelf, 98, 100);
+    ctx.drawImage(this.sprites.lamp, 14, 80);
 
-    if (hot && hot.id === 'flower') {
-      const sway = Math.sin(this.t * 4) * 1.5;
-      ctx.drawImage(this.sprites.flower, 286, 144 + sway);
+    if (this.wheelActive > 0) {
+      this.wheelSpin += dt * 14;
+      this.wheelActive -= dt;
     } else {
-      ctx.drawImage(this.sprites.flower, 286, 144);
+      this.wheelSpin += dt * 0.4;
     }
+    ctx.save();
+    ctx.translate(58, 174);
+    ctx.rotate(this.wheelSpin);
+    ctx.drawImage(this.sprites.wheel, -26, -26);
+    ctx.restore();
 
-    ctx.drawImage(this.sprites.bed, 89, 206);
-    ctx.drawImage(this.sprites.bowl, 208, 206);
+    const sway = hot && hot.id === 'flower' ? Math.sin(this.t * 6) * 2 : Math.sin(this.t * 1.5) * 0.8;
+    ctx.drawImage(this.sprites.flower, 286, 152 + sway);
+
+    ctx.drawImage(this.sprites.bed, 90, 214);
+    ctx.drawImage(this.sprites.bowl, 208, 210);
 
     if (Math.floor(this.t * 2) % 2 === 0) {
-      ctx.fillStyle = 'rgba(255,209,102,.35)';
-      ctx.fillRect(26, 167, 14, 10);
+      ctx.fillStyle = 'rgba(255,209,102,.4)';
+      ctx.fillRect(38, 106, 12, 8);
+      ctx.fillStyle = 'rgba(255,240,200,.25)';
+      ctx.fillRect(26, 92, 24, 12);
     }
 
-    for (let d = 0; d < 4; d++) {
-      const dx = 40 + ((this.t * 8 + d * 60) % 240), dy = 160 + d * 20;
-      ctx.fillStyle = 'rgba(255,230,180,.25)';
-      ctx.fillRect(dx, dy + Math.sin(this.t * 2 + d) * 2, 2, 1);
+    for (let d = 0; d < 5; d++) {
+      const dx = 60 + ((this.t * 10 + d * 70) % 240);
+      const dy = 170 + d * 14 + Math.sin(this.t * 1.5 + d) * 3;
+      ctx.fillStyle = d % 2 ? 'rgba(255,235,190,.35)' : 'rgba(255,255,255,.25)';
+      ctx.fillRect(dx, dy, 2, 1);
     }
 
     const ps = petState(state);
-    let hamSpr, hx = 160 - 32, hy = 196 - 68;
+    let hamSpr;
     if (ps === PET_STATES.SLEEPING || ps === PET_STATES.SICK) hamSpr = this.ham.sleeping;
-    else hamSpr = Math.floor(this.t * 3) % 2 === 0 ? this.ham.a : this.ham.b;
-    if (ps === PET_STATES.JUMPING) {
-      hy -= Math.abs(Math.sin(state._jumping * Math.PI / 12)) * 20;
-    }
+    else hamSpr = this.ham.frames[Math.floor(this.t * 6) % 4];
+    let hx = 160 - 34, hy = 210 - 92;
+    if (ps === PET_STATES.JUMPING) hy -= Math.abs(Math.sin(state._jumping * Math.PI / 12)) * 24;
     ctx.drawImage(hamSpr, hx, hy);
     if (ps === PET_STATES.SLEEPING) {
-      ctx.font = '10px monospace'; ctx.fillStyle = '#8fd0f0';
-      ctx.fillText('z', 190, 140 - (Math.floor(this.t) % 2) * 4);
-      ctx.fillText('Z', 202, 130);
+      ctx.font = '11px monospace';
+      ctx.fillStyle = '#8fd0f0';
+      const zy = 118 - (Math.floor(this.t * 2) % 2) * 4;
+      ctx.fillText('z', 196, zy);
+      ctx.font = '14px monospace';
+      ctx.fillStyle = '#c8ecff';
+      ctx.fillText('Z', 210, zy - 12);
+    } else if (ps === PET_STATES.EATING && Math.floor(this.t * 8) % 2) {
+      ctx.fillStyle = '#ffd166';
+      ctx.fillRect(156, 208, 3, 2);
+      ctx.fillRect(163, 209, 2, 2);
     }
 
     for (let i = this.particles.length - 1; i >= 0; i--) {
       const p = this.particles[i];
       p.y += p.vy; p.life--;
-      ctx.font = '10px monospace'; ctx.fillStyle = p.c;
+      ctx.font = '12px monospace';
+      ctx.fillStyle = p.c;
       ctx.fillText(p.ch, p.x, p.y);
       if (p.life <= 0) this.particles.splice(i, 1);
     }
@@ -108,20 +131,21 @@ export class RoomScene {
   }
 
   drawHot(ctx, hot) {
-    const bump = Math.sin(this.t * 6) * 1;
-    ctx.strokeStyle = '#ffd166'; ctx.lineWidth = 1;
-    ctx.setLineDash([3, 3]);
+    const bump = Math.sin(this.t * 6) * 1.5;
+    ctx.strokeStyle = '#ffd166';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 3]);
     ctx.strokeRect(hot.x - hot.r + .5, hot.y - hot.r + .5 + bump, hot.r * 2, hot.r * 2);
     ctx.setLineDash([]);
-    ctx.font = '7px monospace';
+    ctx.font = '8px monospace';
     const tw = ctx.measureText(hot.label).width;
-    const lx = Math.max(2, Math.min(this.W - tw - 4, hot.x - tw / 2 - 2));
+    const lx = Math.max(2, Math.min(this.W - tw - 6, hot.x - tw / 2 - 2));
     ctx.fillStyle = '#171225';
-    ctx.fillRect(lx, hot.y + hot.r + 3, tw + 4, 11);
+    ctx.fillRect(lx, hot.y + hot.r + 4, tw + 6, 13);
     ctx.fillStyle = '#ffd166';
-    ctx.fillRect(lx, hot.y + hot.r + 3, tw + 4, 1);
-    ctx.fillStyle = '#2b1d0e';
-    ctx.fillText(hot.label, lx + 2, hot.y + hot.r + 11);
+    ctx.fillRect(lx, hot.y + hot.r + 4, tw + 6, 2);
+    ctx.fillStyle = '#fff';
+    ctx.fillText(hot.label, lx + 3, hot.y + hot.r + 14);
   }
 
   hitTest(canvasX, canvasY) {
