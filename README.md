@@ -14,3 +14,40 @@
 ## Запуск
 
 Просто открой `index.html` в браузере или зайди на GitHub Pages.
+
+## Архитектура (v2)
+
+Модульный ES-код без сборки — работает как статика на GitHub Pages:
+
+```
+content/            # контент как данные (для нетехнических редакторов)
+  content.json      # события, привычки, советы, mood-сообщения, grounding
+  lessons.json      # курсы и уроки (сцены → вопрос → объяснение → XP)
+  *.js              # JSON, обёрнутый в window.__*__ для загрузки без сборки
+src/
+  core/             # чистая игровая логика (тестируется без DOM)
+    store.js        # стор + версионированные миграции сохранений (v1 → v2)
+    pet.js          # FSM питомца: idle/eating/jumping/sleeping/sick/happy + тики
+    game.js         # экономика, привычки, события, серии, дневная цель XP
+    lessons.js      # прогресс уроков и курсов
+  render/
+    engine.js       # пиксель-примитивы + пререндер спрайтов в offscreen-canvas
+    sprites.js      # спрайты комнаты и хомяка (рисовка один раз, потом блит)
+    scene.js        # RoomScene: слои, RAF 60fps, hover-подсветка, частицы
+  ui/
+    app.js          # DOM-обвязка, вкладки, магазин, события
+    lessons.js      # дуолинго-плеер уроков
+    support.js      # график настроения за неделю, дыхание 4-4-6, grounding 5-4-3-2-1
+tests/              # unit-тесты (node:test): стор/миграции, FSM, экономика, уроки
+.github/workflows/ci.yml  # CI: syntax check → тесты → валидация контента
+```
+
+### Запуск тестов
+
+```
+node --test "tests/*.test.js"
+```
+
+### Добавление контента без кода
+
+Редактируй `content/content.json` (события, советы) или `content/lessons.json` (уроки) — затем `node tools/build-content.js` перегенерирует JS-обёртки.

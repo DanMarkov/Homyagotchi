@@ -6,119 +6,165 @@
 <title>🐹 Хомягочи</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
-  :root { --accent: #f59e0b; --ink: #2b1d0e; }
+  :root {
+    --bg-1: #241d2e; --bg-2: #221b2b;
+    --card: #3a3350; --card-dark: #2a2440; --card-darker: #241d35;
+    --line: #171225; --line-soft: #544a75;
+    --ink: #efe6d5; --muted: #9d94b8; --muted-2: #c9c0e0;
+    --accent: #ffd166; --accent-dark: #b8860b;
+    --ok: #4ec97a; --ok-dark: #1d7a43; --bad: #e5484d;
+    --heart: #ff8fa3; --shield: #4cc3f7; --brain: #a78bfa;
+    --pix: 4px;
+  }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Press Start 2P', monospace;
-    background: #1a1621 url('') ; min-height: 100vh;
-    background: repeating-linear-gradient(0deg, #241d2e 0 2px, #221b2b 2px 4px);
-    display: flex; flex-direction: column; align-items: center; padding: 16px; color: #efe6d5; }
-  h1 { font-size: 1.1rem; margin-bottom: 8px; color: #ffd166; text-shadow: 2px 2px 0 #000; }
-  .tagline { color: #9d94b8; margin-bottom: 12px; font-size: .55rem; text-align: center; line-height: 1.6; }
-  .card { background: #3a3350; border: 4px solid #171225; box-shadow: 0 6px 0 #171225, inset 0 0 0 2px #544a75;
-    border-radius: 4px; padding: 14px; width: 100%; max-width: 440px; }
+    background: repeating-linear-gradient(0deg, var(--bg-1) 0 2px, var(--bg-2) 2px 4px);
+    min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+    padding: 16px; color: var(--ink); }
+  h1 { font-size: 1.1rem; margin-bottom: 8px; color: var(--accent); text-shadow: 2px 2px 0 #000; }
+  .tagline { color: var(--muted); margin-bottom: 12px; font-size: .55rem; text-align: center; line-height: 1.6; }
+  .card { background: var(--card); border: 4px solid var(--line); box-shadow: 0 6px 0 var(--line), inset 0 0 0 2px var(--line-soft);
+    border-radius: var(--pix); padding: 14px; width: 100%; max-width: 480px; }
 
-  .tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-bottom: 12px; }
-  .tabs button { padding: 8px 2px; font-size: .5rem; font-family: inherit; border-radius: 0;
-    background: #2a2440; color: #9d94b8; border: 2px solid #171225; box-shadow: 0 3px 0 #171225; }
-  .tabs button.active { background: #ffd166; color: #2b1d0e; box-shadow: 0 3px 0 #b8860b; }
+  .tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin-bottom: 12px; }
+  .tabs button { padding: 8px 1px; font-size: .45rem; font-family: inherit; border-radius: 0;
+    background: var(--card-dark); color: var(--muted); border: 2px solid var(--line); box-shadow: 0 3px 0 var(--line); cursor: pointer; }
+  .tabs button.active { background: var(--accent); color: #2b1d0e; box-shadow: 0 3px 0 var(--accent-dark); }
 
-  .canvas-wrap { position: relative; border: 4px solid #171225; background: #000; line-height: 0;
-    box-shadow: 0 5px 0 #171225; }
-  canvas { width: 100%; image-rendering: pixelated; image-rendering: crisp-edges; }
+  .canvas-wrap { position: relative; border: 4px solid var(--line); background: #000; line-height: 0;
+    box-shadow: 0 5px 0 var(--line); }
+  canvas#scene { width: 100%; image-rendering: pixelated; image-rendering: crisp-edges; }
   .pix-hint { position: absolute; right: 4px; bottom: 4px; font-size: .45rem; color: rgba(255,255,255,.55); }
+  .pet-state { position: absolute; left: 4px; bottom: 4px; font-size: .45rem; color: var(--accent);
+    background: rgba(23,18,37,.8); padding: 3px 5px; }
 
-  .room-overlay { position: fixed; inset: 0; background: rgba(10,7,18,.94); display: flex; flex-direction: column;
-    align-items: center; justify-content: center; gap: 10px; padding: 12px; z-index: 20; }
-  #bigScene { width: min(96vw, calc(88vh * 4 / 3)); image-rendering: pixelated; image-rendering: crisp-edges;
-    border: 4px solid #171225; box-shadow: 0 6px 0 #171225; background: #000; }
-  .room-tip { font-size: .5rem; color: #c9c0e0; text-align: center; line-height: 1.8; max-width: min(96vw, 640px); }
-  .room-tip b { color: #ffd166; }
-  .room-panel { position: fixed; left: 50%; top: 50%; transform: translate(-50%,-50%); z-index: 21;
-    background: #3a3350; border: 4px solid #171225; box-shadow: 0 6px 0 #171225; padding: 16px; max-width: 340px; width: 92%; }
-  .room-panel h3 { font-size: .6rem; color: #ffd166; margin-bottom: 10px; }
-  .room-panel p { font-size: .5rem; line-height: 1.9; }
-  .room-panel .row { font-size: .5rem; line-height: 2.2; display: flex; justify-content: space-between; border-bottom: 1px dashed #544a75; }
-  .room-panel .row span:last-child { color: #ffd166; }
+  .goal { margin: 10px 0 4px; }
+  .goal .row { display: flex; justify-content: space-between; font-size: .45rem; color: var(--muted-2); margin-bottom: 3px; }
+  .goal-track { height: 10px; background: var(--card-darker); border: 2px solid var(--line); }
+  .goal-fill { height: 100%; background: var(--ok); transition: width .4s steps(8); }
 
-  .bars { margin: 12px 0; }
+  .bars { margin: 10px 0; }
   .bar-row { display: flex; align-items: center; gap: 8px; margin: 6px 0; font-size: .55rem; }
-  .bar-track { flex: 1; height: 14px; background: #241d35; border: 2px solid #171225; overflow: hidden; }
+  .bar-track { flex: 1; height: 14px; background: var(--card-darker); border: 2px solid var(--line); overflow: hidden; }
   .bar-fill { height: 100%; transition: width .4s steps(8); }
   .stats { display: flex; justify-content: space-between; margin-top: 10px; font-size: .5rem; flex-wrap: wrap; gap: 4px; }
-  .stats span { background: #2a2440; border: 2px solid #171225; padding: 5px 8px; }
+  .stats span { background: var(--card-dark); border: 2px solid var(--line); padding: 5px 8px; }
   .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 12px; }
-  button.act { border: 2px solid #171225; border-radius: 0; padding: 10px 4px; font-size: .55rem; font-family: inherit;
-    cursor: pointer; background: #544a75; color: #fff; box-shadow: 0 3px 0 #171225; transition: transform .05s; }
+  button.act { border: 2px solid var(--line); border-radius: 0; padding: 10px 4px; font-size: .55rem; font-family: inherit;
+    cursor: pointer; background: var(--line-soft); color: #fff; box-shadow: 0 3px 0 var(--line); transition: transform .05s; }
   button.act:hover { background: #6a5e94; } button.act:active { transform: translateY(3px); box-shadow: none; }
-  button.act.primary { background: #ffd166; color: #2b1d0e; box-shadow: 0 3px 0 #b8860b; }
+  button.act.primary { background: var(--accent); color: #2b1d0e; box-shadow: 0 3px 0 var(--accent-dark); }
   button.act.primary:hover { background: #ffe08a; }
-  .log { margin-top: 12px; max-height: 110px; overflow-y: auto; font-size: .5rem; color: #c9c0e0; line-height: 1.7; }
-  .log p { padding: 2px 0; border-bottom: 1px dashed #544a75; }
+  .log { margin-top: 12px; max-height: 110px; overflow-y: auto; font-size: .5rem; color: var(--muted-2); line-height: 1.7; }
+  .log p { padding: 2px 0; border-bottom: 1px dashed var(--line-soft); }
 
   .shop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
-  .shop-item { background: #2a2440; border: 2px solid #171225; padding: 10px 8px; font-size: .5rem; text-align: center; }
+  .shop-item { background: var(--card-dark); border: 2px solid var(--line); padding: 10px 8px; font-size: .5rem; text-align: center; }
   .shop-item .icon { font-size: 1.5rem; display: block; margin-bottom: 6px; }
-  .shop-item .name { display: block; margin-bottom: 4px; color: #efe6d5; }
-  .shop-item .price { display: block; color: #ffd166; margin-bottom: 8px; }
-  .shop-item button { font-family: inherit; font-size: .5rem; border: 2px solid #171225; padding: 6px 8px;
-    cursor: pointer; background: #544a75; color: #fff; box-shadow: 0 3px 0 #171225; }
-  .shop-item button:hover { background: #6a5e94; } button:active { transform: translateY(2px); box-shadow: none; }
-  .shop-item button.equip { background: #4ec97a; color: #10261a; box-shadow: 0 3px 0 #1d7a43; }
-  .shop-item button.owned { background: #ffd166; color: #2b1d0e; box-shadow: 0 3px 0 #b8860b; }
-  .section-h { font-size: .65rem; margin: 10px 0 6px; color: #ffd166; }
+  .shop-item .name { display: block; margin-bottom: 4px; color: var(--ink); }
+  .shop-item .price { display: block; color: var(--accent); margin-bottom: 8px; }
+  .shop-item button { font-family: inherit; font-size: .5rem; border: 2px solid var(--line); padding: 6px 8px;
+    cursor: pointer; background: var(--line-soft); color: #fff; box-shadow: 0 3px 0 var(--line); }
+  .shop-item button:hover { background: #6a5e94; }
+  .shop-item button.equip { background: var(--ok); color: #10261a; box-shadow: 0 3px 0 var(--ok-dark); }
+  .shop-item button.owned { background: var(--accent); color: #2b1d0e; box-shadow: 0 3px 0 var(--accent-dark); }
+  .section-h { font-size: .65rem; margin: 10px 0 6px; color: var(--accent); }
+  .section-sub { font-size: .5rem; color: var(--muted); margin: 6px 0; line-height: 1.7; }
 
-  .habit { display: flex; align-items: center; gap: 8px; padding: 8px; background: #2a2440;
-    border: 2px solid #171225; margin: 6px 0; font-size: .5rem; line-height: 1.5; }
+  .habit { display: flex; align-items: center; gap: 8px; padding: 8px; background: var(--card-dark);
+    border: 2px solid var(--line); margin: 6px 0; font-size: .5rem; line-height: 1.5; }
   .habit.done { background: #1d3a2a; color: #7fae90; }
-  .habit input[type=checkbox] { width: 18px; height: 18px; accent-color: #4ec97a; flex-shrink: 0; }
-  .habit .st { margin-left: auto; color: #ffd166; white-space: nowrap; }
+  .habit input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--ok); flex-shrink: 0; }
+  .habit .st { margin-left: auto; color: var(--accent); white-space: nowrap; }
   .add-habit { display: flex; gap: 6px; margin-top: 8px; }
-  .add-habit input { flex: 1; border: 2px solid #171225; background: #241d35; color: #efe6d5;
+  .add-habit input { flex: 1; border: 2px solid var(--line); background: var(--card-darker); color: var(--ink);
     padding: 8px; font-family: inherit; font-size: .5rem; }
 
+  .course { background: var(--card-dark); border: 2px solid var(--line); padding: 10px; margin: 8px 0; }
+  .course-head { display: flex; align-items: center; gap: 8px; font-size: .55rem; }
+  .course-emoji { font-size: 1.2rem; }
+  .course-bar { height: 8px; background: var(--card-darker); border: 2px solid var(--line); margin: 8px 0 4px; }
+  .course-fill { height: 100%; transition: width .4s steps(8); }
+  .course-pct { font-size: .45rem; color: var(--muted); }
+  .lesson-list { margin-top: 8px; display: grid; gap: 4px; }
+  .lesson-btn { font-family: inherit; font-size: .5rem; text-align: left; padding: 8px; cursor: pointer;
+    background: var(--line-soft); color: #fff; border: 2px solid var(--line); box-shadow: 0 2px 0 var(--line); }
+  .lesson-btn.started { background: #6a5e94; }
+  .lesson-btn.done { background: var(--ok); color: #10261a; box-shadow: 0 2px 0 var(--ok-dark); }
+  .lesson-scene h4 { font-size: .55rem; color: var(--accent); margin-bottom: 10px; line-height: 1.6; }
+  .lesson-text, .lesson-q { font-size: .55rem; line-height: 1.9; margin-bottom: 12px; }
+  .lesson-btns { display: grid; gap: 6px; margin-bottom: 10px; }
+  .lesson-btns button { text-align: left; font-family: inherit; font-size: .5rem; line-height: 1.5; border: 2px solid var(--line);
+    padding: 10px; cursor: pointer; background: var(--line-soft); color: #fff; box-shadow: 0 3px 0 var(--line); }
+  .lesson-btns button:hover { background: #6a5e94; }
+  .lesson-tip { font-size: .5rem; line-height: 1.8; margin: 10px 0; color: var(--muted-2); }
+  .ok { background: #2e7d4f !important; } .bad { background: #b23a48 !important; }
+
   .mood-scale { display: flex; justify-content: space-between; gap: 4px; margin: 10px 0; }
-  .mood-scale button { font-size: 1.4rem; background: #2a2440; border: 2px solid #171225; padding: 8px 2px; flex: 1; cursor: pointer; }
-  .mood-scale button:hover { background: #544a75; }
-  .support-msg { background: #241d35; border: 2px solid #171225; padding: 10px; font-size: .5rem; line-height: 1.8; margin-top: 8px; }
+  .mood-scale button { font-size: 1.4rem; background: var(--card-dark); border: 2px solid var(--line); padding: 8px 2px; flex: 1; cursor: pointer; }
+  .mood-scale button:hover { background: var(--line-soft); }
+  .support-msg { background: var(--card-darker); border: 2px solid var(--line); padding: 10px; font-size: .5rem; line-height: 1.8; margin-top: 8px; }
+  .mood-chart { display: flex; align-items: flex-end; gap: 6px; height: 80px; padding: 10px 0 0; border-bottom: 2px solid var(--line-soft); }
+  .mood-col { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; }
+  .mood-bar { width: 100%; transition: height .4s steps(8); min-height: 4px; }
+  .mood-day { text-align: center; font-size: .45rem; color: var(--muted); margin-top: 4px; }
   .breath-wrap { text-align: center; padding: 10px 0; }
-  .breath-circle { width: 70px; height: 70px; margin: 0 auto; border-radius: 0; background: #6a5e94;
-    transition: transform 4s steps(12); border: 3px solid #ffd166; image-rendering: pixelated; }
-  .breath-label { margin-top: 10px; font-size: .55rem; color: #c9c0e0; min-height: 16px; }
-  .hotlines { background: #3a1d2e; border: 2px solid #171225; padding: 10px; font-size: .48rem; line-height: 1.9; margin-top: 10px; }
-  .hotlines b { color: #ff8fa3; }
-  .disclaimer { font-size: .45rem; color: #9d94b8; margin-top: 8px; line-height: 1.7; }
+  .breath-circle { width: 70px; height: 70px; margin: 0 auto; background: #6a5e94;
+    transition: transform 4s steps(12); border: 3px solid var(--accent); }
+  .breath-label, .ground-label { margin-top: 10px; font-size: .55rem; color: var(--muted-2); min-height: 16px; }
+  .ground-dots { display: flex; justify-content: center; gap: 8px; margin: 12px 0; }
+  .ground-dot { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+    font-size: .55rem; background: var(--card-darker); border: 2px solid var(--line); color: var(--muted); }
+  .ground-dot.cur { background: var(--accent); color: #2b1d0e; border-color: var(--accent-dark); }
+  .ground-dot.done { background: var(--ok); color: #10261a; border-color: var(--ok-dark); }
+  .ground-text { text-align: center; font-size: .55rem; line-height: 1.9; color: var(--ink); margin: 8px 0; }
+  .hotlines { background: #3a1d2e; border: 2px solid var(--line); padding: 10px; font-size: .48rem; line-height: 1.9; margin-top: 10px; }
+  .hotlines b { color: var(--heart); }
+  .disclaimer { font-size: .45rem; color: var(--muted); margin-top: 8px; line-height: 1.7; }
 
   .modal-bg { position: fixed; inset: 0; background: rgba(10,7,18,.8); display: flex;
     align-items: center; justify-content: center; padding: 20px; z-index: 10; }
-  .modal { background: #3a3350; border: 4px solid #171225; box-shadow: 0 6px 0 #171225;
-    padding: 18px; max-width: 400px; width: 100%; color: #efe6d5; }
-  .modal h3 { margin-bottom: 10px; font-size: .65rem; color: #ffd166; }
+  .modal { background: var(--card); border: 4px solid var(--line); box-shadow: 0 6px 0 var(--line);
+    padding: 18px; max-width: 400px; width: 100%; color: var(--ink); }
+  .modal h3 { margin-bottom: 10px; font-size: .65rem; color: var(--accent); }
   .modal .question { margin-bottom: 14px; font-size: .55rem; line-height: 1.8; }
   .modal .btns { display: grid; gap: 6px; }
-  .modal .btns button { text-align: left; font-family: inherit; font-size: .5rem; line-height: 1.5; border: 2px solid #171225;
-    padding: 10px; cursor: pointer; background: #544a75; color: #fff; box-shadow: 0 3px 0 #171225; }
+  .modal .btns button { text-align: left; font-family: inherit; font-size: .5rem; line-height: 1.5; border: 2px solid var(--line);
+    padding: 10px; cursor: pointer; background: var(--line-soft); color: #fff; box-shadow: 0 3px 0 var(--line); }
   .modal .btns button:hover { background: #6a5e94; }
-  .ok { background: #2e7d4f !important; } .bad { background: #b23a48 !important; }
   .hidden { display: none; }
-  .footer { margin-top: 14px; font-size: .45rem; color: #9d94b8; text-align: center; line-height: 1.8; }
+  .footer { margin-top: 14px; font-size: .45rem; color: var(--muted); text-align: center; line-height: 1.8; }
+
+  .room-panel { position: fixed; left: 50%; top: 50%; transform: translate(-50%,-50%); z-index: 21;
+    background: var(--card); border: 4px solid var(--line); box-shadow: 0 6px 0 var(--line); padding: 16px; max-width: 340px; width: 92%; }
+  .room-panel h3 { font-size: .6rem; color: var(--accent); margin-bottom: 10px; }
+  .room-panel .row { font-size: .5rem; line-height: 2.2; display: flex; justify-content: space-between; border-bottom: 1px dashed var(--line-soft); }
+  .room-panel .row span:last-child { color: var(--accent); }
+  .panel-text { font-size: .5rem; line-height: 1.9; }
 </style>
 </head>
 <body>
   <h1>★ ХОМЯГОЧИ ★</h1>
-  <p class="tagline">пиксельный помощник для привычек:<br>безопасность • привычки • поддержка</p>
+  <p class="tagline">пиксельный помощник для привычек:<br>безопасность • уроки • поддержка</p>
 
   <div class="card">
     <div class="tabs">
       <button data-tab="home" class="active">ДОМИК</button>
       <button data-tab="shop">МАГАЗИН</button>
       <button data-tab="habits">ПРИВЫЧКИ</button>
+      <button data-tab="lessons">УРОКИ</button>
       <button data-tab="support">ПОМОЩЬ</button>
     </div>
 
     <div id="tab-home">
       <div class="canvas-wrap">
-        <canvas id="scene" width="160" height="120"></canvas>
+        <canvas id="scene" width="320" height="240"></canvas>
         <span class="pix-hint">16-bit</span>
+        <span class="pet-state" id="petState"></span>
+      </div>
+      <div class="goal">
+        <div class="row"><span id="goalText">цель дня: 0/10 XP</span><span>ежедневная цель</span></div>
+        <div class="goal-track"><div class="goal-fill" id="goalFill" style="width:0%"></div></div>
       </div>
       <div class="bars">
         <div class="bar-row">❤ <div class="bar-track"><div class="bar-fill" id="bHealth" style="background:#e5484d"></div></div><span id="tHealth"></span></div>
@@ -135,14 +181,13 @@
         <button class="act" id="btnFeed">🥜 КОРМИТЬ</button>
         <button class="act" id="btnPlay">🎮 ИГРАТЬ</button>
         <button class="act" id="btnRest">💤 СПАТЬ</button>
-        <button class="act" id="btnRoom" style="grid-column:1/-1">🔍 РАЗГЛЯДЕТЬ КОМНАТУ</button>
       </div>
       <div class="log" id="log"></div>
     </div>
 
     <div id="tab-shop" class="hidden">
       <h3 class="section-h">🛒 МАГАЗИН ХОМЯКА</h3>
-      <p style="font-size:.5rem;color:#9d94b8;line-height:1.7">Зарабатывай монетки в событиях и привычках, наряжай хомяка и обустраивай домик!</p>
+      <p style="font-size:.5rem;color:var(--muted);line-height:1.7">Зарабатывай монетки в событиях и уроках, наряжай хомяка и обустраивай домик!</p>
       <h3 class="section-h">— ШАПКИ —</h3>
       <div class="shop-grid" id="shopHats"></div>
       <h3 class="section-h">— ОБОИ —</h3>
@@ -153,12 +198,18 @@
 
     <div id="tab-habits" class="hidden">
       <h3 class="section-h">✅ ЕЖЕДНЕВНЫЕ ПРИВЫЧКИ</h3>
-      <p style="font-size:.5rem;color:#9d94b8;line-height:1.7">Отмечай выполненное — растёт уровень и копятся монетки.</p>
+      <p style="font-size:.5rem;color:var(--muted);line-height:1.7">Отмечай выполненное — растёт уровень и копятся монетки.</p>
       <div id="habitList"></div>
       <div class="add-habit">
         <input id="newHabit" placeholder="своя привычка..." maxlength="60">
         <button class="act" id="btnAddHabit">➕</button>
       </div>
+    </div>
+
+    <div id="tab-lessons" class="hidden">
+      <h3 class="section-h">🎓 УРОКИ</h3>
+      <p style="font-size:.5rem;color:var(--muted);line-height:1.7">Короткие уроки в стиле Дуолинго: сцена → вопрос → объяснение. За завершение — XP!</p>
+      <div id="lessonList"></div>
     </div>
 
     <div id="tab-support" class="hidden">
@@ -168,12 +219,21 @@
         <button data-mood="4">🙂</button><button data-mood="5">😄</button>
       </div>
       <div class="support-msg hidden" id="moodMsg"></div>
+      <h3 class="section-h">📈 ТВОЯ НЕДЕЛЯ</h3>
+      <div id="moodChart"></div>
       <h3 class="section-h">🌬 ДЫХАНИЕ 4-4-6</h3>
-      <p style="font-size:.5rem;color:#9d94b8;line-height:1.7">Три цикла: вдох 4 — пауза 4 — выдох 6. Помогает при тревоге.</p>
+      <p style="font-size:.5rem;color:var(--muted);line-height:1.7">Три цикла: вдох 4 — пауза 4 — выдох 6. Помогает при тревоге.</p>
       <div class="breath-wrap">
         <div class="breath-circle" id="breathCircle"></div>
         <div class="breath-label" id="breathLabel">нажми НАЧАТЬ</div>
         <button class="act primary" id="btnBreath" style="margin-top:8px">▶ НАЧАТЬ</button>
+      </div>
+      <h3 class="section-h">🧠 ЗАЗЕМЛЕНИЕ 5-4-3-2-1</h3>
+      <p style="font-size:.5rem;color:var(--muted);line-height:1.7">Техника при панике: возвращаемся в «здесь и сейчас» через чувства.</p>
+      <div style="text-align:center">
+        <div class="ground-label" id="groundLabel"></div>
+        <div id="groundSteps"></div>
+        <button class="act primary" id="btnGround" style="margin-top:8px">▶ ШАГ ЗА ШАГОМ</button>
       </div>
       <div class="hotlines">
         💙 <b>Если тяжело — ты не один.</b><br>
@@ -197,711 +257,11 @@
     </div>
   </div>
 
-  <div class="room-overlay hidden" id="roomOverlay">
-    <canvas id="bigScene" width="320" height="240"></canvas>
-    <div class="room-tip">🔍 <b>наведи</b> на предмет и <b>кликни</b>:
-      📖 дневник — статистика • 🥣 миска — покормить • 🛡 плакат — совет • 🪟 окно — привет • 🌱 цветок — забота • 💤 лежанка — сон • хомяк — играть</div>
-    <div class="room-panel hidden" id="roomPanel"></div>
-  </div>
+  <div class="room-panel hidden" id="roomPanel"></div>
 
-<script>
-var S = {
-  health: 80, sec: 60, mood: 70,
-  coins: 30, lvl: 1, xp: 0, streak: 0,
-  lastDay: '', habits: [], habitState: {}, moodLog: [],
-  owned: ['hat_none', 'wall_rose'], equipped: { hat: 'hat_none', wall: 'wall_rose' }
-};
-
-var SHOP = {
-  hats: [
-    { id: 'hat_none', icon: '🚫', name: 'Без шапки', price: 0 },
-    { id: 'hat_cap', icon: '🧢', name: 'Кепка', price: 30 },
-    { id: 'hat_bow', icon: '🎀', name: 'Бантик', price: 25 },
-    { id: 'hat_crown', icon: '👑', name: 'Корона', price: 60 },
-    { id: 'hat_ph', icon: '🎧', name: 'Наушники', price: 45 }
-  ],
-  walls: [
-    { id: 'wall_rose', icon: '🌸', name: 'Розовые', price: 0 },
-    { id: 'wall_sky', icon: '💧', name: 'Небесные', price: 20 },
-    { id: 'wall_mint', icon: '🌿', name: 'Мятные', price: 20 },
-    { id: 'wall_star', icon: '⭐', name: 'Звёздные', price: 35 }
-  ],
-  food: [
-    { id: 'food_seeds', icon: '🌰', name: 'Семечки +❤15', price: 5 },
-    { id: 'food_cake', icon: '🍰', name: 'Тортик +🧠20', price: 15 },
-    { id: 'food_tea', icon: '🍵', name: 'Чай +❤8 +🧠8', price: 10 }
-  ]
-};
-var WALL_COLORS = {
-  wall_rose: ['#d98ba0', '#c77b8f'], wall_sky: ['#7db8d9', '#6aa8cc'],
-  wall_mint: ['#8fd9b0', '#7cc79d'], wall_star: ['#8f7fd9', '#7d6dcc']
-};
-
-var DEFAULT_HABITS = [
-  { id: 'h_links', emoji: '🔗', text: 'Проверил ссылку перед кликом' },
-  { id: 'h_detox', emoji: '📵', text: '30 мин без телефона перед сном' },
-  { id: 'h_water', emoji: '💧', text: 'Выпил 6–8 стаканов воды' },
-  { id: 'h_move', emoji: '🚶', text: '20 минут движения' },
-  { id: 'h_sleep', emoji: '😴', text: 'Лёг спать до 23:00' },
-  { id: 'h_kind', emoji: '💬', text: 'Сделал доброе дело' }
-];
-
-var EVENTS = [
-  { cat: '🛡 БЕЗОПАСНОСТЬ', q: "SMS: «Ваша посылка задержана, перейдите по ссылке для оплаты». Что делать?", a: ["Открыть ссылку — посылка дорогая", "Игнорировать и проверить в официальном приложении", "Переслать другу, пусть посмотрит"], ok: 1, tip: "Это фишинг! Ссылки из SMS о посылках — классическая ловушка мошенников."},
-  { cat: '🛡 БЕЗОПАСНОСТЬ', q: "Незнакомец: «Мама, это ты? У меня новый номер, скинь деньги срочно»", a: ["Сразу перевести — вдруг правда мама", "Позвонить маме на обычный номер и проверить", "Написать «ок» и ждать"], ok: 1, tip: "Взлом аккаунтов близких — частый сценарий. Проверяй по другому каналу."},
-  { cat: '🛡 БЕЗОПАСНОСТЬ', q: "Сайт даёт «бесплатный» курс, но просит данные карты «для верификации»", a: ["Ввести карту — курс же бесплатный", "Закрыть сайт: честные сервисы так не делают", "Ввести, но пустую карту"], ok: 1, tip: "Запрос карты за «бесплатное» — сигнал мошенничества."},
-  { cat: '🛡 БЕЗОПАСНОСТЬ', q: "Друг просит твой код из SMS «для верификации его аккаунта»", a: ["Отправить — друг же", "Отказать: код открывает ТВОЙ аккаунт", "Отправить половину кода"], ok: 1, tip: "Коды из SMS — ключ от твоих аккаунтов. Их нельзя никому отправлять."},
-  { cat: '🛡 БЕЗОПАСНОСТЬ', q: "Публичный Wi-Fi в кафе просит войти через соцсеть", a: ["Войти — так быстрее", "Использовать мобильный интернет или VPN", "Ввести логин и пароль дважды"], ok: 1, tip: "Публичный Wi-Fi может перехватывать данные. Лучше VPN или мобильный интернет."},
-  { cat: '✅ ПРИВЫЧКИ', q: "Хомяк планировал учиться, но уже час скроллит ленту. Что выбрать?", a: ["Ещё 5 минуток и начать", "Таймер на 15 минут, телефон — в другую комнату", "Отложить на завтра"], ok: 1, tip: "Правило 15 минут: маленький кусочек задачи — самый простой способ победить прокрастинацию."},
-  { cat: '✅ ПРИВЫЧКИ', q: "Хомяк лёг в 2 часа ночи: «сериалчик важнее». Итог дня?", a: ["Такой отдых важнее сна", "Сон — приоритет: на свежую голову эффективнее", "Допить сериал и поесть"], ok: 1, tip: "Сон — фундамент памяти и концентрации. Привычка «до 23:00» работает лучше мотивации."},
-  { cat: '🤝 СОФТ-СКИЛЛЫ', q: "Одногруппник резко раскритиковал идею хомяка. Как отреагировать?", a: ["Ответить резко — он первый начал", "«Спасибо, что именно стоит улучшить?» — спокойно уточнить", "Молча обидеться"], ok: 1, tip: "Конструктивный вопрос превращает конфликт в обратную связь — ключевой софт-скилл."},
-  { cat: '💙 ПСИХОЛОГИЯ', q: "Хомяк провалил тест и думает: «я тупой, никогда не получится». Это...", a: ["Правда, надо смириться", "Искажение мышления: один тест ≠ способности", "Повод забросить учёбу"], ok: 1, tip: "Это «ярлыки» — когнитивное искажение. Отделяй факт («не сдал») от вывода о себе."},
-  { cat: '💙 ПСИХОЛОГИЯ', q: "Перед экзаменом у хомяка трясутся лапки. Лучшая первая помощь?", a: ["Гнать себя учиться без сна", "Дыхание 4-4-6 и короткий отдых", "Три кофе подряд"], ok: 1, tip: "Медленный выдох активирует парасимпатическую систему — телу становится безопасно."},
-  { cat: '💙 ПСИХОЛОГИЯ', q: "Хомяк третий день грустит без причины. Что правильно?", a: ["«Соберись, всё в твоих лапках»", "Не винить себя; рассказать близкому, при затянувшемся — к психологу", "Запереться и ждать"], ok: 1, tip: "Затянувшееся подавленное настроение — сигнал обратиться за поддержкой. Это нормально."}
-];
-
-function save() { localStorage.setItem('khomyagochi_pixel', JSON.stringify(S)); }
-function load() { var d = localStorage.getItem('khomyagochi_pixel'); if (d) { try { Object.assign(S, JSON.parse(d)); } catch(e){} } }
-function log(msg) { var el = document.getElementById('log'); var p = document.createElement('p'); p.textContent = msg; el.insertBefore(p, el.firstChild); while (el.children.length > 10) el.removeChild(el.lastChild); }
-function todayStr() { return new Date().toDateString(); }
-function gainXP(n) { S.xp += n; while (S.xp >= 10) { S.xp -= 10; S.lvl++; S.coins += 20; log('★ LVL UP! ' + S.lvl + ' +20🪙'); } }
-
-/* ============ PIXEL RENDER ============ */
-var cv = document.getElementById('scene');
-var ctx = cv.getContext('2d');
-var W = 160, H = 120;
-var animT = 0, blinkT = 0, jumping = 0, eating = 0, sleeping = false;
-
-function px(x, y, c, w, h) { ctx.fillStyle = c; ctx.fillRect(Math.round(x), Math.round(y), w || 1, h || 1); }
-function ell(cx, cy, rx, ry, c) {
-  ctx.fillStyle = c;
-  for (var y = -ry; y <= ry; y++) {
-    var hw = Math.floor(rx * Math.sqrt(Math.max(0, 1 - (y * y) / (ry * ry))));
-    if (hw >= 0) ctx.fillRect(Math.round(cx - hw), Math.round(cy + y), hw * 2 + 1, 1);
-  }
-}
-function rect(x, y, w, h, c) { px(x, y, c, w, h); }
-
-function drawRoom() {
-  var wc = WALL_COLORS[S.equipped.wall] || WALL_COLORS.wall_rose;
-  rect(0, 0, W, 74, wc[0]);
-  for (var y = 4; y < 74; y += 8) for (var x = (y % 16 === 4 ? 4 : 12); x < W; x += 16) px(x, y, wc[1]);
-  rect(0, 74, W, H - 74, '#a3703f');
-  for (var i = 0; i < 10; i++) { rect(0, 78 + i * 5, W, 1, '#8a5c32'); rect(i * 16, 74, 1, H - 74, '#8a5c32'); }
-  rect(0, 73, W, 2, '#5e3d1f');
-  rect(14, 10, 30, 24, '#5e3d1f'); rect(16, 12, 26, 20, '#8fd0f0');
-  px(20, 16, '#fff', 3, 3); px(26, 20, '#fff', 2, 2);
-  px(35, 15, '#ffd166', 4, 4); px(36, 14, '#ffd166', 2, 6); px(34, 16, '#ffd166', 6, 2);
-  rect(28, 30, 2, 4, '#5e3d1f');
-  rect(52, 16, 22, 18, '#3a2a55'); rect(54, 18, 18, 14, '#171225');
-  px(60, 22, '#ffd166', 2, 2); px(64, 26, '#ffd166', 2, 2); px(66, 21, '#ff8fa3', 2, 2);
-  rect(122, 14, 8, 12, '#c98d5a'); rect(124, 10, 4, 6, '#5aa85e');
-  ell(80, 98, 26, 6, '#c77b8f'); ell(80, 98, 20, 4, '#e8a7bb');
-  rect(112, 66, 42, 4, '#8a5c32'); rect(114, 70, 38, 16, '#efe6d5'); rect(114, 76, 38, 1, '#d8cdb8');
-  rect(116, 71, 12, 8, '#fff'); rect(116, 71, 12, 2, '#ffd166');
-  rect(34, 102, 14, 5, '#8a5c32'); rect(34, 100, 14, 2, '#a3703f');
-  px(37, 98, '#5e3d1f', 2, 2); px(41, 97, '#5e3d1f', 2, 3); px(45, 98, '#5e3d1f', 2, 2);
-}
-
-function drawHamster() {
-  var bob = sleeping ? 1 : (animT % 2 === 0 ? 0 : 1);
-  var jy = jumping > 0 ? -Math.abs(Math.sin(jumping * Math.PI / 12)) * 14 : 0;
-  var cx = 80, base = 96;
-  var cy = base - 16 + bob + jy;
-  var squash = eating > 0 && eating % 2 === 0 ? 1 : 0;
-  var OUT = '#7a4a1d', FUR = '#f5cd8f', FUR2 = '#e8b46e', BELLY = '#fff2d9', PINK = '#e898a3';
-  var cheekOn = S.mood >= 60;
-  ell(cx, cy + 8 - squash, 11, 7 + squash, OUT); ell(cx, cy + 8 - squash, 10, 6 + squash, FUR);
-  ell(cx - 7, cy - 10, 4, 5, OUT); ell(cx - 7, cy - 10, 3, 4, PINK);
-  ell(cx + 7, cy - 10, 4, 5, OUT); ell(cx + 7, cy - 10, 3, 4, PINK);
-  var hry = 8 + (sleeping ? 1 : 0);
-  ell(cx, cy - 2, 12, hry, OUT); ell(cx, cy - 2, 11, hry - 1, FUR);
-  ell(cx, cy + 4, 7, 4, BELLY);
-  var eyeC = sleeping ? '#7a4a1d' : '#2b1d0e';
-  if (!sleeping) {
-    px(cx - 5, cy - 4, '#fff', 3, 3); px(cx + 3, cy - 4, '#fff', 3, 3);
-    px(cx - 5, cy - 3, eyeC, 2, 2); px(cx + 4, cy - 3, eyeC, 2, 2);
-  } else {
-    px(cx - 5, cy - 3, eyeC, 3, 1); px(cx + 3, cy - 3, eyeC, 3, 1);
-  }
-  px(cx - 1, cy + 1, '#e898a3', 3, 2);
-  if (S.health <= 30) { px(cx - 2, cy + 5, '#7a4a1d', 5, 1); px(cx - 2, cy + 6, '#7a4a1d', 5, 1); }
-  else if (cheekOn) { px(cx - 2, cy + 4, OUT, 1, 1); px(cx + 2, cy + 4, OUT, 1, 1); px(cx - 2, cy + 5, OUT, 5, 1); }
-  else px(cx - 2, cy + 4, OUT, 5, 1);
-  if (cheekOn) { ell(cx - 8, cy + 1, 2, 1, '#f4a8b8'); ell(cx + 8, cy + 1, 2, 1, '#f4a8b8'); }
-  px(cx - 12, cy, '#7a4a1d', 1, 1); px(cx - 14, cy + 1, '#7a4a1d', 1, 1);
-  px(cx + 12, cy, '#7a4a1d', 1, 1); px(cx + 14, cy + 1, '#7a4a1d', 1, 1);
-  ell(cx - 6, cy + 15, 3, 2, PINK); ell(cx + 6, cy + 15, 3, 2, PINK);
-  drawHat(cx, cy);
-  if (sleeping) {
-    ctx.font = '6px monospace'; ctx.fillStyle = '#8fd0f0';
-    ctx.fillText('z', cx + 14, cy - 14 - (animT % 2) * 2);
-    ctx.fillText('Z', cx + 20, cy - 20);
-  }
-  if (eating > 0) { px(cx - 1, cy + 8, '#8a5c32', 2, 2); }
-}
-
-function drawHat(cx, cy) {
-  var hat = S.equipped.hat, top = cy - 11;
-  if (hat === 'hat_cap') {
-    rect(cx - 7, top - 2, 14, 4, '#e5484d'); rect(cx - 9, top + 1, 12, 2, '#e5484d'); rect(cx - 3, top - 4, 6, 2, '#b23a48');
-  } else if (hat === 'hat_bow') {
-    rect(cx - 6, top - 3, 4, 4, '#ff8fa3'); rect(cx + 2, top - 3, 4, 4, '#ff8fa3'); rect(cx - 1, top - 3, 3, 4, '#e56a85');
-  } else if (hat === 'hat_crown') {
-    rect(cx - 6, top - 4, 12, 4, '#ffd166');
-    px(cx - 6, top - 7, '#ffd166', 2, 3); px(cx - 1, top - 8, '#ffd166', 2, 4); px(cx + 4, top - 7, '#ffd166', 2, 3);
-    px(cx - 1, top - 3, '#e5484d', 2, 2);
-  } else if (hat === 'hat_ph') {
-    rect(cx - 12, top + 2, 4, 5, '#544a75'); rect(cx + 8, top + 2, 4, 5, '#544a75');
-    rect(cx - 9, top, 18, 2, '#171225'); px(cx - 11, top + 3, '#ffd166', 2, 2); px(cx + 9, top + 3, '#ffd166', 2, 2);
-  }
-}
-
-function drawHearts() {
-  for (var i = 0; i < particles.length; i++) {
-    var p = particles[i];
-    ctx.font = '8px monospace';
-    ctx.fillStyle = p.c;
-    ctx.fillText(p.ch, p.x, p.y);
-  }
-}
-var particles = [];
-function puff(ch, color) {
-  particles.push({ ch: ch, c: color || '#ff8fa3', x: 70 + Math.random() * 30, y: 80, vy: -0.8 - Math.random() * 0.6, life: 40 });
-  if (particles.length > 8) particles.shift();
-}
-
-function drawScene() {
-  drawRoom();
-  drawHamster();
-  drawHearts();
-  for (var i = particles.length - 1; i >= 0; i--) {
-    var p = particles[i];
-    p.y += p.vy; p.life--;
-    if (p.life <= 0) particles.splice(i, 1);
-  }
-}
-
-setInterval(function() {
-  animT++; blinkT = (blinkT + 1) % 14;
-  if (jumping > 0) jumping--;
-  if (eating > 0) eating--;
-  drawScene();
-  if (!document.getElementById('roomOverlay').classList.contains('hidden')) drawBigScene();
-}, 250);
-
-cv.addEventListener('click', function() {
-  S.mood = Math.min(100, S.mood + 2);
-  jumping = 12; puff('♥', '#ff8fa3');
-  log('пип! хомяк рад ♥');
-  render(); save();
-});
-
-/* ============ UI ============ */
-function render() {
-  function set(b, t, v) { document.getElementById(b).style.width = v + '%'; document.getElementById(t).textContent = v + '%'; }
-  set('bHealth','tHealth',Math.max(0,Math.round(S.health)));
-  set('bSec','tSec',Math.max(0,Math.round(S.sec)));
-  set('bMood','tMood',Math.max(0,Math.round(S.mood)));
-  document.getElementById('lvl').textContent = S.lvl;
-  document.getElementById('coins').textContent = S.coins;
-  document.getElementById('streak').textContent = S.streak;
-}
-
-function dayCheck() {
-  var today = todayStr();
-  if (S.lastDay !== today) {
-    S.streak = S.lastDay ? S.streak + 1 : 1;
-    S.lastDay = today;
-    log('📅 день ' + S.streak + ' серии!');
-  }
-}
-
-function tick() {
-  S.health -= 0.3; S.mood -= 0.25; S.sec -= 0.1;
-  sleeping = S.health < 25;
-  if (Math.random() < 0.012) spawnEvent();
-  render(); save();
-}
-
-function spawnEvent() {
-  var e = EVENTS[Math.floor(Math.random() * EVENTS.length)];
-  var bg = document.getElementById('modalBg');
-  document.getElementById('mTitle').textContent = e.cat;
-  document.getElementById('mQuestion').textContent = e.q;
-  var res = document.getElementById('mResult'); res.classList.add('hidden');
-  var btns = document.getElementById('mBtns'); btns.innerHTML = '';
-  e.a.forEach(function(opt, i) {
-    var b = document.createElement('button');
-    b.textContent = opt;
-    b.onclick = function() {
-      Array.prototype.forEach.call(btns.children, function(c, j) { c.classList.add(j === e.ok ? 'ok' : 'bad'); });
-      if (i === e.ok) {
-        S.sec = Math.min(100, S.sec + 10); S.mood += 5; S.coins += 10; gainXP(5);
-        res.textContent = '✅ ВЕРНО! +10🛡 +10🪙 ' + e.tip;
-        jumping = 12; puff('★', '#ffd166');
-      } else {
-        S.sec = Math.max(0, S.sec - 12); S.health -= 5;
-        res.textContent = '❌ ОЙ! ' + e.tip;
-        puff('?', '#e5484d');
-      }
-      res.classList.remove('hidden');
-      render(); save();
-      setTimeout(function(){ bg.classList.add('hidden'); }, 4000);
-    };
-    btns.appendChild(b);
-  });
-  bg.classList.remove('hidden');
-}
-
-document.querySelectorAll('.tabs button').forEach(function(btn) {
-  btn.onclick = function() {
-    document.querySelectorAll('.tabs button').forEach(function(b){ b.classList.remove('active'); });
-    btn.classList.add('active');
-    ['home','shop','habits','support'].forEach(function(t) {
-      document.getElementById('tab-' + t).classList.toggle('hidden', t !== btn.dataset.tab);
-    });
-    if (btn.dataset.tab === 'shop') renderShop();
-    if (btn.dataset.tab === 'habits') renderHabits();
-  };
-});
-
-document.getElementById('btnEvent').onclick = spawnEvent;
-document.getElementById('btnFeed').onclick = function() { S.health = Math.min(100, S.health + 12); S.mood += 3; eating = 8; puff('🌰', '#e8b46e'); log('🥜 хомяк хрустит! +❤'); render(); save(); };
-document.getElementById('btnPlay').onclick = function() { S.mood = Math.min(100, S.mood + 12); S.health -= 2; gainXP(3); jumping = 16; puff('♪', '#a78bfa'); log('🎮 игра! +🧠'); render(); save(); };
-document.getElementById('btnRest').onclick = function() { S.health = Math.min(100, S.health + 8); S.mood = Math.min(100, S.mood + 5); sleeping = true; setTimeout(function(){ sleeping = false; }, 6000); log('💤 хомяк поспал.'); render(); save(); };
-
-/* ============ SHOP ============ */
-function owns(id) { return S.owned.indexOf(id) !== -1; }
-function renderShop() {
-  function cell(item, type, equipped) {
-    var div = document.createElement('div');
-    div.className = 'shop-item';
-    div.innerHTML = '<span class="icon">' + item.icon + '</span><span class="name">' + item.name + '</span>';
-    var price = document.createElement('span');
-    var btn = document.createElement('button');
-    if (equipped) { btn.textContent = 'НАДЕТО ✓'; btn.className = 'equip'; btn.disabled = true; price.textContent = '—'; }
-    else if (owns(item.id)) { btn.textContent = 'НАДЕТЬ'; btn.className = 'owned'; price.textContent = 'куплено'; }
-    else { btn.textContent = 'КУПИТЬ'; price.textContent = item.price + ' 🪙'; if (S.coins < item.price) btn.disabled = true; }
-    price.className = 'price';
-    div.appendChild(price); div.appendChild(btn);
-    btn.onclick = function() {
-      if (type === 'food') {
-        if (S.coins < item.price) return;
-        S.coins -= item.price;
-        if (item.id === 'food_seeds') S.health = Math.min(100, S.health + 15);
-        if (item.id === 'food_cake') S.mood = Math.min(100, S.mood + 20);
-        if (item.id === 'food_tea') { S.health = Math.min(100, S.health + 8); S.mood = Math.min(100, S.mood + 8); }
-        eating = 8; puff(item.icon, '#ffd166');
-        log('куплено: ' + item.name);
-        render(); save(); renderShop();
-        return;
-      }
-      if (!owns(item.id)) {
-        if (S.coins < item.price) return;
-        S.coins -= item.price; S.owned.push(item.id);
-        log('куплено: ' + item.name + '!');
-        jumping = 12;
-      }
-      S.equipped[type] = item.id;
-      puff('♥', '#ff8fa3');
-      render(); save(); renderShop();
-    };
-    return div;
-  }
-  var hats = document.getElementById('shopHats'); hats.innerHTML = '';
-  SHOP.hats.forEach(function(h) { hats.appendChild(cell(h, 'hat', S.equipped.hat === h.id)); });
-  var walls = document.getElementById('shopWalls'); walls.innerHTML = '';
-  SHOP.walls.forEach(function(w) { walls.appendChild(cell(w, 'wall', S.equipped.wall === w.id)); });
-  var food = document.getElementById('shopFood'); food.innerHTML = '';
-  SHOP.food.forEach(function(f) { food.appendChild(cell(f, 'food', false)); });
-}
-
-/* ============ HABITS ============ */
-function habitToday(id) { return S.habitState[id] && S.habitState[id].lastDay === todayStr(); }
-function renderHabits() {
-  var list = document.getElementById('habitList');
-  list.innerHTML = '';
-  S.habits.forEach(function(h) {
-    var div = document.createElement('div');
-    div.className = 'habit' + (habitToday(h.id) ? ' done' : '');
-    var cb = document.createElement('input');
-    cb.type = 'checkbox'; cb.checked = !!habitToday(h.id);
-    cb.onchange = function() { toggleHabit(h.id, cb.checked); };
-    var label = document.createElement('span');
-    label.textContent = h.emoji + ' ' + h.text;
-    var st = document.createElement('span');
-    st.className = 'st';
-    st.textContent = '🔥' + ((S.habitState[h.id] && S.habitState[h.id].streak) || 0);
-    div.appendChild(cb); div.appendChild(label); div.appendChild(st);
-    list.appendChild(div);
-  });
-}
-function toggleHabit(id, checked) {
-  if (!S.habitState[id]) S.habitState[id] = { streak: 0, lastDay: '' };
-  var st = S.habitState[id];
-  if (checked) {
-    st.lastDay = todayStr(); st.streak++;
-    S.mood = Math.min(100, S.mood + 4); gainXP(2); S.coins += 3;
-    jumping = 12; puff('★', '#ffd166');
-    log('✅ серия ' + st.streak + '!');
-  } else { st.lastDay = ''; st.streak = Math.max(0, st.streak - 1); }
-  renderHabits(); render(); save();
-}
-document.getElementById('btnAddHabit').onclick = function() {
-  var inp = document.getElementById('newHabit');
-  var txt = inp.value.trim();
-  if (!txt) return;
-  S.habits.push({ id: 'h_' + Date.now(), emoji: '⭐', text: txt });
-  inp.value = '';
-  renderHabits(); save();
-};
-
-/* ============ SUPPORT ============ */
-var MOOD_MSGS = {
-  1: "💙 Мне жаль, что сейчас тяжело. Это нормально — просить помощи. Попробуй дыхание ниже, расскажи близкому. Если состояние держится — обратись к психологу (контакты ниже).",
-  2: "💙 Бывает — и это пройдёт. Одна маленькая забота сейчас: вода, воздух или дыхание 4-4-6.",
-  3: "👍 Спокойное состояние — хорошая база. Идеальный момент для привычки или сценария безопасности!",
-  4: "😊 Здорово, что день идёт хорошо! Погладь хомяка — он это заслужил.",
-  5: "🎉 Отличное настроение! Вызови СОБЫТИЕ — на подъёме всё усваивается быстрее."
-};
-document.querySelectorAll('#moodScale button').forEach(function(b) {
-  b.onclick = function() {
-    var m = +b.dataset.mood;
-    S.moodLog.push({ d: todayStr(), m: m });
-    if (S.moodLog.length > 60) S.moodLog.shift();
-    var msg = document.getElementById('moodMsg');
-    msg.textContent = MOOD_MSGS[m];
-    msg.classList.remove('hidden');
-    if (m >= 4) { S.mood = Math.min(100, S.mood + 6); jumping = 12; puff('♥', '#ff8fa3'); }
-    else { S.mood = Math.min(100, S.mood + 3); sleeping = true; setTimeout(function(){ sleeping = false; }, 3000); }
-    gainXP(1);
-    log('💙 чек-ин записан');
-    render(); save();
-  };
-});
-
-var breathing = false;
-document.getElementById('btnBreath').onclick = function() {
-  if (breathing) return;
-  breathing = true;
-  var circle = document.getElementById('breathCircle');
-  var label = document.getElementById('breathLabel');
-  var phases = [['вдох... 4', 4000, 'scale(1.7)'], ['пауза... 4', 4000, 'scale(1.7)'], ['выдох... 6', 6000, 'scale(1)']];
-  var cycle = 0, i = 0;
-  sleeping = true;
-  function step() {
-    if (cycle >= 3) {
-      label.textContent = 'готово! ты молодец ★';
-      circle.style.transform = 'scale(1)';
-      breathing = false; sleeping = false; jumping = 12;
-      S.mood = Math.min(100, S.mood + 8); gainXP(2);
-      log('🌬 практика завершена +🧠');
-      render(); save(); return;
-    }
-    var p = phases[i];
-    label.textContent = p[0];
-    circle.style.transform = p[2];
-    setTimeout(function() { i++; if (i >= phases.length) { i = 0; cycle++; } step(); }, p[1]);
-  }
-  step();
-};
-
-load();
-if (!S.habits || !S.habits.length) S.habits = DEFAULT_HABITS.slice();
-if (!S.owned) S.owned = ['hat_none', 'wall_rose'];
-dayCheck(); render(); renderHabits(); drawScene();
-log('🐹 добро пожаловать в домик!');
-setInterval(tick, 4000);
-
-/* ============ FULLSCREEN ROOM ============ */
-var bcv = document.getElementById('bigScene');
-var bctx = bcv.getContext('2d');
-var BW = 320, BH = 240;
-var bigAnimT = 0, hot = null;
-
-function bpx(x, y, c, w, h) { bctx.fillStyle = c; bctx.fillRect(Math.round(x), Math.round(y), w || 1, h || 1); }
-function brect(x, y, w, h, c) { bpx(x, y, c, w, h); }
-function bell(cx, cy, rx, ry, c) {
-  bctx.fillStyle = c;
-  for (var y = -ry; y <= ry; y++) {
-    var hw = Math.floor(rx * Math.sqrt(Math.max(0, 1 - (y * y) / (ry * ry))));
-    if (hw >= 0) bctx.fillRect(Math.round(cx - hw), Math.round(cy + y), hw * 2 + 1, 1);
-  }
-}
-function ellBig(cx, cy, rx, ry, c) { bell(cx, cy, rx, ry, c); }
-
-var TIPS = [
-  "⚡ Пароль для разных сайтов — разный. Если один утечёт — все не утечут.",
-  "🔗 Перед кликом по ссылке остановись на 3 секунды и подумай: от кого она и куда ведёт?",
-  "📱 Смс-код из сообщения нельзя никому давать — даже лучшему другу.",
-  "🗂 Любое доброе дело для себя можно начать с 15 минут в день. Маленькие прыжки всегда выигрывают у больших планов.",
-  "🧴 Когда тяжело — не забывай простые вещи: вода, сон и дыхание вдох — пауза — выдох."
-];
-var ROOM_POINTS = [
-  { id: 'book', x: 104, y: 132, r: 30, label: '📖 дневник — статистика' },
-  { id: 'bowl', x: 224, y: 212, r: 16, label: '🥣 миска — покормить' },
-  { id: 'poster', x: 160, y: 44, r: 26, label: '🛡 плакат — совет' },
-  { id: 'window', x: 48, y: 48, r: 30, label: '🪟 окно — привет' },
-  { id: 'flower', x: 286, y: 176, r: 16, label: '🌱 цветок — забота' },
-  { id: 'bed', x: 112, y: 204, r: 26, label: '💤 лежанка — спать' },
-  { id: 'ham', x: 160, y: 180, r: 30, label: '🐹 погладить' }
-];
-
-function drawBigScene() {
-  var wc = WALL_COLORS[S.equipped.wall] || WALL_COLORS.wall_rose;
-  brect(0, 0, BW, 148, wc[0]);
-  for (var y = 6; y < 148; y += 12) for (var x = (y % 24 === 6 ? 6 : 18); x < BW; x += 24) bpx(x, y, wc[1]);
-  brect(0, 146, BW, 2, '#5e3d1f');
-  brect(0, 148, BW, BH - 148, '#a3703f');
-  for (var i = 0; i < 15; i++) {
-    brect(0, 152 + i * 6, BW, 1, '#8a5c32');
-    bpx(24 + i * 24, 148, '#8a5c32', 1, BH - 148);
-    bpx(12 + i * 24, 148, '#96653a', 1, 4);
-  }
-
-  /* window */
-  brect(20, 20, 58, 54, '#5e3d1f');
-  brect(23, 23, 52, 48, '#8fd0f0');
-  brect(23, 56, 52, 15, '#b8e4f8');
-  bpx(23, 23, '#e8f6ff', 52, 4);
-  for (var c1 = 0; c1 < 5; c1++) bpx(28 + c1 * 10, 26 + c1 * 4, '#fff', 4, 2);
-  for (var s = 0; s < 4; s++) {
-    var sx = 62 + (s % 2) * 8, sy = 27 + s * 3;
-    bpx(sx, sy, '#fff', 2, 2); bpx(sx - 2, sy + 2, '#fff', 1, 1); bpx(sx + 3, sy + 2, '#fff', 1, 1);
-  }
-  bell(33, 62, 6, 5, '#2e7d4f'); bell(31, 66, 3, 3, '#4ec97a'); bell(40, 64, 4, 3, '#1d7a43');
-  bpx(26, 34, '#ffd166', 5, 5); bpx(27, 32, 3, 9); bpx(24, 36, 9, 2);
-  brect(48, 44, 2, 46, '#5e3d1f'); brect(23, 66, 52, 2, '#5e3d1f');
-
-  /* poster */
-  brect(134, 16, 52, 56, '#171225');
-  brect(136, 18, 48, 52, '#2a2440');
-  bpx(145, 24, '#4cc3f7', 30, 2); bpx(145, 28, '#4cc3f7', 22, 2);
-  bpx(145, 34, '#ffd166', 30, 2); bpx(145, 38, '#ffd166', 26, 2);
-  bpx(145, 44, '#ff8fa3', 18, 2); bpx(145, 48, '#ff8fa3', 24, 2);
-  bpx(145, 55, '#a78bfa', 30, 2); bpx(145, 59, '#a78bfa', 14, 2);
-  bell(160, 44, 5, 5, '#5e3d1f'); bpx(158, 44, '#4cc3f7', 2, 2); bpx(161, 44, '#4cc3f7', 2, 2);
-  bpx(149, 51, '#f5cd8f', 2, 1); bpx(165, 52, '#f5cd8f', 2, 1);
-
-  /* bookshelf */
-  brect(96, 100, 76, 52, '#5e3d1f');
-  brect(100, 104, 68, 44, '#3a2a55');
-  brect(100, 140, 68, 4, '#8a5c32');
-  brect(100, 118, 68, 4, '#8a5c32');
-  var spineC = ['#e5484d', '#4cc3f7', '#ffd166', '#4ec97a', '#a78bfa', '#ff8fa3'];
-  for (var b = 0; b < 6; b++) {
-    var bx = 102 + b * 11;
-    brect(bx, 122, 9, 18, spineC[b]);
-    bpx(bx + 1, 125, '#fff', 7, 1); bpx(bx + 1, 129, '#fff', 7, 1); bpx(bx + 3, 133, '#2b1d0e', 3, 3);
-  }
-  brect(102, 124, 9, 16, '#f5e6c8'); bpx(104, 128, '#2b1d0e', 5, 1); bpx(104, 131, '#2b1d0e', 5, 1); bpx(104, 134, '#2b1d0e', 5, 1);
-  brect(116, 124, 12, 18, '#d98ba0'); bpx(122, 126, '#fff', 2, 2);
-  brect(132, 124, 8, 16, '#ffd166'); bpx(134, 128, '#b8860b', 4, 2);
-  var lean = bigAnimT % 8 < 4 ? 1 : 0;
-  brect(144 + lean, 122 + (2 - lean), 9, 20 - (2 - lean), '#8f7fd9');
-  bpx(146 + lean, 126, '#fff', 5, 1); bpx(146 + lean, 130, '#fff', 5, 1);
-  brect(104, 105, 6, 13, '#c98d5a'); brect(104, 105, 6, 3, '#5aa85e'); bpx(106, 112, '#e5484d', 2, 2);
-  brect(160, 104, 4, 12, '#efe6d5'); bpx(161, 106, '#2b1d0e', 2, 8);
-  brect(96, 152, 76, 4, '#5e3d1f');
-
-  /* lamp */
-  brect(24, 116, 18, 36, '#3a2a55'); brect(22, 112, 22, 4, '#544a75');
-  bell(33, 106, 8, 7, '#ffd166'); brect(27, 98, 12, 6, '#e8b46e'); brect(29, 94, 8, 4, '#ffd166');
-  bpx(29, 84, 'rgba(255,209,102,.5)', 8, 10); bpx(25, 90, 'rgba(255,209,102,.3)', 16, 6);
-  if (bigAnimT % 4 < 2) bpx(30, 83, 'rgba(255,209,102,.35)', 6, 12);
-
-  /* bed */
-  bell(112, 204, 34, 10, '#8a5c32'); bell(112, 202, 30, 8, '#c77b8f'); bell(112, 202, 24, 5, '#e8a7bb');
-  for (var k = 0; k < 5; k++) bpx(94 + k * 12, 194 + (k % 2) * 2, '#f4c2d0', 3, 2);
-
-  /* bowl */
-  bell(224, 206, 14, 7, '#5e3d1f'); bell(224, 205, 12, 5, '#c98d5a');
-  brect(212, 206, 24, 3, '#e8b46e');
-  for (var sd = 0; sd < 6; sd++) bpx(215 + (sd * 4) % 20, 202 + (sd % 3), '#7a4a1d', 2, 2);
-
-  /* flowerpot */
-  bell(286, 200, 11, 6, '#b45a3c'); brect(278, 196, 16, 3, '#c98d5a');
-  brect(285, 172, 2, 24, '#1d7a43');
-  bpx(280, 180, '#2e7d4f', 6, 2); bpx(288, 176, '#2e7d4f', 6, 2);
-  var petal = bigAnimT % 6 < 3 ? '#ff8fa3' : '#f4a8b8';
-  bpx(283, 167, petal, 6, 6); bpx(281, 169, petal, 10, 2); bpx(285, 165, '#ffd166', 2, 2);
-
-  /* dust motes */
-  for (var d = 0; d < 3; d++) {
-    var dx = 40 + ((bigAnimT * 3 + d * 30) % 200), dy = 156 + d * 26;
-    if (dx < BW - 40) bpx(dx, dy + (bigAnimT % 2), 'rgba(255,230,180,.25)', 2, 1);
-  }
-
-  drawBigHamster();
-
-  if (hot) {
-    bctx.strokeStyle = '#ffd166'; bctx.lineWidth = 1;
-    bctx.setLineDash([3, 3]);
-    bctx.strokeRect(hot.x - hot.r + .5, hot.y - hot.r + .5, hot.r * 2, hot.r * 2);
-    bctx.setLineDash([]);
-    bctx.font = '7px monospace'; bctx.fillStyle = '#171225';
-    var tw = bctx.measureText(hot.label).width;
-    bpx(hot.x - tw / 2 - 2, hot.y + hot.r + 3, '#ffd166', tw + 4, 11);
-    bctx.fillStyle = '#2b1d0e';
-    bctx.fillText(hot.label, hot.x - tw / 2, hot.y + hot.r + 11);
-  }
-}
-
-function drawBigHamster() {
-  var bob = sleeping ? 2 : (bigAnimT % 2 === 0 ? 0 : 2);
-  var jy = jumping > 0 ? -Math.abs(Math.sin(jumping * Math.PI / 12)) * 26 : 0;
-  var cx = 160, base = 196;
-  var cy = base - 32 + bob + jy;
-  var OUT = '#7a4a1d', FUR = '#f5cd8f', FUR2 = '#e8b46e', BELLY = '#fff2d9', PINK = '#e898a3';
-  var cheekOn = S.mood >= 60;
-  ellBig(cx, cy + 16, 22, 14, OUT); ellBig(cx, cy + 16, 20, 12, FUR);
-  for (var fy = -10; fy <= 10; fy += 2) {
-    var fw = Math.floor(19 * Math.sqrt(Math.max(0, 1 - fy * fy / 121)));
-    for (var fx = -fw; fx <= fw; fx += 3) bpx(cx + fx, cy + 16 + fy, (fx + fy) % 4 === 0 ? FUR2 : FUR);
-  }
-  bell(cx - 14, cy - 20, 8, 10, OUT); bell(cx - 14, cy - 20, 6, 8, PINK);
-  bpx(cx - 16, cy - 24, '#e898a3', 3, 3); bpx(cx - 17, cy - 27, '#f4a8b8', 2, 2);
-  bell(cx + 14, cy - 20, 8, 10, OUT); bell(cx + 14, cy - 20, 6, 8, PINK);
-  bpx(cx + 14, cy - 24, '#e898a3', 3, 3); bpx(cx + 16, cy - 27, '#f4a8b8', 2, 2);
-  var hry = 16 + (sleeping ? 2 : 0);
-  ellBig(cx, cy - 4, 24, hry, OUT); ellBig(cx, cy - 4, 22, hry - 2, FUR);
-  for (var fy2 = -hry + 3; fy2 <= hry - 3; fy2 += 3) {
-    var fw2 = Math.floor(21 * Math.sqrt(Math.max(0, 1 - fy2 * fy2 / ((hry - 3) * (hry - 3)))));
-    for (var fx2 = -fw2; fx2 <= fw2; fx2 += 4) bpx(cx + fx2, cy - 4 + fy2, (fx2 - fy2) % 6 === 0 ? FUR2 : FUR);
-  }
-  ellBig(cx, cy + 8, 14, 8, BELLY);
-  bpx(cx + 2, cy + 6, '#e2d0b0', 5, 4);
-  var eyeC = sleeping ? '#7a4a1d' : '#2b1d0e';
-  if (!sleeping) {
-    bpx(cx - 10, cy - 8, '#fff', 6, 6); bpx(cx + 6, cy - 8, '#fff', 6, 6);
-    bpx(cx - 9, cy - 6, eyeC, 3, 4); bpx(cx + 8, cy - 6, eyeC, 3, 4);
-    bpx(cx - 8, cy - 7, '#fff', 2, 2); bpx(cx + 9, cy - 7, '#fff', 2, 2);
-    if (blinkT > 11) { bpx(cx - 10, cy - 6, OUT, 6, 2); bpx(cx + 6, cy - 6, OUT, 6, 2); }
-  } else {
-    bpx(cx - 10, cy - 5, eyeC, 6, 2); bpx(cx + 6, cy - 5, eyeC, 6, 2);
-  }
-  bpx(cx - 3, cy + 2, PINK, 6, 4); bpx(cx - 2, cy + 3, '#d16f80', 4, 2);
-  if (S.health <= 30) { bpx(cx - 5, cy + 9, OUT, 10, 2); bpx(cx - 5, cy + 11, OUT, 10, 2); bpx(cx - 4, cy + 8, OUT, 8, 1); }
-  else if (cheekOn) { bpx(cx - 5, cy + 8, OUT, 1, 1); bpx(cx + 5, cy + 8, OUT, 1, 1); bpx(cx - 5, cy + 9, OUT, 10, 1); }
-  else bpx(cx - 5, cy + 9, OUT, 10, 1);
-  if (cheekOn) { bell(cx - 16, cy + 2, 4, 2, '#f4a8b8'); bell(cx + 16, cy + 2, 4, 2, '#f4a8b8'); }
-  bpx(cx - 24, cy, OUT, 2, 2); bpx(cx - 27, cy + 2, OUT, 2, 2); bpx(cx - 29, cy + 5, OUT, 2, 2);
-  bpx(cx + 23, cy, OUT, 2, 2); bpx(cx + 26, cy + 2, OUT, 2, 2); bpx(cx + 28, cy + 5, OUT, 2, 2);
-  bell(cx - 12, cy + 30, 6, 4, PINK); bell(cx + 12, cy + 30, 6, 4, PINK);
-  bpx(cx - 14, cy + 33, '#d16f80', 3, 2); bpx(cx + 11, cy + 33, '#d16f80', 3, 2);
-  drawBigHat(cx, cy);
-  if (sleeping) {
-    bctx.font = '10px monospace'; bctx.fillStyle = '#8fd0f0';
-    bctx.fillText('z', cx + 28, cy - 28 - (bigAnimT % 2) * 4);
-    bctx.fillText('Z', cx + 40, cy - 40);
-  }
-  if (eating > 0) bpx(cx - 2, cy + 16, '#8a5c32', 4, 3);
-}
-
-function drawBigHat(cx, cy) {
-  var hat = S.equipped.hat, top = cy - 22;
-  if (hat === 'hat_cap') {
-    brect(cx - 14, top - 4, 28, 8, '#e5484d'); brect(cx - 18, top + 2, 24, 4, '#e5484d'); brect(cx - 6, top - 8, 12, 4, '#b23a48'); bpx(cx - 10, top + 4, '#ffd166', 4, 2);
-  } else if (hat === 'hat_bow') {
-    brect(cx - 12, top - 6, 8, 8, '#ff8fa3'); brect(cx + 4, top - 6, 8, 8, '#ff8fa3'); brect(cx - 2, top - 6, 6, 8, '#e56a85'); bpx(cx - 10, top - 4, '#fff', 2, 2); bpx(cx + 6, top - 4, '#fff', 2, 2);
-  } else if (hat === 'hat_crown') {
-    brect(cx - 12, top - 8, 24, 8, '#ffd166');
-    bpx(cx - 12, top - 14, '#ffd166', 4, 6); bpx(cx - 2, top - 16, '#ffd166', 4, 8); bpx(cx + 8, top - 14, '#ffd166', 4, 6);
-    bpx(cx - 2, top - 6, '#e5484d', 4, 4); bpx(cx - 11, top - 11, '#fff', 2, 2);
-  } else if (hat === 'hat_ph') {
-    brect(cx - 24, top + 4, 8, 10, '#544a75'); brect(cx + 16, top + 4, 8, 10, '#544a75');
-    brect(cx - 18, top, 36, 4, '#171225'); bpx(cx - 22, top + 6, '#ffd166', 4, 4); bpx(cx + 18, top + 6, '#ffd166', 4, 4);
-  }
-}
-
-function scenePos(e) {
-  var r = bcv.getBoundingClientRect();
-  return { x: (e.clientX - r.left) * BW / r.width, y: (e.clientY - r.top) * BH / r.height };
-}
-function hitPoint(p) {
-  for (var i = 0; i < ROOM_POINTS.length; i++) {
-    var pt = ROOM_POINTS[i];
-    var dx = p.x - pt.x, dy = p.y - pt.y;
-    if (dx * dx + dy * dy <= pt.r * pt.r) return pt;
-  }
-  return null;
-}
-
-bcv.addEventListener('mousemove', function(e) {
-  hot = hitPoint(scenePos(e));
-  drawBigScene();
-  bcv.style.cursor = hot ? 'pointer' : 'default';
-});
-
-function showPanel(title, bodyHtml) {
-  var panel = document.getElementById('roomPanel');
-  panel.innerHTML = '<h3>' + title + '</h3>' + bodyHtml +
-    '<button class="act primary" style="margin-top:12px;width:100%" onclick="closeRoomPanel()">ЗАКРЫТЬ</button>';
-  panel.classList.remove('hidden');
-}
-function closeRoomPanel() { document.getElementById('roomPanel').classList.add('hidden'); }
-
-function statsHtml() {
-  var habitsDone = 0;
-  if (S.habits) S.habits.forEach(function(h) { if (habitToday(h.id)) habitsDone++; });
-  var totalHabits = S.habits ? S.habits.length : 0;
-  return '<div class="row"><span>LVL</span><span>' + S.lvl + ' (XP ' + S.xp + '/10)</span></div>' +
-    '<div class="row"><span>монеты</span><span>' + S.coins + ' 🪙</span></div>' +
-    '<div class="row"><span>серия дней</span><span>' + S.streak + '</span></div>' +
-    '<div class="row"><span>привычки сегодня</span><span>' + habitsDone + '/' + totalHabits + '</span></div>' +
-    '<div class="row"><span>чек-инов настроения</span><span>' + (S.moodLog ? S.moodLog.length : 0) + '</span></div>';
-}
-
-function roomAction(id) {
-  if (id === 'book') {
-    showPanel('📖 ДНЕВНИК ХОМЯКА', statsHtml());
-  } else if (id === 'bowl') {
-    S.health = Math.min(100, S.health + 12); S.mood += 3; eating = 8; puff('⚡', '#e8b46e');
-    log('🥣 хомяк поел! +❤'); render(); save();
-  } else if (id === 'poster') {
-    showPanel('🛡 СОВЕТ ОТ ХОМЯКА', '<p>' + TIPS[Math.floor(Math.random() * TIPS.length)] + '</p>');
-  } else if (id === 'window') {
-    var hr = new Date().getHours();
-    var greet = hr < 6 ? '🌙 ночь тиха... спать пора!' : hr < 12 ? '🌅 доброе утро!' : hr < 18 ? '☀ добрый день!' : '🌓 добрый вечер!';
-    showPanel('🪟 ЗА ОКНОМ', '<p>' + greet + ' За окном светит солнце, а хомяк здесь для тебя ♥</p>');
-    S.mood = Math.min(100, S.mood + 2); render(); save();
-  } else if (id === 'flower') {
-    S.mood = Math.min(100, S.mood + 4); gainXP(1); puff('♥', '#7fae90');
-    log('🌱 ты полил цветок — забота возвращается!');
-    render(); save();
-  } else if (id === 'bed') {
-    S.health = Math.min(100, S.health + 8); S.mood = Math.min(100, S.mood + 5); sleeping = true;
-    setTimeout(function(){ sleeping = false; }, 6000);
-    log('💤 хомяк приснул на лежанке.'); render(); save();
-  } else if (id === 'ham') {
-    S.mood = Math.min(100, S.mood + 6); jumping = 16; puff('♥', '#ff8fa3');
-    log('🐹 пип! хомяк рад!'); render(); save();
-  }
-  drawBigScene();
-}
-
-bcv.addEventListener('click', function(e) {
-  var pt = hitPoint(scenePos(e));
-  if (pt) roomAction(pt.id);
-});
-
-document.getElementById('btnRoom').onclick = function() {
-  document.getElementById('roomOverlay').classList.remove('hidden');
-  document.getElementById('roomPanel').classList.add('hidden');
-  hot = null;
-  drawBigScene();
-};
-
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') { closeRoomPanel(); document.getElementById('roomOverlay').classList.add('hidden'); }
-});
-
-(function bigLoop() {
-  bigAnimT++;
-  if (!document.getElementById('roomOverlay').classList.contains('hidden')) drawBigScene();
-  setTimeout(bigLoop, 300);
-})();
-</script>
+  <script src="content/content.js"></script>
+  <script src="content/lessons.js"></script>
+  <script src="content/shop.js"></script>
+  <script type="module" src="src/ui/app.js"></script>
 </body>
 </html>
