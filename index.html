@@ -4,208 +4,179 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🐹 Хомягочи</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
-  :root { --accent: #f59e0b; --blue: #60a5fa; --purple: #a78bfa; --green: #34d399; }
+  :root { --accent: #f59e0b; --ink: #2b1d0e; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: linear-gradient(160deg, #fef3c7 0%, #e0f2fe 100%); min-height: 100vh;
-    display: flex; flex-direction: column; align-items: center; padding: 20px; color: #1f2937; }
-  h1 { font-size: 1.6rem; margin-bottom: 4px; }
-  .tagline { color: #6b7280; margin-bottom: 16px; text-align: center; }
-  .card { background: #fff; border-radius: 20px; padding: 20px; box-shadow: 0 8px 24px rgba(0,0,0,.08);
-    width: 100%; max-width: 420px; }
+  body { font-family: 'Press Start 2P', monospace;
+    background: #1a1621 url('') ; min-height: 100vh;
+    background: repeating-linear-gradient(0deg, #241d2e 0 2px, #221b2b 2px 4px);
+    display: flex; flex-direction: column; align-items: center; padding: 16px; color: #efe6d5; }
+  h1 { font-size: 1.1rem; margin-bottom: 8px; color: #ffd166; text-shadow: 2px 2px 0 #000; }
+  .tagline { color: #9d94b8; margin-bottom: 12px; font-size: .55rem; text-align: center; line-height: 1.6; }
+  .card { background: #3a3350; border: 4px solid #171225; box-shadow: 0 6px 0 #171225, inset 0 0 0 2px #544a75;
+    border-radius: 4px; padding: 14px; width: 100%; max-width: 440px; }
 
-  .tabs { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px; margin-bottom: 14px; }
-  .tabs button { padding: 10px 4px; font-size: .8rem; border-radius: 12px; background: #f3f4f6; color: #6b7280; }
-  .tabs button.active { background: var(--accent); color: #fff; font-weight: 700; }
+  .tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-bottom: 12px; }
+  .tabs button { padding: 8px 2px; font-size: .5rem; font-family: inherit; border-radius: 0;
+    background: #2a2440; color: #9d94b8; border: 2px solid #171225; box-shadow: 0 3px 0 #171225; }
+  .tabs button.active { background: #ffd166; color: #2b1d0e; box-shadow: 0 3px 0 #b8860b; }
 
-  .pet-stage { position: relative; width: 200px; height: 200px; margin: 0 auto; cursor: pointer; user-select: none; }
-  .pet-stage:active .pet { transform: scale(.95); }
-  .pet { width: 100%; height: 100%; transform-origin: 50% 90%;
-    animation: breathe 3s ease-in-out infinite; transition: transform .15s; }
-  .pet-stage:hover .pet { transform: scale(1.05); }
-  @keyframes breathe { 0%,100% { transform: scale(1) } 50% { transform: scale(1.04,1.03) } }
-  .eye { animation: blink 4.2s infinite; transform-origin: center; }
-  @keyframes blink { 0%,92%,100% { transform: scaleY(1) } 95% { transform: scaleY(.08) } }
-  .ear-l { animation: earWiggle 5s ease-in-out infinite; transform-origin: 60% 90%; }
-  .ear-r { animation: earWiggle 5s ease-in-out .6s infinite; transform-origin: 40% 90%; }
-  @keyframes earWiggle { 0%,88%,100% { transform: rotate(0) } 92% { transform: rotate(-8deg) } 96% { transform: rotate(5deg) } }
-  .cheek-glow { opacity: 0; transition: opacity .4s; }
-  .mood-happy .cheek-glow { opacity: 1; }
-  .pet-stage.jumping .pet { animation: jump .6s ease; }
-  @keyframes jump { 0%,100% { transform: translateY(0) } 30% { transform: translateY(-26px) } 55% { transform: translateY(0) } 70% { transform: translateY(-10px) } 85% { transform: translateY(0) } }
-  .pet-stage.eating .pet { animation: munch .8s ease-in-out 2; }
-  @keyframes munch { 0%,100% { transform: scale(1) } 50% { transform: scale(1.08,.94) } }
-  .pet-stage.sleeping .pet { animation: sleep 3s ease-in-out infinite; }
-  @keyframes sleep { 0%,100% { transform: scale(1,1) translateY(0) } 50% { transform: scale(1.05,.96) translateY(4px) } }
-  .pet-stage.sleeping .eye { animation: blink 1.2s infinite; }
-  .pet-stage.sad .pet { animation: shiver 2.4s ease-in-out infinite; }
-  @keyframes shiver { 0%,100% { transform: translateX(0) } 20% { transform: translateX(-3px) } 40% { transform: translateX(3px) } 60% { transform: translateX(-2px) } 80% { transform: translateX(2px) } }
-  .float { position: absolute; left: 50%; bottom: 60%; font-size: 22px; pointer-events: none;
-    animation: floatUp 1.4s ease-out forwards; z-index: 3; }
-  @keyframes floatUp { 0% { opacity: 1; transform: translate(-50%,0) } 100% { opacity: 0; transform: translate(-50%,-70px) scale(1.3) } }
-  .zzz { position: absolute; font-size: 16px; color: #93c5fd; font-weight: 700; opacity: 0; pointer-events: none; }
-  .pet-stage.sleeping .zzz { opacity: 1; animation: zfloat 3s ease-in-out infinite; }
-  .zzz:nth-child(2) { left: 68%; bottom: 55%; animation-delay: .8s; }
-  .zzz:nth-child(3) { left: 76%; bottom: 70%; animation-delay: 1.6s; }
-  @keyframes zfloat { 0% { transform: translate(0,0); opacity: 0 } 30% { opacity: 1 } 100% { transform: translate(24px,-40px); opacity: 0 } }
+  .canvas-wrap { position: relative; border: 4px solid #171225; background: #000; line-height: 0;
+    box-shadow: 0 5px 0 #171225; }
+  canvas { width: 100%; image-rendering: pixelated; image-rendering: crisp-edges; }
+  .pix-hint { position: absolute; right: 4px; bottom: 4px; font-size: .45rem; color: rgba(255,255,255,.55); }
 
   .bars { margin: 12px 0; }
-  .bar-row { display: flex; align-items: center; gap: 8px; margin: 6px 0; font-size: .85rem; }
-  .bar-track { flex: 1; height: 12px; background: #f3f4f6; border-radius: 8px; overflow: hidden; }
-  .bar-fill { height: 100%; border-radius: 8px; transition: width .5s; }
-  .stats { display: flex; justify-content: space-between; margin-top: 12px; font-size: .9rem; flex-wrap: wrap; gap: 6px; }
-  .stats span { background: #f9fafb; padding: 4px 10px; border-radius: 10px; }
-  .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
-  button { border: none; border-radius: 12px; padding: 12px; font-size: .95rem; cursor: pointer;
-    background: #fef3c7; transition: background .2s, transform .1s; }
-  button:hover { background: #fde68a; } button:active { transform: scale(.96); }
-  button.primary { background: var(--accent); color: #fff; font-weight: 600; }
-  button.primary:hover { background: #d97706; }
-  .log { margin-top: 14px; max-height: 130px; overflow-y: auto; font-size: .85rem; color: #4b5563; }
-  .log p { padding: 3px 0; border-bottom: 1px dashed #e5e7eb; }
+  .bar-row { display: flex; align-items: center; gap: 8px; margin: 6px 0; font-size: .55rem; }
+  .bar-track { flex: 1; height: 14px; background: #241d35; border: 2px solid #171225; overflow: hidden; }
+  .bar-fill { height: 100%; transition: width .4s steps(8); }
+  .stats { display: flex; justify-content: space-between; margin-top: 10px; font-size: .5rem; flex-wrap: wrap; gap: 4px; }
+  .stats span { background: #2a2440; border: 2px solid #171225; padding: 5px 8px; }
+  .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 12px; }
+  button.act { border: 2px solid #171225; border-radius: 0; padding: 10px 4px; font-size: .55rem; font-family: inherit;
+    cursor: pointer; background: #544a75; color: #fff; box-shadow: 0 3px 0 #171225; transition: transform .05s; }
+  button.act:hover { background: #6a5e94; } button.act:active { transform: translateY(3px); box-shadow: none; }
+  button.act.primary { background: #ffd166; color: #2b1d0e; box-shadow: 0 3px 0 #b8860b; }
+  button.act.primary:hover { background: #ffe08a; }
+  .log { margin-top: 12px; max-height: 110px; overflow-y: auto; font-size: .5rem; color: #c9c0e0; line-height: 1.7; }
+  .log p { padding: 2px 0; border-bottom: 1px dashed #544a75; }
 
-  .habit { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px;
-    background: #f9fafb; margin: 8px 0; font-size: .9rem; }
-  .habit.done { background: #dcfce7; text-decoration: line-through; color: #6b7280; }
-  .habit input[type=checkbox] { width: 20px; height: 20px; accent-color: var(--green); flex-shrink: 0; }
-  .habit .st { margin-left: auto; font-size: .78rem; white-space: nowrap; color: #b45309; font-weight: 700; }
-  .add-habit { display: flex; gap: 6px; margin-top: 10px; }
-  .add-habit input { flex: 1; border: 1px solid #e5e7eb; border-radius: 12px; padding: 10px 12px; font-size: .9rem; }
-  .section-h { font-size: 1rem; margin: 14px 0 6px; }
+  .shop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+  .shop-item { background: #2a2440; border: 2px solid #171225; padding: 10px 8px; font-size: .5rem; text-align: center; }
+  .shop-item .icon { font-size: 1.5rem; display: block; margin-bottom: 6px; }
+  .shop-item .name { display: block; margin-bottom: 4px; color: #efe6d5; }
+  .shop-item .price { display: block; color: #ffd166; margin-bottom: 8px; }
+  .shop-item button { font-family: inherit; font-size: .5rem; border: 2px solid #171225; padding: 6px 8px;
+    cursor: pointer; background: #544a75; color: #fff; box-shadow: 0 3px 0 #171225; }
+  .shop-item button:hover { background: #6a5e94; } button:active { transform: translateY(2px); box-shadow: none; }
+  .shop-item button.equip { background: #4ec97a; color: #10261a; box-shadow: 0 3px 0 #1d7a43; }
+  .shop-item button.owned { background: #ffd166; color: #2b1d0e; box-shadow: 0 3px 0 #b8860b; }
+  .section-h { font-size: .65rem; margin: 10px 0 6px; color: #ffd166; }
 
-  .mood-scale { display: flex; justify-content: space-between; gap: 6px; margin: 10px 0; }
-  .mood-scale button { font-size: 1.7rem; background: #f3f4f6; padding: 10px 6px; flex: 1; }
-  .mood-scale button:hover { background: #e0e7ff; }
-  .support-msg { background: #eef2ff; border-radius: 12px; padding: 12px; font-size: .88rem; line-height: 1.5; margin-top: 8px; }
-  .breath-wrap { text-align: center; padding: 14px 0; }
-  .breath-circle { width: 90px; height: 90px; margin: 0 auto; border-radius: 50%;
-    background: radial-gradient(circle at 35% 30%, #bfdbfe, #60a5fa); transition: transform 4s ease-in-out; }
-  .breath-circle.exhale { transition-duration: 6s; }
-  .breath-label { margin-top: 10px; font-size: .9rem; color: #4b5563; min-height: 20px; }
-  .hotlines { background: #fef2f2; border-radius: 12px; padding: 12px; font-size: .82rem; line-height: 1.6; margin-top: 12px; }
-  .hotlines b { color: #b91c1c; }
-  .disclaimer { font-size: .75rem; color: #9ca3af; margin-top: 8px; line-height: 1.4; }
+  .habit { display: flex; align-items: center; gap: 8px; padding: 8px; background: #2a2440;
+    border: 2px solid #171225; margin: 6px 0; font-size: .5rem; line-height: 1.5; }
+  .habit.done { background: #1d3a2a; color: #7fae90; }
+  .habit input[type=checkbox] { width: 18px; height: 18px; accent-color: #4ec97a; flex-shrink: 0; }
+  .habit .st { margin-left: auto; color: #ffd166; white-space: nowrap; }
+  .add-habit { display: flex; gap: 6px; margin-top: 8px; }
+  .add-habit input { flex: 1; border: 2px solid #171225; background: #241d35; color: #efe6d5;
+    padding: 8px; font-family: inherit; font-size: .5rem; }
 
-  .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,.5); display: flex;
+  .mood-scale { display: flex; justify-content: space-between; gap: 4px; margin: 10px 0; }
+  .mood-scale button { font-size: 1.4rem; background: #2a2440; border: 2px solid #171225; padding: 8px 2px; flex: 1; cursor: pointer; }
+  .mood-scale button:hover { background: #544a75; }
+  .support-msg { background: #241d35; border: 2px solid #171225; padding: 10px; font-size: .5rem; line-height: 1.8; margin-top: 8px; }
+  .breath-wrap { text-align: center; padding: 10px 0; }
+  .breath-circle { width: 70px; height: 70px; margin: 0 auto; border-radius: 0; background: #6a5e94;
+    transition: transform 4s steps(12); border: 3px solid #ffd166; image-rendering: pixelated; }
+  .breath-label { margin-top: 10px; font-size: .55rem; color: #c9c0e0; min-height: 16px; }
+  .hotlines { background: #3a1d2e; border: 2px solid #171225; padding: 10px; font-size: .48rem; line-height: 1.9; margin-top: 10px; }
+  .hotlines b { color: #ff8fa3; }
+  .disclaimer { font-size: .45rem; color: #9d94b8; margin-top: 8px; line-height: 1.7; }
+
+  .modal-bg { position: fixed; inset: 0; background: rgba(10,7,18,.8); display: flex;
     align-items: center; justify-content: center; padding: 20px; z-index: 10; }
-  .modal { background: #fff; border-radius: 20px; padding: 24px; max-width: 400px; width: 100%; }
-  .modal h3 { margin-bottom: 8px; font-size: 1.1rem; }
-  .modal .question { margin-bottom: 16px; line-height: 1.5; }
-  .modal .btns { display: grid; gap: 8px; }
-  .modal .btns button { text-align: left; }
-  .ok { background: #dcfce7 !important; } .bad { background: #fee2e2 !important; }
+  .modal { background: #3a3350; border: 4px solid #171225; box-shadow: 0 6px 0 #171225;
+    padding: 18px; max-width: 400px; width: 100%; color: #efe6d5; }
+  .modal h3 { margin-bottom: 10px; font-size: .65rem; color: #ffd166; }
+  .modal .question { margin-bottom: 14px; font-size: .55rem; line-height: 1.8; }
+  .modal .btns { display: grid; gap: 6px; }
+  .modal .btns button { text-align: left; font-family: inherit; font-size: .5rem; line-height: 1.5; border: 2px solid #171225;
+    padding: 10px; cursor: pointer; background: #544a75; color: #fff; box-shadow: 0 3px 0 #171225; }
+  .modal .btns button:hover { background: #6a5e94; }
+  .ok { background: #2e7d4f !important; } .bad { background: #b23a48 !important; }
   .hidden { display: none; }
-  .footer { margin-top: 18px; font-size: .8rem; color: #9ca3af; text-align: center; }
+  .footer { margin-top: 14px; font-size: .45rem; color: #9d94b8; text-align: center; line-height: 1.8; }
 </style>
 </head>
 <body>
-  <h1>🐹 Хомягочи</h1>
-  <p class="tagline">Помощник для привычек: цифровая безопасность • устойчивые привычки • психологическая поддержка</p>
+  <h1>★ ХОМЯГОЧИ ★</h1>
+  <p class="tagline">пиксельный помощник для привычек:<br>безопасность • привычки • поддержка</p>
 
   <div class="card">
     <div class="tabs">
-      <button data-tab="home" class="active">🏠 Домик</button>
-      <button data-tab="habits">✅ Привычки</button>
-      <button data-tab="support">💙 Поддержка</button>
-      <button data-tab="theory">📚 Теория</button>
+      <button data-tab="home" class="active">ДОМИК</button>
+      <button data-tab="shop">МАГАЗИН</button>
+      <button data-tab="habits">ПРИВЫЧКИ</button>
+      <button data-tab="support">ПОМОЩЬ</button>
     </div>
 
     <div id="tab-home">
-      <div class="pet-stage" id="petStage" title="Погладить хомяка">
-        <span class="zzz">z</span><span class="zzz">z</span><span class="zzz">z</span>
-        <svg class="pet" id="petSvg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-          <ellipse cx="100" cy="182" rx="62" ry="10" fill="#000" opacity=".08"/>
-          <g id="hamsterBody">
-            <path class="ear-l" d="M62 52 C50 28 34 30 38 46 C41 58 52 64 62 68 Z" fill="#f4b9c4" stroke="#d99aa8" stroke-width="2"/>
-            <path class="ear-r" d="M138 52 C150 28 166 30 162 46 C159 58 148 64 138 68 Z" fill="#f4b9c4" stroke="#d99aa8" stroke-width="2"/>
-            <ellipse cx="100" cy="115" rx="70" ry="62" fill="#fcd9a0" stroke="#eab308" stroke-width="3"/>
-            <ellipse cx="100" cy="132" rx="52" ry="42" fill="#fff7e6"/>
-            <ellipse cx="56" cy="120" rx="16" ry="11" fill="#f9b4b4" class="cheek-glow"/>
-            <ellipse cx="144" cy="120" rx="16" ry="11" fill="#f9b4b4" class="cheek-glow"/>
-            <g id="face">
-              <g class="eye"><circle cx="76" cy="100" r="8" fill="#1f2937"/><circle cx="79" cy="97" r="2.5" fill="#fff"/></g>
-              <g class="eye"><circle cx="124" cy="100" r="8" fill="#1f2937"/><circle cx="127" cy="97" r="2.5" fill="#fff"/></g>
-              <ellipse cx="100" cy="114" rx="7" ry="5" fill="#e898a3"/>
-              <path id="mouth" d="M88 128 Q100 138 112 128" stroke="#b45309" stroke-width="3" fill="none" stroke-linecap="round"/>
-              <g stroke="#c99b5f" stroke-width="2" stroke-linecap="round">
-                <line x1="60" y1="112" x2="38" y2="106"/><line x1="60" y1="120" x2="36" y2="122"/>
-                <line x1="140" y1="112" x2="162" y2="106"/><line x1="140" y1="120" x2="164" y2="122"/>
-              </g>
-            </g>
-            <g id="paws">
-              <ellipse cx="72" cy="172" rx="14" ry="8" fill="#f4b9c4" stroke="#d99aa8" stroke-width="2"/>
-              <ellipse cx="128" cy="172" rx="14" ry="8" fill="#f4b9c4" stroke="#d99aa8" stroke-width="2"/>
-            </g>
-          </g>
-        </svg>
+      <div class="canvas-wrap">
+        <canvas id="scene" width="160" height="120"></canvas>
+        <span class="pix-hint">16-bit</span>
       </div>
       <div class="bars">
-        <div class="bar-row">❤️ <div class="bar-track"><div class="bar-fill" id="bHealth" style="background:#f87171"></div></div><span id="tHealth"></span></div>
-        <div class="bar-row">🛡️ <div class="bar-track"><div class="bar-fill" id="bSec" style="background:#60a5fa"></div></div><span id="tSec"></span></div>
+        <div class="bar-row">❤ <div class="bar-track"><div class="bar-fill" id="bHealth" style="background:#e5484d"></div></div><span id="tHealth"></span></div>
+        <div class="bar-row">🛡 <div class="bar-track"><div class="bar-fill" id="bSec" style="background:#4cc3f7"></div></div><span id="tSec"></span></div>
         <div class="bar-row">🧠 <div class="bar-track"><div class="bar-fill" id="bMood" style="background:#a78bfa"></div></div><span id="tMood"></span></div>
       </div>
       <div class="stats">
-        <span>⭐ Уровень: <b id="lvl">1</b></span>
-        <span>🪙 Монетки: <b id="coins">0</b></span>
-        <span>🔥 Серия: <b id="streak">0</b> дн.</span>
+        <span>LVL <b id="lvl">1</b></span>
+        <span>🪙 <b id="coins">0</b></span>
+        <span>🔥 <b id="streak">0</b> дн</span>
       </div>
       <div class="actions">
-        <button class="primary" id="btnEvent">⚠️ Событие</button>
-        <button id="btnFeed">🥜 Покормить</button>
-        <button id="btnPlay">🎮 Поиграть</button>
-        <button id="btnRest">😴 Отдых</button>
+        <button class="act primary" id="btnEvent">⚠ СОБЫТИЕ</button>
+        <button class="act" id="btnFeed">🥜 КОРМИТЬ</button>
+        <button class="act" id="btnPlay">🎮 ИГРАТЬ</button>
+        <button class="act" id="btnRest">💤 СПАТЬ</button>
       </div>
       <div class="log" id="log"></div>
     </div>
 
+    <div id="tab-shop" class="hidden">
+      <h3 class="section-h">🛒 МАГАЗИН ХОМЯКА</h3>
+      <p style="font-size:.5rem;color:#9d94b8;line-height:1.7">Зарабатывай монетки в событиях и привычках, наряжай хомяка и обустраивай домик!</p>
+      <h3 class="section-h">— ШАПКИ —</h3>
+      <div class="shop-grid" id="shopHats"></div>
+      <h3 class="section-h">— ОБОИ —</h3>
+      <div class="shop-grid" id="shopWalls"></div>
+      <h3 class="section-h">— ЕДА —</h3>
+      <div class="shop-grid" id="shopFood"></div>
+    </div>
+
     <div id="tab-habits" class="hidden">
-      <h3 class="section-h">✅ Ежедневные привычки</h3>
-      <p style="font-size:.82rem;color:#6b7280">Отмечай выполненное — хомяк радуется, ты растёшь в уровне.</p>
+      <h3 class="section-h">✅ ЕЖЕДНЕВНЫЕ ПРИВЫЧКИ</h3>
+      <p style="font-size:.5rem;color:#9d94b8;line-height:1.7">Отмечай выполненное — растёт уровень и копятся монетки.</p>
       <div id="habitList"></div>
       <div class="add-habit">
-        <input id="newHabit" placeholder="Своя привычка..." maxlength="60">
-        <button id="btnAddHabit">➕</button>
+        <input id="newHabit" placeholder="своя привычка..." maxlength="60">
+        <button class="act" id="btnAddHabit">➕</button>
       </div>
     </div>
 
     <div id="tab-support" class="hidden">
-      <h3 class="section-h">💙 Как ты себя чувствуешь?</h3>
+      <h3 class="section-h">💙 КАК ТЫ СЕБЯ ЧУВСТВУЕШЬ?</h3>
       <div class="mood-scale" id="moodScale">
         <button data-mood="1">😞</button><button data-mood="2">😕</button><button data-mood="3">😐</button>
         <button data-mood="4">🙂</button><button data-mood="5">😄</button>
       </div>
       <div class="support-msg hidden" id="moodMsg"></div>
-
-      <h3 class="section-h">🌬️ Дыхательная практика 4-4-6</h3>
-      <p style="font-size:.82rem;color:#6b7280">Три цикла: вдох 4 сек — пауза 4 сек — выдох 6 сек. Помогает при тревоге и перед сном.</p>
+      <h3 class="section-h">🌬 ДЫХАНИЕ 4-4-6</h3>
+      <p style="font-size:.5rem;color:#9d94b8;line-height:1.7">Три цикла: вдох 4 — пауза 4 — выдох 6. Помогает при тревоге.</p>
       <div class="breath-wrap">
         <div class="breath-circle" id="breathCircle"></div>
-        <div class="breath-label" id="breathLabel">Нажми «Начать»</div>
-        <button class="primary" id="btnBreath" style="margin-top:10px">▶️ Начать</button>
+        <div class="breath-label" id="breathLabel">нажми НАЧАТЬ</div>
+        <button class="act primary" id="btnBreath" style="margin-top:8px">▶ НАЧАТЬ</button>
       </div>
-
       <div class="hotlines">
-        💙 <b>Если тяжело — ты не один.</b> Обратиться за помощью — это сила, а не слабость.<br>
+        💙 <b>Если тяжело — ты не один.</b><br>
         📞 <b>112</b> — экстренные службы<br>
-        📞 <b>8-800-2000-122</b> — бесплатный анонимный телефон доверия для детей, подростков и родителей (круглосуточно)<br>
-        📞 <b>8-800-100-49-94</b> — горячая линия психологической помощи (взрослые)<br>
-        🩺 При длительной тревоге, панике или подавленности обратись к врачу-психотерапевту или психологу вашего вуза/школы.
+        📞 <b>8-800-2000-122</b> — телефон доверия (круглосуточно)<br>
+        📞 <b>8-800-100-49-94</b> — псих. помощь взрослым<br>
+        🩺 При затянувшейся тревоге обратись к психологу вуза/школы.
       </div>
-      <p class="disclaimer">Хомягочи — не медицинский сервис и не заменяет профессиональную психологическую помощь. В экстренной ситуации звони по номерам выше.</p>
-    </div>
-
-    <div id="tab-theory" class="hidden">
-      <h3 class="section-h">📚 Мини-база знаний</h3>
-      <div class="support-msg" id="theoryBox" style="background:#f0fdf4"></div>
+      <p class="disclaimer">Хомягочи — не медицинский сервис и не заменяет профессиональную психологическую помощь.</p>
     </div>
   </div>
 
-  <p class="footer">Хомягочи © 2026 — MVP-демо. Заботься о хомяке, тренируй привычки и учись распознавать цифровые угрозы!</p>
+  <p class="footer">ХОМЯГОЧИ © 2026 — пиксельный MVP<br>заботься о хомяке и учись распознавать угрозы!</p>
 
   <div class="modal-bg hidden" id="modalBg">
     <div class="modal">
-      <h3 id="mTitle">⚠️ Событие!</h3>
+      <h3 id="mTitle">⚠ СОБЫТИЕ!</h3>
       <p class="question" id="mQuestion"></p>
       <div class="btns" id="mBtns"></div>
       <p class="question hidden" id="mResult" style="margin-top:12px"></p>
@@ -215,74 +186,196 @@
 <script>
 var S = {
   health: 80, sec: 60, mood: 70,
-  coins: 0, lvl: 1, xp: 0, streak: 0,
-  lastDay: '',
-  habits: [], habitState: {}, moodLog: []
+  coins: 30, lvl: 1, xp: 0, streak: 0,
+  lastDay: '', habits: [], habitState: {}, moodLog: [],
+  owned: ['hat_none', 'wall_rose'], equipped: { hat: 'hat_none', wall: 'wall_rose' }
+};
+
+var SHOP = {
+  hats: [
+    { id: 'hat_none', icon: '🚫', name: 'Без шапки', price: 0 },
+    { id: 'hat_cap', icon: '🧢', name: 'Кепка', price: 30 },
+    { id: 'hat_bow', icon: '🎀', name: 'Бантик', price: 25 },
+    { id: 'hat_crown', icon: '👑', name: 'Корона', price: 60 },
+    { id: 'hat_ph', icon: '🎧', name: 'Наушники', price: 45 }
+  ],
+  walls: [
+    { id: 'wall_rose', icon: '🌸', name: 'Розовые', price: 0 },
+    { id: 'wall_sky', icon: '💧', name: 'Небесные', price: 20 },
+    { id: 'wall_mint', icon: '🌿', name: 'Мятные', price: 20 },
+    { id: 'wall_star', icon: '⭐', name: 'Звёздные', price: 35 }
+  ],
+  food: [
+    { id: 'food_seeds', icon: '🌰', name: 'Семечки +❤15', price: 5 },
+    { id: 'food_cake', icon: '🍰', name: 'Тортик +🧠20', price: 15 },
+    { id: 'food_tea', icon: '🍵', name: 'Чай +❤8 +🧠8', price: 10 }
+  ]
+};
+var WALL_COLORS = {
+  wall_rose: ['#d98ba0', '#c77b8f'], wall_sky: ['#7db8d9', '#6aa8cc'],
+  wall_mint: ['#8fd9b0', '#7cc79d'], wall_star: ['#8f7fd9', '#7d6dcc']
 };
 
 var DEFAULT_HABITS = [
-  { id: 'h_links', emoji: '🔗', text: 'Проверил отправителя/ссылку перед кликом' },
-  { id: 'h_detox', emoji: '📵', text: 'Цифровой детокс: 30 мин без телефона перед сном' },
+  { id: 'h_links', emoji: '🔗', text: 'Проверил ссылку перед кликом' },
+  { id: 'h_detox', emoji: '📵', text: '30 мин без телефона перед сном' },
   { id: 'h_water', emoji: '💧', text: 'Выпил 6–8 стаканов воды' },
-  { id: 'h_move', emoji: '🚶', text: '20 минут движения или прогулка' },
+  { id: 'h_move', emoji: '🚶', text: '20 минут движения' },
   { id: 'h_sleep', emoji: '😴', text: 'Лёг спать до 23:00' },
-  { id: 'h_study', emoji: '📚', text: '15 минут учёбы или чтения' },
-  { id: 'h_kind', emoji: '💬', text: 'Сделал доброе дело или поблагодарил кого-то' }
+  { id: 'h_kind', emoji: '💬', text: 'Сделал доброе дело' }
 ];
 
 var EVENTS = [
-  { cat: '🛡️ Безопасность', q: "Хомяку пришло SMS: «Ваша посылка задержана, перейдите по ссылке для оплаты». Что делать?", a: ["Открыть ссылку — посылка дорогая", "Игнорировать и проверить в официальном приложении", "Переслать другу, пусть посмотрит"], ok: 1, tip: "Это фишинг! Ссылки из SMS о посылках — классическая ловушка мошенников."},
-  { cat: '🛡️ Безопасность', q: "Незнакомец в мессенджере: «Мама, это ты? У меня новый номер, скинь деньги срочно»", a: ["Сразу перевести — вдруг правда мама", "Позвонить маме на обычный номер и проверить", "Написать «ок» и ждать"], ok: 1, tip: "Взлом аккаунтов близких — частый сценарий. Всегда проверяй по другому каналу."},
-  { cat: '🛡️ Безопасность', q: "Сайт предлагает «бесплатный» курс, но просит данные банковской карты «для верификации»", a: ["Ввести карту — курс же бесплатный", "Закрыть сайт: честные сервисы не просят карту бесплатно", "Ввести, но пустую карту"], ok: 1, tip: "Запрос карты за «бесплатное» — сигнал мошенничества."},
-  { cat: '🛡️ Безопасность', q: "Друг просит твой код из SMS «для верификации его аккаунта»", a: ["Отправить — друг же", "Отказать: этот код открывает ТВОЙ аккаунт", "Отправить половину кода"], ok: 1, tip: "Коды из SMS — ключ от твоих аккаунтов. Их нельзя никому отправлять."},
-  { cat: '🛡️ Безопасность', q: "Хомяк перегрузился: открыто 30 вкладок и 15 уведомлений. Как ему помочь?", a: ["Закрыть всё лишнее и сделать цифровой детокс на 15 минут", "Открыть ещё вкладок", "Пролистать ленту, чтобы расслабиться"], ok: 0, tip: "Информационная гигиена — тоже часть цифровой безопасности!"},
-  { cat: '🛡️ Безопасность', q: "Публичный Wi-Fi в кафе просит войти через соцсеть", a: ["Войти — так быстрее", "Использовать мобильный интернет или VPN", "Ввести логин и пароль дважды"], ok: 1, tip: "Публичный Wi-Fi может перехватывать данные. Лучше VPN или мобильный интернет."},
-  { cat: '🛡️ Безопасность', q: "Хомяк видит объявление: «Заработок 5000₽ в день, нужны только твои паспортные данные»", a: ["Отправить данные и ждать денег", "Пройти мимо: это схема мошенников", "Отправить данные друга вместо своих"], ok: 1, tip: "Любой «лёгкий заработок» за твои документы — работа с дропперами и мошенниками."},
-  { cat: '✅ Привычки', q: "Хомяк планировал учиться, но уже час скроллит ленту. Что выбрать?", a: ["Ещё 5 минуток и начать", "Таймер на 15 минут учёбы, телефон — в другую комнату", "Отложить на завтра"], ok: 1, tip: "Правило 15 минут: начать маленький кусочек задачи — самый простой способ победить прокрастинацию."},
-  { cat: '✅ Привычки', q: "Хомяк лёг в 2 часа ночи: «домашку доделалю, сериалчик важнее». Итог дня?", a: ["Такой отдых важнее сна", "Сон — приоритет: план на свежую голову эффективнее", "Допить сериал и заодно поесть"], ok: 1, tip: "Сон — фундамент памяти и концентрации. Привычка «ложиться до 23:00» работает лучше любой мотивации."},
-  { cat: '✅ Привычки', q: "Хомяк голоден и берёт пятый подряд энергетик. Что посоветуешь?", a: ["Энергетики — топливо для учёбы", "Вода + нормальный обед: энергетик даёт скачок и провал", "Двойной энергетик — двойная энергия"], ok: 1, tip: "Скачки сахара и кофеина усиливают тревожность. Вода и регулярная еда — база устойчивой энергии."},
-  { cat: '🤝 Софт-скиллы', q: "Одногруппник на паре резко раскритиковал идею хомяка. Как отреагировать?", a: ["Ответить резко — он первый начал", "«Спасибо за мнение, что именно стоит улучшить?» — уточнить спокойно", "Молча обидеться и больше не предлагать идеи"], ok: 1, tip: "Конструктивный вопрос превращает конфликт в обратную связь — ключевой софт-скилл командной работы."},
-  { cat: '🤝 Софт-скиллы', q: "Хомяк в команде, партнёр уже неделю не сдаёт свою часть. Что делать?", a: ["Молча сделать всё самому", "Честно поговорить: узнать причины и договориться о сроке", "Пожаловаться куратору, не поговорив"], ok: 1, tip: "Прямой честный диалог — прежде чем эскалация. Уважение + ясные договорённости."},
-  { cat: '💙 Психология', q: "Хомяк провалил тест и думает: «я тупой, у меня никогда не получится». Это...", a: ["Правда, надо смириться", "Когнитивное искажение: один тест не определяет способности", "Повод забросить учёбу"], ok: 1, tip: "Это «ярлыки» — искажение мышления. Отделяй факт («не сдал тест») от вывода о себе."},
-  { cat: '💙 Психология', q: "Перед экзаменом у хомяка трясутся лапки и пусто в голове. Лучшая первая помощь?", a: ["Гнать себя готовиться дальше без сна", "Дыхание 4-4-6 и короткий отдых — тревога снижается, мышление включается", "Выпить три кофе подряд"], ok: 1, tip: "Медленный выдох активирует парасимпатическую систему — телу становится безопасно."},
-  { cat: '💙 Психология', q: "Хомяк третий день грустит без причины, забросил любимое колесо. Что правильно?", a: ["«Соберись, всё в твоих лапках»", "Не винить себя; рассказать близкому и, если не проходит, обратиться к психологу", "Запереться в домике и ждать"], ok: 1, tip: "Затянувшееся подавленное настроение — сигнал обратиться за поддержкой. Это нормально и работает."}
+  { cat: '🛡 БЕЗОПАСНОСТЬ', q: "SMS: «Ваша посылка задержана, перейдите по ссылке для оплаты». Что делать?", a: ["Открыть ссылку — посылка дорогая", "Игнорировать и проверить в официальном приложении", "Переслать другу, пусть посмотрит"], ok: 1, tip: "Это фишинг! Ссылки из SMS о посылках — классическая ловушка мошенников."},
+  { cat: '🛡 БЕЗОПАСНОСТЬ', q: "Незнакомец: «Мама, это ты? У меня новый номер, скинь деньги срочно»", a: ["Сразу перевести — вдруг правда мама", "Позвонить маме на обычный номер и проверить", "Написать «ок» и ждать"], ok: 1, tip: "Взлом аккаунтов близких — частый сценарий. Проверяй по другому каналу."},
+  { cat: '🛡 БЕЗОПАСНОСТЬ', q: "Сайт даёт «бесплатный» курс, но просит данные карты «для верификации»", a: ["Ввести карту — курс же бесплатный", "Закрыть сайт: честные сервисы так не делают", "Ввести, но пустую карту"], ok: 1, tip: "Запрос карты за «бесплатное» — сигнал мошенничества."},
+  { cat: '🛡 БЕЗОПАСНОСТЬ', q: "Друг просит твой код из SMS «для верификации его аккаунта»", a: ["Отправить — друг же", "Отказать: код открывает ТВОЙ аккаунт", "Отправить половину кода"], ok: 1, tip: "Коды из SMS — ключ от твоих аккаунтов. Их нельзя никому отправлять."},
+  { cat: '🛡 БЕЗОПАСНОСТЬ', q: "Публичный Wi-Fi в кафе просит войти через соцсеть", a: ["Войти — так быстрее", "Использовать мобильный интернет или VPN", "Ввести логин и пароль дважды"], ok: 1, tip: "Публичный Wi-Fi может перехватывать данные. Лучше VPN или мобильный интернет."},
+  { cat: '✅ ПРИВЫЧКИ', q: "Хомяк планировал учиться, но уже час скроллит ленту. Что выбрать?", a: ["Ещё 5 минуток и начать", "Таймер на 15 минут, телефон — в другую комнату", "Отложить на завтра"], ok: 1, tip: "Правило 15 минут: маленький кусочек задачи — самый простой способ победить прокрастинацию."},
+  { cat: '✅ ПРИВЫЧКИ', q: "Хомяк лёг в 2 часа ночи: «сериалчик важнее». Итог дня?", a: ["Такой отдых важнее сна", "Сон — приоритет: на свежую голову эффективнее", "Допить сериал и поесть"], ok: 1, tip: "Сон — фундамент памяти и концентрации. Привычка «до 23:00» работает лучше мотивации."},
+  { cat: '🤝 СОФТ-СКИЛЛЫ', q: "Одногруппник резко раскритиковал идею хомяка. Как отреагировать?", a: ["Ответить резко — он первый начал", "«Спасибо, что именно стоит улучшить?» — спокойно уточнить", "Молча обидеться"], ok: 1, tip: "Конструктивный вопрос превращает конфликт в обратную связь — ключевой софт-скилл."},
+  { cat: '💙 ПСИХОЛОГИЯ', q: "Хомяк провалил тест и думает: «я тупой, никогда не получится». Это...", a: ["Правда, надо смириться", "Искажение мышления: один тест ≠ способности", "Повод забросить учёбу"], ok: 1, tip: "Это «ярлыки» — когнитивное искажение. Отделяй факт («не сдал») от вывода о себе."},
+  { cat: '💙 ПСИХОЛОГИЯ', q: "Перед экзаменом у хомяка трясутся лапки. Лучшая первая помощь?", a: ["Гнать себя учиться без сна", "Дыхание 4-4-6 и короткий отдых", "Три кофе подряд"], ok: 1, tip: "Медленный выдох активирует парасимпатическую систему — телу становится безопасно."},
+  { cat: '💙 ПСИХОЛОГИЯ', q: "Хомяк третий день грустит без причины. Что правильно?", a: ["«Соберись, всё в твоих лапках»", "Не винить себя; рассказать близкому, при затянувшемся — к психологу", "Запереться и ждать"], ok: 1, tip: "Затянувшееся подавленное настроение — сигнал обратиться за поддержкой. Это нормально."}
 ];
 
-var TIPS = [
-  "🛡️ Банк никогда не просит коды из SMS и данные карты по телефону или в письме.",
-  "🛡️ Проверяй адрес сайта в адресной строке: sberbank.ru и sberbank-info.ru — разные сайты.",
-  "📵 Правило 20-20-20: каждые 20 минут смотри 20 секунд на объект в ~6 метрах — отдых для глаз.",
-  "✅ Привычка закрепляется в среднем за 21–66 дней. Маленькие шаги каждый день > рывок раз в неделю.",
-  "💙 Именование эмоции («я тревожусь») снижает её интенсивность — эффект аффективного лейблинга.",
-  "🤝 Активное слушание: переформулируй мысль собеседника своими словами — конфликты гаснут быстрее.",
-  "✅ «Две минуты»: если дело занимает меньше 2 минут — сделай сразу, не откладывая.",
-  "💙 Сон 7–9 часов улучшает консолидацию памяти лучше зубрёжки ночью."
-];
+function save() { localStorage.setItem('khomyagochi_pixel', JSON.stringify(S)); }
+function load() { var d = localStorage.getItem('khomyagochi_pixel'); if (d) { try { Object.assign(S, JSON.parse(d)); } catch(e){} } }
+function log(msg) { var el = document.getElementById('log'); var p = document.createElement('p'); p.textContent = msg; el.insertBefore(p, el.firstChild); while (el.children.length > 10) el.removeChild(el.lastChild); }
+function todayStr() { return new Date().toDateString(); }
+function gainXP(n) { S.xp += n; while (S.xp >= 10) { S.xp -= 10; S.lvl++; S.coins += 20; log('★ LVL UP! ' + S.lvl + ' +20🪙'); } }
 
-function save() { localStorage.setItem('khomyagochi', JSON.stringify(S)); }
-function load() { var d = localStorage.getItem('khomyagochi'); if (d) { try { Object.assign(S, JSON.parse(d)); } catch(e){} } }
-function log(msg) { var el = document.getElementById('log'); var p = document.createElement('p'); p.textContent = msg; el.insertBefore(p, el.firstChild); while (el.children.length > 12) el.removeChild(el.lastChild); }
+/* ============ PIXEL RENDER ============ */
+var cv = document.getElementById('scene');
+var ctx = cv.getContext('2d');
+var W = 160, H = 120;
+var animT = 0, blinkT = 0, jumping = 0, eating = 0, sleeping = false;
 
-var stage = document.getElementById('petStage');
-var mouth = document.getElementById('mouth');
-
-function petAnim(cls, ms) {
-  stage.classList.remove('jumping', 'eating', 'sleeping', 'sad');
-  if (cls) { stage.classList.add(cls); if (ms) setTimeout(function(){ stage.classList.remove(cls); syncMood(); }, ms); }
+function px(x, y, c, w, h) { ctx.fillStyle = c; ctx.fillRect(Math.round(x), Math.round(y), w || 1, h || 1); }
+function ell(cx, cy, rx, ry, c) {
+  ctx.fillStyle = c;
+  for (var y = -ry; y <= ry; y++) {
+    var hw = Math.floor(rx * Math.sqrt(Math.max(0, 1 - (y * y) / (ry * ry))));
+    if (hw >= 0) ctx.fillRect(Math.round(cx - hw), Math.round(cy + y), hw * 2 + 1, 1);
+  }
 }
-function syncMood() {
-  stage.classList.remove('mood-happy', 'sad');
-  if (S.health <= 30) { stage.classList.add('sad'); mouth.setAttribute('d', 'M88 134 Q100 124 112 134'); }
-  else if (S.mood >= 60) { stage.classList.add('mood-happy'); mouth.setAttribute('d', 'M86 126 Q100 142 114 126'); }
-  else mouth.setAttribute('d', 'M88 128 Q100 138 112 128');
-}
-function floatEmoji(ch) {
-  var s = document.createElement('span');
-  s.className = 'float'; s.textContent = ch;
-  stage.appendChild(s);
-  setTimeout(function(){ s.remove(); }, 1400);
+function rect(x, y, w, h, c) { px(x, y, c, w, h); }
+
+function drawRoom() {
+  var wc = WALL_COLORS[S.equipped.wall] || WALL_COLORS.wall_rose;
+  rect(0, 0, W, 74, wc[0]);
+  for (var y = 4; y < 74; y += 8) for (var x = (y % 16 === 4 ? 4 : 12); x < W; x += 16) px(x, y, wc[1]);
+  rect(0, 74, W, H - 74, '#a3703f');
+  for (var i = 0; i < 10; i++) { rect(0, 78 + i * 5, W, 1, '#8a5c32'); rect(i * 16, 74, 1, H - 74, '#8a5c32'); }
+  rect(0, 73, W, 2, '#5e3d1f');
+  rect(14, 10, 30, 24, '#5e3d1f'); rect(16, 12, 26, 20, '#8fd0f0');
+  px(20, 16, '#fff', 3, 3); px(26, 20, '#fff', 2, 2);
+  px(35, 15, '#ffd166', 4, 4); px(36, 14, '#ffd166', 2, 6); px(34, 16, '#ffd166', 6, 2);
+  rect(28, 30, 2, 4, '#5e3d1f');
+  rect(52, 16, 22, 18, '#3a2a55'); rect(54, 18, 18, 14, '#171225');
+  px(60, 22, '#ffd166', 2, 2); px(64, 26, '#ffd166', 2, 2); px(66, 21, '#ff8fa3', 2, 2);
+  rect(122, 14, 8, 12, '#c98d5a'); rect(124, 10, 4, 6, '#5aa85e');
+  ell(80, 98, 26, 6, '#c77b8f'); ell(80, 98, 20, 4, '#e8a7bb');
+  rect(112, 66, 42, 4, '#8a5c32'); rect(114, 70, 38, 16, '#efe6d5'); rect(114, 76, 38, 1, '#d8cdb8');
+  rect(116, 71, 12, 8, '#fff'); rect(116, 71, 12, 2, '#ffd166');
+  rect(34, 102, 14, 5, '#8a5c32'); rect(34, 100, 14, 2, '#a3703f');
+  px(37, 98, '#5e3d1f', 2, 2); px(41, 97, '#5e3d1f', 2, 3); px(45, 98, '#5e3d1f', 2, 2);
 }
 
+function drawHamster() {
+  var bob = sleeping ? 1 : (animT % 2 === 0 ? 0 : 1);
+  var jy = jumping > 0 ? -Math.abs(Math.sin(jumping * Math.PI / 12)) * 14 : 0;
+  var cx = 80, base = 96;
+  var cy = base - 16 + bob + jy;
+  var squash = eating > 0 && eating % 2 === 0 ? 1 : 0;
+  var OUT = '#7a4a1d', FUR = '#f5cd8f', FUR2 = '#e8b46e', BELLY = '#fff2d9', PINK = '#e898a3';
+  var cheekOn = S.mood >= 60;
+  ell(cx, cy + 8 - squash, 11, 7 + squash, OUT); ell(cx, cy + 8 - squash, 10, 6 + squash, FUR);
+  ell(cx - 7, cy - 10, 4, 5, OUT); ell(cx - 7, cy - 10, 3, 4, PINK);
+  ell(cx + 7, cy - 10, 4, 5, OUT); ell(cx + 7, cy - 10, 3, 4, PINK);
+  var hry = 8 + (sleeping ? 1 : 0);
+  ell(cx, cy - 2, 12, hry, OUT); ell(cx, cy - 2, 11, hry - 1, FUR);
+  ell(cx, cy + 4, 7, 4, BELLY);
+  var eyeC = sleeping ? '#7a4a1d' : '#2b1d0e';
+  if (!sleeping) {
+    px(cx - 5, cy - 4, '#fff', 3, 3); px(cx + 3, cy - 4, '#fff', 3, 3);
+    px(cx - 5, cy - 3, eyeC, 2, 2); px(cx + 4, cy - 3, eyeC, 2, 2);
+  } else {
+    px(cx - 5, cy - 3, eyeC, 3, 1); px(cx + 3, cy - 3, eyeC, 3, 1);
+  }
+  px(cx - 1, cy + 1, '#e898a3', 3, 2);
+  if (S.health <= 30) { px(cx - 2, cy + 5, '#7a4a1d', 5, 1); px(cx - 2, cy + 6, '#7a4a1d', 5, 1); }
+  else if (cheekOn) { px(cx - 2, cy + 4, OUT, 1, 1); px(cx + 2, cy + 4, OUT, 1, 1); px(cx - 2, cy + 5, OUT, 5, 1); }
+  else px(cx - 2, cy + 4, OUT, 5, 1);
+  if (cheekOn) { ell(cx - 8, cy + 1, 2, 1, '#f4a8b8'); ell(cx + 8, cy + 1, 2, 1, '#f4a8b8'); }
+  px(cx - 12, cy, '#7a4a1d', 1, 1); px(cx - 14, cy + 1, '#7a4a1d', 1, 1);
+  px(cx + 12, cy, '#7a4a1d', 1, 1); px(cx + 14, cy + 1, '#7a4a1d', 1, 1);
+  ell(cx - 6, cy + 15, 3, 2, PINK); ell(cx + 6, cy + 15, 3, 2, PINK);
+  drawHat(cx, cy);
+  if (sleeping) {
+    ctx.font = '6px monospace'; ctx.fillStyle = '#8fd0f0';
+    ctx.fillText('z', cx + 14, cy - 14 - (animT % 2) * 2);
+    ctx.fillText('Z', cx + 20, cy - 20);
+  }
+  if (eating > 0) { px(cx - 1, cy + 8, '#8a5c32', 2, 2); }
+}
+
+function drawHat(cx, cy) {
+  var hat = S.equipped.hat, top = cy - 11;
+  if (hat === 'hat_cap') {
+    rect(cx - 7, top - 2, 14, 4, '#e5484d'); rect(cx - 9, top + 1, 12, 2, '#e5484d'); rect(cx - 3, top - 4, 6, 2, '#b23a48');
+  } else if (hat === 'hat_bow') {
+    rect(cx - 6, top - 3, 4, 4, '#ff8fa3'); rect(cx + 2, top - 3, 4, 4, '#ff8fa3'); rect(cx - 1, top - 3, 3, 4, '#e56a85');
+  } else if (hat === 'hat_crown') {
+    rect(cx - 6, top - 4, 12, 4, '#ffd166');
+    px(cx - 6, top - 7, '#ffd166', 2, 3); px(cx - 1, top - 8, '#ffd166', 2, 4); px(cx + 4, top - 7, '#ffd166', 2, 3);
+    px(cx - 1, top - 3, '#e5484d', 2, 2);
+  } else if (hat === 'hat_ph') {
+    rect(cx - 12, top + 2, 4, 5, '#544a75'); rect(cx + 8, top + 2, 4, 5, '#544a75');
+    rect(cx - 9, top, 18, 2, '#171225'); px(cx - 11, top + 3, '#ffd166', 2, 2); px(cx + 9, top + 3, '#ffd166', 2, 2);
+  }
+}
+
+function drawHearts() {
+  for (var i = 0; i < particles.length; i++) {
+    var p = particles[i];
+    ctx.font = '8px monospace';
+    ctx.fillStyle = p.c;
+    ctx.fillText(p.ch, p.x, p.y);
+  }
+}
+var particles = [];
+function puff(ch, color) {
+  particles.push({ ch: ch, c: color || '#ff8fa3', x: 70 + Math.random() * 30, y: 80, vy: -0.8 - Math.random() * 0.6, life: 40 });
+  if (particles.length > 8) particles.shift();
+}
+
+function drawScene() {
+  drawRoom();
+  drawHamster();
+  drawHearts();
+  for (var i = particles.length - 1; i >= 0; i--) {
+    var p = particles[i];
+    p.y += p.vy; p.life--;
+    if (p.life <= 0) particles.splice(i, 1);
+  }
+}
+
+setInterval(function() {
+  animT++; blinkT = (blinkT + 1) % 14;
+  if (jumping > 0) jumping--;
+  if (eating > 0) eating--;
+  drawScene();
+}, 250);
+
+cv.addEventListener('click', function() {
+  S.mood = Math.min(100, S.mood + 2);
+  jumping = 12; puff('♥', '#ff8fa3');
+  log('пип! хомяк рад ♥');
+  render(); save();
+});
+
+/* ============ UI ============ */
 function render() {
   function set(b, t, v) { document.getElementById(b).style.width = v + '%'; document.getElementById(t).textContent = v + '%'; }
   set('bHealth','tHealth',Math.max(0,Math.round(S.health)));
@@ -291,28 +384,21 @@ function render() {
   document.getElementById('lvl').textContent = S.lvl;
   document.getElementById('coins').textContent = S.coins;
   document.getElementById('streak').textContent = S.streak;
-  syncMood();
 }
-
-function gainXP(n) {
-  S.xp += n;
-  while (S.xp >= 10) { S.xp -= 10; S.lvl++; S.coins += 20; log('🎉 Хомяк вырос до уровня ' + S.lvl + '! +20 🪙'); }
-}
-
-function todayStr() { return new Date().toDateString(); }
 
 function dayCheck() {
   var today = todayStr();
   if (S.lastDay !== today) {
-    if (S.lastDay) S.streak++; else S.streak = 1;
+    S.streak = S.lastDay ? S.streak + 1 : 1;
     S.lastDay = today;
-    log('📅 Новый день! Серия: ' + S.streak + ' дн. Хомяк рад тебя видеть!');
+    log('📅 день ' + S.streak + ' серии!');
   }
 }
 
 function tick() {
   S.health -= 0.3; S.mood -= 0.25; S.sec -= 0.1;
-  if (Math.random() < 0.015) spawnEvent();
+  sleeping = S.health < 25;
+  if (Math.random() < 0.012) spawnEvent();
   render(); save();
 }
 
@@ -330,16 +416,16 @@ function spawnEvent() {
       Array.prototype.forEach.call(btns.children, function(c, j) { c.classList.add(j === e.ok ? 'ok' : 'bad'); });
       if (i === e.ok) {
         S.sec = Math.min(100, S.sec + 10); S.mood += 5; S.coins += 10; gainXP(5);
-        res.textContent = '✅ Верно! +10 🛡️ +10 🪙. ' + e.tip;
-        petAnim('jumping', 700); floatEmoji('✅');
+        res.textContent = '✅ ВЕРНО! +10🛡 +10🪙 ' + e.tip;
+        jumping = 12; puff('★', '#ffd166');
       } else {
         S.sec = Math.max(0, S.sec - 12); S.health -= 5;
-        res.textContent = '❌ Ой! ' + e.tip;
-        floatEmoji('❓');
+        res.textContent = '❌ ОЙ! ' + e.tip;
+        puff('?', '#e5484d');
       }
       res.classList.remove('hidden');
       render(); save();
-      setTimeout(function(){ bg.classList.add('hidden'); }, 3500);
+      setTimeout(function(){ bg.classList.add('hidden'); }, 4000);
     };
     btns.appendChild(b);
   });
@@ -350,21 +436,67 @@ document.querySelectorAll('.tabs button').forEach(function(btn) {
   btn.onclick = function() {
     document.querySelectorAll('.tabs button').forEach(function(b){ b.classList.remove('active'); });
     btn.classList.add('active');
-    ['home','habits','support','theory'].forEach(function(t) {
+    ['home','shop','habits','support'].forEach(function(t) {
       document.getElementById('tab-' + t).classList.toggle('hidden', t !== btn.dataset.tab);
     });
+    if (btn.dataset.tab === 'shop') renderShop();
+    if (btn.dataset.tab === 'habits') renderHabits();
   };
 });
 
 document.getElementById('btnEvent').onclick = spawnEvent;
-document.getElementById('btnFeed').onclick = function() { S.health = Math.min(100, S.health + 12); S.mood += 3; S.coins = Math.max(0, S.coins - 2); petAnim('eating', 1600); floatEmoji('🥜'); log('🥜 Хомяк хрустит орешком! +❤️'); render(); save(); };
-document.getElementById('btnPlay').onclick = function() { S.mood = Math.min(100, S.mood + 12); S.health -= 2; gainXP(3); petAnim('jumping', 700); floatEmoji('🎮'); log('🎮 Игра в колесе! Хомяк доволен +🧠'); render(); save(); };
-document.getElementById('btnRest').onclick = function() { S.health = Math.min(100, S.health + 8); S.mood = Math.min(100, S.mood + 5); petAnim('sleeping', 3000); floatEmoji('💤'); log('😴 Хомяк отдохнул.'); render(); save(); };
-stage.onclick = function() { S.mood = Math.min(100, S.mood + 2); floatEmoji('💗'); petAnim('jumping', 700); log(' squeak! 🐹'); render(); save(); };
+document.getElementById('btnFeed').onclick = function() { S.health = Math.min(100, S.health + 12); S.mood += 3; eating = 8; puff('🌰', '#e8b46e'); log('🥜 хомяк хрустит! +❤'); render(); save(); };
+document.getElementById('btnPlay').onclick = function() { S.mood = Math.min(100, S.mood + 12); S.health -= 2; gainXP(3); jumping = 16; puff('♪', '#a78bfa'); log('🎮 игра! +🧠'); render(); save(); };
+document.getElementById('btnRest').onclick = function() { S.health = Math.min(100, S.health + 8); S.mood = Math.min(100, S.mood + 5); sleeping = true; setTimeout(function(){ sleeping = false; }, 6000); log('💤 хомяк поспал.'); render(); save(); };
 
-function habitToday(id) {
-  return S.habitState[id] && S.habitState[id].lastDay === todayStr();
+/* ============ SHOP ============ */
+function owns(id) { return S.owned.indexOf(id) !== -1; }
+function renderShop() {
+  function cell(item, type, equipped) {
+    var div = document.createElement('div');
+    div.className = 'shop-item';
+    div.innerHTML = '<span class="icon">' + item.icon + '</span><span class="name">' + item.name + '</span>';
+    var price = document.createElement('span');
+    var btn = document.createElement('button');
+    if (equipped) { btn.textContent = 'НАДЕТО ✓'; btn.className = 'equip'; btn.disabled = true; price.textContent = '—'; }
+    else if (owns(item.id)) { btn.textContent = 'НАДЕТЬ'; btn.className = 'owned'; price.textContent = 'куплено'; }
+    else { btn.textContent = 'КУПИТЬ'; price.textContent = item.price + ' 🪙'; if (S.coins < item.price) btn.disabled = true; }
+    price.className = 'price';
+    div.appendChild(price); div.appendChild(btn);
+    btn.onclick = function() {
+      if (type === 'food') {
+        if (S.coins < item.price) return;
+        S.coins -= item.price;
+        if (item.id === 'food_seeds') S.health = Math.min(100, S.health + 15);
+        if (item.id === 'food_cake') S.mood = Math.min(100, S.mood + 20);
+        if (item.id === 'food_tea') { S.health = Math.min(100, S.health + 8); S.mood = Math.min(100, S.mood + 8); }
+        eating = 8; puff(item.icon, '#ffd166');
+        log('куплено: ' + item.name);
+        render(); save(); renderShop();
+        return;
+      }
+      if (!owns(item.id)) {
+        if (S.coins < item.price) return;
+        S.coins -= item.price; S.owned.push(item.id);
+        log('куплено: ' + item.name + '!');
+        jumping = 12;
+      }
+      S.equipped[type] = item.id;
+      puff('♥', '#ff8fa3');
+      render(); save(); renderShop();
+    };
+    return div;
+  }
+  var hats = document.getElementById('shopHats'); hats.innerHTML = '';
+  SHOP.hats.forEach(function(h) { hats.appendChild(cell(h, 'hat', S.equipped.hat === h.id)); });
+  var walls = document.getElementById('shopWalls'); walls.innerHTML = '';
+  SHOP.walls.forEach(function(w) { walls.appendChild(cell(w, 'wall', S.equipped.wall === w.id)); });
+  var food = document.getElementById('shopFood'); food.innerHTML = '';
+  SHOP.food.forEach(function(f) { food.appendChild(cell(f, 'food', false)); });
 }
+
+/* ============ HABITS ============ */
+function habitToday(id) { return S.habitState[id] && S.habitState[id].lastDay === todayStr(); }
 function renderHabits() {
   var list = document.getElementById('habitList');
   list.innerHTML = '';
@@ -378,7 +510,7 @@ function renderHabits() {
     label.textContent = h.emoji + ' ' + h.text;
     var st = document.createElement('span');
     st.className = 'st';
-    st.textContent = '🔥 ' + ((S.habitState[h.id] && S.habitState[h.id].streak) || 0);
+    st.textContent = '🔥' + ((S.habitState[h.id] && S.habitState[h.id].streak) || 0);
     div.appendChild(cb); div.appendChild(label); div.appendChild(st);
     list.appendChild(div);
   });
@@ -389,11 +521,9 @@ function toggleHabit(id, checked) {
   if (checked) {
     st.lastDay = todayStr(); st.streak++;
     S.mood = Math.min(100, S.mood + 4); gainXP(2); S.coins += 3;
-    floatEmoji('🔥'); petAnim('jumping', 700);
-    log('✅ Привычка выполнена! +' + st.streak + ' в серии. Хомяк доволен!');
-  } else {
-    st.lastDay = ''; st.streak = Math.max(0, st.streak - 1);
-  }
+    jumping = 12; puff('★', '#ffd166');
+    log('✅ серия ' + st.streak + '!');
+  } else { st.lastDay = ''; st.streak = Math.max(0, st.streak - 1); }
   renderHabits(); render(); save();
 }
 document.getElementById('btnAddHabit').onclick = function() {
@@ -405,12 +535,13 @@ document.getElementById('btnAddHabit').onclick = function() {
   renderHabits(); save();
 };
 
+/* ============ SUPPORT ============ */
 var MOOD_MSGS = {
-  1: "💙 Мне жаль, что сейчас так тяжело. Это по-настоящему трудно — и нормально просить помощи. Попробуй дыхательную практику ниже, расскажи о чувствах близкому человеку. Если состояние держится несколько дней — обратись к психологу (контакты ниже). Ты не один.",
-  2: "💙 Бывает — и это пройдёт. Сделай сейчас одну маленькую заботу о себе: стакан воды, 5 минут на воздухе или дыхание 4-4-6. Хомяк рядом и верит в тебя.",
-  3: "👍 Спокойное состояние — хорошая база. Идеальный момент, чтобы отметить одну привычку или пройти сценарий безопасности!",
-  4: "😊 Здорово, что день идёт хорошо! Поделись настроением с хомяком — погладь его. А может, подтянешь серию привычек?",
-  5: "🎉 Отличное настроение! Лучший день, чтобы вызвать «Событие» и прокачать навык — на подъёме всё усваивается быстрее."
+  1: "💙 Мне жаль, что сейчас тяжело. Это нормально — просить помощи. Попробуй дыхание ниже, расскажи близкому. Если состояние держится — обратись к психологу (контакты ниже).",
+  2: "💙 Бывает — и это пройдёт. Одна маленькая забота сейчас: вода, воздух или дыхание 4-4-6.",
+  3: "👍 Спокойное состояние — хорошая база. Идеальный момент для привычки или сценария безопасности!",
+  4: "😊 Здорово, что день идёт хорошо! Погладь хомяка — он это заслужил.",
+  5: "🎉 Отличное настроение! Вызови СОБЫТИЕ — на подъёме всё усваивается быстрее."
 };
 document.querySelectorAll('#moodScale button').forEach(function(b) {
   b.onclick = function() {
@@ -420,10 +551,10 @@ document.querySelectorAll('#moodScale button').forEach(function(b) {
     var msg = document.getElementById('moodMsg');
     msg.textContent = MOOD_MSGS[m];
     msg.classList.remove('hidden');
-    if (m >= 4) { S.mood = Math.min(100, S.mood + 6); floatEmoji('💗'); petAnim('jumping', 700); }
-    else { S.mood = Math.min(100, S.mood + 3); petAnim('sleeping', 2500); }
+    if (m >= 4) { S.mood = Math.min(100, S.mood + 6); jumping = 12; puff('♥', '#ff8fa3'); }
+    else { S.mood = Math.min(100, S.mood + 3); sleeping = true; setTimeout(function(){ sleeping = false; }, 3000); }
     gainXP(1);
-    log('💙 Чек-ин настроения записан. Спасибо, что поделился!');
+    log('💙 чек-ин записан');
     render(); save();
   };
 });
@@ -434,36 +565,31 @@ document.getElementById('btnBreath').onclick = function() {
   breathing = true;
   var circle = document.getElementById('breathCircle');
   var label = document.getElementById('breathLabel');
-  var phases = [['Вдох... 4', 4000, 'scale(1.7)'], ['Пауза... 4', 4000, 'scale(1.7)'], ['Выдох... 6', 6000, 'scale(1)']];
+  var phases = [['вдох... 4', 4000, 'scale(1.7)'], ['пауза... 4', 4000, 'scale(1.7)'], ['выдох... 6', 6000, 'scale(1)']];
   var cycle = 0, i = 0;
-  petAnim('sleeping', 45000);
+  sleeping = true;
   function step() {
     if (cycle >= 3) {
-      label.textContent = 'Готово! Ты большой молодец 🐹';
+      label.textContent = 'готово! ты молодец ★';
       circle.style.transform = 'scale(1)';
-      breathing = false; petAnim('jumping', 700);
+      breathing = false; sleeping = false; jumping = 12;
       S.mood = Math.min(100, S.mood + 8); gainXP(2);
-      log('🌬️ Дыхательная практика завершена. Спокойнее, правда? +🧠');
+      log('🌬 практика завершена +🧠');
       render(); save(); return;
     }
     var p = phases[i];
     label.textContent = p[0];
-    circle.classList.toggle('exhale', i === 2);
     circle.style.transform = p[2];
-    setTimeout(function() {
-      i++; if (i >= phases.length) { i = 0; cycle++; }
-      step();
-    }, p[1]);
+    setTimeout(function() { i++; if (i >= phases.length) { i = 0; cycle++; } step(); }, p[1]);
   }
   step();
 };
 
-document.getElementById('theoryBox').textContent = TIPS[Math.floor(Math.random() * TIPS.length)];
-
 load();
 if (!S.habits || !S.habits.length) S.habits = DEFAULT_HABITS.slice();
-dayCheck(); render(); renderHabits();
-log('🐹 Добро пожаловать в Хомягочи!');
+if (!S.owned) S.owned = ['hat_none', 'wall_rose'];
+dayCheck(); render(); renderHabits(); drawScene();
+log('🐹 добро пожаловать в домик!');
 setInterval(tick, 4000);
 </script>
 </body>
