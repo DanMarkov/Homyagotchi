@@ -16,6 +16,6 @@ jobs:
         run: |
           for f in $(find src tests -name '*.js'); do node --check "$f"; done
       - name: Unit tests
-        run: node --test "tests/*.test.js"
+        run: node --test tests/*.test.js
       - name: Validate content JSON
         run: node -e "JSON.parse(require('fs').readFileSync('content/content.json','utf8')); JSON.parse(require('fs').readFileSync('content/lessons.json','utf8')); console.log('content OK')"
