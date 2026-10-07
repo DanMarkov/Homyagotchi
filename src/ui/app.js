@@ -6,7 +6,7 @@ import { LessonUI } from './lessons.js?v=4';
 import { CloudUI } from './cloud.js?v=4';
 import { cloudSave } from '../core/cloud.js?v=4';
 import { sfx } from './audio.js?v=4';
-import { renderMoodChart, startGrounding, ChatUI } from './support.js?v=4';
+import { renderMoodChart, ChatUI } from './support.js?v=4';
 
 const CONTENT = window.__CONTENT__;
 const LESSONS = window.__LESSONS__;
@@ -243,8 +243,6 @@ function openSupportTool(target, label) {
   if (target === 'lessons') { document.querySelector('[data-tab="lessons"]').click(); return; }
   if (target === 'habit') { document.querySelector('[data-tab="habits"]').click(); return; }
   document.querySelector('[data-tab="support"]').click();
-  if (target === 'breath') setTimeout(() => els('btnBreath').click(), 200);
-  if (target === 'ground') setTimeout(() => { els('groundLabel').scrollIntoView({ behavior: 'smooth' }); els('btnGround').click(); }, 200);
   if (target === 'mood') setTimeout(() => els('moodScale').scrollIntoView({ behavior: 'smooth' }), 200);
 }
 
@@ -299,38 +297,7 @@ document.querySelectorAll('#moodScale button').forEach((b) => {
   };
 });
 
-let breathing = false;
-els('btnBreath').onclick = () => {
-  if (breathing) return;
-  breathing = true;
-  const circle = els('breathCircle');
-  const label = els('breathLabel');
-  const phases = [['вдох... 4', 4000, 'scale(1.7)'], ['пауза... 4', 4000, 'scale(1.7)'], ['выдох... 6', 6000, 'scale(1)']];
-  let cycle = 0, i = 0;
-  function step() {
-    if (cycle >= 3) {
-      label.textContent = 'готово! ты молодец ★';
-      circle.style.transform = 'scale(1)';
-      breathing = false;
-      S._jumping = 16;
-      S.mood = Math.min(100, S.mood + 8); gainXP(S, 2);
-      log('🌬 практика завершена +🧠');
-      persist(); return;
-    }
-    const p = phases[i];
-    label.textContent = p[0];
-    circle.style.transform = p[2];
-    setTimeout(() => { i++; if (i >= phases.length) { i = 0; cycle++; } step(); }, p[1]);
-  }
-  step();
-};
 
-let groundNext = startGrounding(CONTENT, els('groundLabel'), els('groundSteps'), () => {
-  S.mood = Math.min(100, S.mood + 5); gainXP(S, 2);
-  log('🧠 grounding завершён +🧠');
-  persist();
-});
-els('btnGround').onclick = () => groundNext();
 
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') els('roomPanel').classList.add('hidden');
