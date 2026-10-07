@@ -121,8 +121,11 @@ function statsHtml() {
     '<div class="row"><span>чек-инов настроения</span><span>' + S.moodLog.length + '</span></div>';
 }
 
-els('btnEvent').onclick = spawnEvent;
+els('btnEvent').onclick = () => spawnEvent();
+let eventTimer = null;
 function spawnEvent() {
+  if (!els('modalBg').classList.contains('hidden')) return;
+  if (eventTimer) { clearTimeout(eventTimer); eventTimer = null; }
   const ev = CONTENT.events[Math.floor(Math.random() * CONTENT.events.length)];
   const bg = els('modalBg');
   els('mTitle').textContent = ev.cat;
@@ -131,17 +134,29 @@ function spawnEvent() {
   res.classList.add('hidden');
   const btns = els('mBtns');
   btns.innerHTML = '';
+  let answered = false;
   ev.a.forEach((opt, i) => {
     const b = document.createElement('button');
     b.textContent = opt;
     b.onclick = () => {
-      Array.prototype.forEach.call(btns.children, (c, j) => c.classList.add(j === ev.ok ? 'ok' : 'bad'));
+      if (answered) return;
+      answered = true;
+      Array.prototype.forEach.call(btns.querySelectorAll('button'), (c, j) => {
+        c.classList.add(j === ev.ok ? 'ok' : 'bad');
+        c.disabled = true;
+      });
       const ok = answerEvent(S, ev, i);
       res.textContent = ok ? '✅ ВЕРНО! +10🛡 +10🪙 ' + ev.tip : '❌ ОЙ! ' + ev.tip;
       if (ok) { S._jumping = 16; scene.puff('★', '#ffd166'); sfx.correct(); } else { scene.puff('?', '#e5484d'); sfx.wrong(); }
       res.classList.remove('hidden');
       persist();
-      setTimeout(() => bg.classList.add('hidden'), 4000);
+      const next = document.createElement('button');
+      next.className = 'act primary';
+      next.style.marginTop = '12px';
+      next.style.width = '100%';
+      next.textContent = 'ПРОДОЛЖИТЬ →';
+      next.onclick = () => { bg.classList.add('hidden'); next.remove(); };
+      res.appendChild(next);
     };
     btns.appendChild(b);
   });
