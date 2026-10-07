@@ -6,7 +6,7 @@ import { LessonUI } from './lessons.js';
 import { CloudUI } from './cloud.js';
 import { cloudSave } from '../core/cloud.js';
 import { sfx } from './audio.js';
-import { renderMoodChart, startGrounding } from './support.js';
+import { renderMoodChart, startGrounding, ChatUI } from './support.js';
 
 const CONTENT = window.__CONTENT__;
 const LESSONS = window.__LESSONS__;
@@ -236,6 +236,18 @@ function renderHabits() {
   });
 }
 
+let chatUI = null;
+function openSupportTool(target, label) {
+  log('→ ' + label);
+  if (target === 'home') { document.querySelector('[data-tab="home"]').click(); return; }
+  if (target === 'lessons') { document.querySelector('[data-tab="lessons"]').click(); return; }
+  if (target === 'habit') { document.querySelector('[data-tab="habits"]').click(); return; }
+  document.querySelector('[data-tab="support"]').click();
+  if (target === 'breath') setTimeout(() => els('btnBreath').click(), 200);
+  if (target === 'ground') setTimeout(() => { els('groundLabel').scrollIntoView({ behavior: 'smooth' }); els('btnGround').click(); }, 200);
+  if (target === 'mood') setTimeout(() => els('moodScale').scrollIntoView({ behavior: 'smooth' }), 200);
+}
+
 const lessonUI = new LessonUI(LESSONS, S, { onSave: persist, onLog: log, onPuff: (c, col) => scene.puff(c, col) });
 function renderLessons() { lessonUI.renderList(els('lessonList')); }
 
@@ -250,7 +262,16 @@ document.querySelectorAll('.tabs button').forEach((btn) => {
     if (btn.dataset.tab === 'shop') renderShop();
     if (btn.dataset.tab === 'habits') renderHabits();
     if (btn.dataset.tab === 'lessons') renderLessons();
-    if (btn.dataset.tab === 'support') renderMoodChart(S, els('moodChart'));
+    if (btn.dataset.tab === 'support') {
+      renderMoodChart(S, els('moodChart'));
+      if (!chatUI) {
+        chatUI = new ChatUI(CONTENT, S, {
+          onLog: log, sfx,
+          actions: { goTo: (target, label) => openSupportTool(target, label) }
+        });
+        chatUI.mount(els('chatBox'));
+      }
+    }
   };
 });
 
