@@ -151,6 +151,10 @@ function spawnEvent() {
 els('btnFeed').onclick = () => { feed(S); scene.puff('⚡', '#e8b46e'); sfx.feed(); log('🥜 хомяк хрустит! +❤'); persist(); };
 els('btnPlay').onclick = () => { play(S); gainXP(S, 3); scene.puff('♪', '#a78bfa'); sfx.play(); log('🎮 игра! +🧠'); persist(); };
 els('btnRest').onclick = () => { rest(S); sfx.sleep(); log('💤 хомяк поспал.'); persist(); };
+els('btnSound').onclick = () => {
+  const on = sfx.toggle();
+  els('btnSound').textContent = on ? '🔊' : '🔇';
+};
 
 const SHOP = window.__SHOP__;
 function renderShop() {
@@ -305,3 +309,19 @@ cloudUI.init();
 setInterval(() => {
   if (cloudUI.user && cloudUI.user.access_token) cloudSave(S).catch(() => {});
 }, 60000);
+
+window.addEventListener('error', function (e) {
+  var cv = document.getElementById('scene');
+  if (cv) {
+    var c = cv.getContext('2d');
+    c.fillStyle = '#171225';
+    c.fillRect(0, 0, 320, 240);
+    c.fillStyle = '#e5484d';
+    c.font = '8px monospace';
+    var msg = (e.message || 'error').slice(0, 40);
+    c.fillText('XOMYAKI OFFLINE:', 10, 100);
+    c.fillText(msg, 10, 116);
+    c.fillStyle = '#9d94b8';
+    c.fillText('F12 - Console', 10, 140);
+  }
+});
