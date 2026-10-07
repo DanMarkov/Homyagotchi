@@ -1,4 +1,4 @@
-import { SAVE_VERSION, migrate } from './store.js';
+import { SAVE_VERSION, migrate } from './store.js?v=4';
 
 const KEY_URL = 'SUPABASE_URL';
 const KEY_ANON = 'SUPABASE_ANON_KEY';

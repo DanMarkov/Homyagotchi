@@ -1,4 +1,4 @@
-import { isCloudConfigured, initAuth, signIn, signUp, signOut, cloudSave, cloudLoad, getSession } from '../core/cloud.js';
+import { isCloudConfigured, initAuth, signIn, signUp, signOut, cloudSave, cloudLoad, getSession } from '../core/cloud.js?v=4';
 
 export class CloudUI {
   constructor({ state, onSave, onLog, onRender }) {

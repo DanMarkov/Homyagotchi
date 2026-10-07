@@ -1,5 +1,5 @@
-import { lessonProgress, saveLessonProgress, courseProgress, totalProgress, lessonKey } from '../core/lessons.js';
-import { gainXP } from '../core/game.js';
+import { lessonProgress, saveLessonProgress, courseProgress, totalProgress, lessonKey } from '../core/lessons.js?v=4';
+import { gainXP } from '../core/game.js?v=4';
 
 export class LessonUI {
   constructor(content, state, { onSave, onLog, onPuff }) {

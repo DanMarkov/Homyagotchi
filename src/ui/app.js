@@ -1,12 +1,12 @@
-import { load, save } from '../core/store.js';
-import { tick, feed, play, rest, petState, PET_STATES } from '../core/pet.js';
-import { gainXP, dayCheck, addCoins, owns, buy, habitDone, toggleHabit, logMood, answerEvent, dailyGoalProgress, todayStr, moodAvg } from '../core/game.js';
-import { RoomScene, ROOM_POINTS } from '../render/scene.js';
-import { LessonUI } from './lessons.js';
-import { CloudUI } from './cloud.js';
-import { cloudSave } from '../core/cloud.js';
-import { sfx } from './audio.js';
-import { renderMoodChart, startGrounding, ChatUI } from './support.js';
+import { load, save } from '../core/store.js?v=4';
+import { tick, feed, play, rest, petState, PET_STATES } from '../core/pet.js?v=4';
+import { gainXP, dayCheck, addCoins, owns, buy, habitDone, toggleHabit, logMood, answerEvent, dailyGoalProgress, todayStr, moodAvg } from '../core/game.js?v=4';
+import { RoomScene, ROOM_POINTS } from '../render/scene.js?v=4';
+import { LessonUI } from './lessons.js?v=4';
+import { CloudUI } from './cloud.js?v=4';
+import { cloudSave } from '../core/cloud.js?v=4';
+import { sfx } from './audio.js?v=4';
+import { renderMoodChart, startGrounding, ChatUI } from './support.js?v=4';
 
 const CONTENT = window.__CONTENT__;
 const LESSONS = window.__LESSONS__;

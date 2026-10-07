@@ -1,5 +1,5 @@
-import { sprite } from './engine.js';
-import { SKIES } from './daynight.js';
+import { sprite } from './engine.js?v=4';
+import { SKIES } from './daynight.js?v=4';
 
 export const WALL_COLORS = {
   wall_rose: { top: '#e8a0b8', bot: '#d98ba0', dot: '#f4c2d4', line: '#b8627f' },

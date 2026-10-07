@@ -1,6 +1,6 @@
-import { makeRoomSprites, makeHamsterSprites, makeSkySprites } from './sprites.js';
-import { petState, PET_STATES } from '../core/pet.js';
-import { dayPhase, SKIES } from './daynight.js';
+import { makeRoomSprites, makeHamsterSprites, makeSkySprites } from './sprites.js?v=4';
+import { petState, PET_STATES } from '../core/pet.js?v=4';
+import { dayPhase, SKIES } from './daynight.js?v=4';
 
 export const ROOM_POINTS = [
   { id: 'book', x: 136, y: 130, r: 34, label: '📖 дневник — статистика' },
