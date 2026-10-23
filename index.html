@@ -4,272 +4,1278 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🐹 Хомягочи</title>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg-1: #241d2e; --bg-2: #221b2b;
-    --card: #3a3350; --card-dark: #2a2440; --card-darker: #241d35;
-    --line: #171225; --line-soft: #544a75;
-    --ink: #efe6d5; --muted: #9d94b8; --muted-2: #c9c0e0;
-    --accent: #ffd166; --accent-dark: #b8860b;
-    --ok: #4ec97a; --ok-dark: #1d7a43; --bad: #e5484d;
-    --heart: #ff8fa3; --shield: #4cc3f7; --brain: #a78bfa;
-    --pix: 4px;
+    --sky: #cfe9f9;
+    --sky-deep: #a8d4f0;
+    --card: #ffffff;
+    --ink: #2c3e50;
+    --ink-soft: #5b7085;
+    --muted: #8fa5b8;
+    --line: #dce8f2;
+    --green: #58cc02;
+    --green-dark: #46a302;
+    --green-soft: #e8f8dc;
+    --red: #ea4b4b;
+    --red-soft: #fde8e8;
+    --orange: #ff9f1c;
+    --orange-dark: #e07f00;
+    --blue: #1cb0f6;
+    --blue-dark: #1899d6;
+    --blue-soft: #e3f5fd;
+    --purple: #a78bfa;
+    --purple-dark: #8b5cf6;
+    --yellow: #ffd166;
+    --yellow-dark: #e6a817;
+    --pink: #ff8fab;
+    --shadow: 0 4px 0 rgba(44,62,80,.08);
+    --shadow-lg: 0 8px 24px rgba(44,62,80,.12);
+    --radius: 16px;
+    --radius-lg: 24px;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Press Start 2P', monospace;
-    background: repeating-linear-gradient(0deg, var(--bg-1) 0 2px, var(--bg-2) 2px 4px);
-    min-height: 100vh; display: flex; flex-direction: column; align-items: center;
-    padding: 16px; color: var(--ink); }
-  h1 { font-size: 1.1rem; margin-bottom: 8px; color: var(--accent); text-shadow: 2px 2px 0 #000; }
-  .tagline { color: var(--muted); margin-bottom: 12px; font-size: .55rem; text-align: center; line-height: 1.6; }
-  .card { background: var(--card); border: 4px solid var(--line); box-shadow: 0 6px 0 var(--line), inset 0 0 0 2px var(--line-soft);
-    border-radius: var(--pix); padding: 14px; width: 100%; max-width: 480px; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Nunito', system-ui, sans-serif;
+    background: linear-gradient(180deg, var(--sky) 0%, var(--sky-deep) 100%);
+    min-height: 100vh;
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    overflow-x: hidden;
+  }
 
-  .tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin-bottom: 12px; }
-  .tabs button { padding: 8px 1px; font-size: .45rem; font-family: inherit; border-radius: 0;
-    background: var(--card-dark); color: var(--muted); border: 2px solid var(--line); box-shadow: 0 3px 0 var(--line); cursor: pointer; }
-  .tabs button.active { background: var(--accent); color: #2b1d0e; box-shadow: 0 3px 0 var(--accent-dark); }
+  /* ===== TOP BAR ===== */
+  .topbar {
+    width: 100%;
+    max-width: 960px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 20px;
+    flex-wrap: wrap;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 800;
+    font-size: 1.4rem;
+    color: var(--ink);
+  }
+  .brand .logo {
+    width: 44px; height: 44px;
+    background: var(--card);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem;
+    box-shadow: var(--shadow);
+  }
+  .topbar-stats {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .stat-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--card);
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-weight: 700;
+    font-size: .9rem;
+    box-shadow: var(--shadow);
+    border: 2px solid var(--line);
+  }
+  .stat-chip.hearts { color: #ff5b7f; }
+  .stat-chip.coins { color: #e6a817; }
+  .stat-chip.kp { color: var(--blue-dark); }
+  .stat-chip.lvl { color: var(--purple-dark); }
+  .btn-icon {
+    width: 44px; height: 44px;
+    border-radius: 14px;
+    border: 2px solid var(--line);
+    background: var(--card);
+    cursor: pointer;
+    font-size: 1.2rem;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: var(--shadow);
+    transition: transform .1s;
+  }
+  .btn-icon:active { transform: translateY(2px); box-shadow: none; }
 
-  .canvas-wrap { position: relative; border: 4px solid var(--line); background: #000; line-height: 0;
-    box-shadow: 0 5px 0 var(--line); }
-  canvas#scene { width: 100%; image-rendering: pixelated; image-rendering: crisp-edges; }
-  .pix-hint { position: absolute; right: 4px; bottom: 4px; font-size: .45rem; color: rgba(255,255,255,.55); }
-  .pet-state { position: absolute; left: 4px; bottom: 4px; font-size: .45rem; color: var(--accent);
-    background: rgba(23,18,37,.8); padding: 3px 5px; }
+  /* ===== MAIN LAYOUT ===== */
+  .app {
+    width: 100%;
+    max-width: 960px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 0 20px 100px;
+  }
+  .screen { display: none; animation: fadeIn .25s ease; }
+  .screen.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
-  .goal { margin: 10px 0 4px; }
-  .goal .row { display: flex; justify-content: space-between; font-size: .45rem; color: var(--muted-2); margin-bottom: 3px; }
-  .goal-track { height: 10px; background: var(--card-darker); border: 2px solid var(--line); }
-  .goal-fill { height: 100%; background: var(--ok); transition: width .4s steps(8); }
+  .card {
+    background: var(--card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    padding: 24px;
+    border: 2px solid var(--line);
+  }
+  .screen-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    color: var(--ink);
+  }
+  .screen-title .t-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+  }
 
-  .bars { margin: 10px 0; }
-  .bar-row { display: flex; align-items: center; gap: 8px; margin: 6px 0; font-size: .55rem; }
-  .bar-track { flex: 1; height: 14px; background: var(--card-darker); border: 2px solid var(--line); overflow: hidden; }
-  .bar-fill { height: 100%; transition: width .4s steps(8); }
-  .stats { display: flex; justify-content: space-between; margin-top: 10px; font-size: .5rem; flex-wrap: wrap; gap: 4px; }
-  .stats span { background: var(--card-dark); border: 2px solid var(--line); padding: 5px 8px; }
-  .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 12px; }
-  button.act { border: 2px solid var(--line); border-radius: 0; padding: 10px 4px; font-size: .55rem; font-family: inherit;
-    cursor: pointer; background: var(--line-soft); color: #fff; box-shadow: 0 3px 0 var(--line); transition: transform .05s; }
-  button.act:hover { background: #6a5e94; } button.act:active { transform: translateY(3px); box-shadow: none; }
-  button.act.primary { background: var(--accent); color: #2b1d0e; box-shadow: 0 3px 0 var(--accent-dark); }
-  button.act.primary:hover { background: #ffe08a; }
-  .log { margin-top: 12px; max-height: 110px; overflow-y: auto; font-size: .5rem; color: var(--muted-2); line-height: 1.7; }
-  .log p { padding: 2px 0; border-bottom: 1px dashed var(--line-soft); }
+  /* ===== BUTTONS ===== */
+  .btn {
+    font-family: inherit;
+    font-weight: 800;
+    font-size: 1rem;
+    border: none;
+    border-radius: 14px;
+    padding: 14px 24px;
+    cursor: pointer;
+    transition: transform .1s, box-shadow .1s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+  }
+  .btn:active { transform: translateY(3px); }
+  .btn-green { background: var(--green); color: #fff; box-shadow: 0 4px 0 var(--green-dark); }
+  .btn-green:active { box-shadow: 0 1px 0 var(--green-dark); }
+  .btn-blue { background: var(--blue); color: #fff; box-shadow: 0 4px 0 var(--blue-dark); }
+  .btn-blue:active { box-shadow: 0 1px 0 var(--blue-dark); }
+  .btn-orange { background: var(--orange); color: #fff; box-shadow: 0 4px 0 var(--orange-dark); }
+  .btn-orange:active { box-shadow: 0 1px 0 var(--orange-dark); }
+  .btn-purple { background: var(--purple); color: #fff; box-shadow: 0 4px 0 var(--purple-dark); }
+  .btn-purple:active { box-shadow: 0 1px 0 var(--purple-dark); }
+  .btn-ghost { background: var(--card); color: var(--ink-soft); border: 2px solid var(--line); box-shadow: var(--shadow); }
+  .btn-ghost:active { box-shadow: none; }
+  .btn-block { width: 100%; }
+  .btn:disabled { opacity: .5; cursor: not-allowed; transform: none !important; }
 
-  .shop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
-  .shop-item { background: var(--card-dark); border: 2px solid var(--line); padding: 10px 8px; font-size: .5rem; text-align: center; }
-  .shop-item .icon { font-size: 1.5rem; display: block; margin-bottom: 6px; }
-  .shop-item .name { display: block; margin-bottom: 4px; color: var(--ink); }
-  .shop-item .price { display: block; color: var(--accent); margin-bottom: 8px; }
-  .shop-item button { font-family: inherit; font-size: .5rem; border: 2px solid var(--line); padding: 6px 8px;
-    cursor: pointer; background: var(--line-soft); color: #fff; box-shadow: 0 3px 0 var(--line); }
-  .shop-item button:hover { background: #6a5e94; }
-  .shop-item button.equip { background: var(--ok); color: #10261a; box-shadow: 0 3px 0 var(--ok-dark); }
-  .shop-item button.owned { background: var(--accent); color: #2b1d0e; box-shadow: 0 3px 0 var(--accent-dark); }
-  .section-h { font-size: .65rem; margin: 10px 0 6px; color: var(--accent); }
-  .section-sub { font-size: .5rem; color: var(--muted); margin: 6px 0; line-height: 1.7; }
+  /* ===== ONBOARDING / AUDIENCE ===== */
+  #screen-audience { text-align: center; padding-top: 30px; }
+  #screen-audience .big-title {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+  #screen-audience .subtitle {
+    color: var(--ink-soft);
+    font-size: 1.1rem;
+    margin-bottom: 32px;
+  }
+  .audience-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+  .audience-card {
+    background: var(--card);
+    border: 3px solid var(--blue);
+    border-radius: var(--radius-lg);
+    padding: 24px 16px;
+    cursor: pointer;
+    transition: all .2s;
+    box-shadow: var(--shadow);
+    position: relative;
+  }
+  .audience-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+  .audience-card.selected {
+    border-color: var(--green);
+    background: var(--green-soft);
+  }
+  .audience-card.selected::after {
+    content: '✓';
+    position: absolute;
+    top: -10px; right: -10px;
+    width: 32px; height: 32px;
+    background: var(--green);
+    color: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800;
+    font-size: 1rem;
+    border: 3px solid #fff;
+  }
+  .audience-card .a-emoji { font-size: 4rem; display: block; margin-bottom: 12px; }
+  .audience-card .a-name { font-weight: 800; font-size: 1.2rem; margin-bottom: 6px; }
+  .audience-card .a-desc { color: var(--ink-soft); font-size: .85rem; line-height: 1.5; }
 
-  .habit { display: flex; align-items: center; gap: 8px; padding: 8px; background: var(--card-dark);
-    border: 2px solid var(--line); margin: 6px 0; font-size: .5rem; line-height: 1.5; }
-  .habit.done { background: #1d3a2a; color: #7fae90; }
-  .habit input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--ok); flex-shrink: 0; }
-  .habit .st { margin-left: auto; color: var(--accent); white-space: nowrap; }
-  .add-habit { display: flex; gap: 6px; margin-top: 8px; }
-  .add-habit input { flex: 1; border: 2px solid var(--line); background: var(--card-darker); color: var(--ink);
-    padding: 8px; font-family: inherit; font-size: .5rem; }
+  /* ===== HOME / ROOM ===== */
+  #screen-home .room {
+    position: relative;
+    background: linear-gradient(180deg, #d6ecfa 0%, #b8dcf5 60%, #9cc8ee 60%, #8ab8e0 100%);
+    border-radius: var(--radius-lg);
+    min-height: 420px;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    border: 2px solid var(--line);
+  }
+  .room-floor {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 35%;
+    background: #c49a6c;
+    border-top: 6px solid #a87e4f;
+  }
+  .room-floor::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 100%;
+    background: repeating-linear-gradient(90deg, transparent 0 60px, rgba(0,0,0,.04) 60px 62px);
+  }
+  .room-nav-top {
+    position: absolute;
+    top: 16px; left: 16px; right: 16px;
+    display: flex;
+    gap: 10px;
+    z-index: 5;
+  }
+  .room-nav-top .nav-btn {
+    background: var(--card);
+    border: 2px solid var(--line);
+    border-radius: 12px;
+    padding: 10px 18px;
+    font-family: inherit;
+    font-weight: 800;
+    font-size: .9rem;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: transform .1s;
+  }
+  .room-nav-top .nav-btn:active { transform: translateY(2px); box-shadow: none; }
+  .room-nav-top .nav-btn.play { color: var(--green-dark); }
+  .room-nav-top .nav-btn.shop { color: var(--orange-dark); }
+  .room-nav-top .nav-btn.stats { color: var(--blue-dark); }
 
-  .course { background: var(--card-dark); border: 2px solid var(--line); padding: 10px; margin: 8px 0; }
-  .course-head { display: flex; align-items: center; gap: 8px; font-size: .55rem; }
-  .course-emoji { font-size: 1.2rem; }
-  .course-bar { height: 8px; background: var(--card-darker); border: 2px solid var(--line); margin: 8px 0 4px; }
-  .course-fill { height: 100%; transition: width .4s steps(8); }
-  .course-pct { font-size: .45rem; color: var(--muted); }
-  .lesson-list { margin-top: 8px; display: grid; gap: 4px; }
-  .lesson-btn { font-family: inherit; font-size: .5rem; text-align: left; padding: 8px; cursor: pointer;
-    background: var(--line-soft); color: #fff; border: 2px solid var(--line); box-shadow: 0 2px 0 var(--line); }
-  .lesson-btn.started { background: #6a5e94; }
-  .lesson-btn.done { background: var(--ok); color: #10261a; box-shadow: 0 2px 0 var(--ok-dark); }
-  .lesson-scene h4 { font-size: .55rem; color: var(--accent); margin-bottom: 10px; line-height: 1.6; }
-  .lesson-text, .lesson-q { font-size: .55rem; line-height: 1.9; margin-bottom: 12px; }
-  .lesson-btns { display: grid; gap: 6px; margin-bottom: 10px; }
-  .lesson-btns button { text-align: left; font-family: inherit; font-size: .5rem; line-height: 1.5; border: 2px solid var(--line);
-    padding: 10px; cursor: pointer; background: var(--line-soft); color: #fff; box-shadow: 0 3px 0 var(--line); }
-  .lesson-btns button:hover { background: #6a5e94; }
-  .lesson-tip { font-size: .5rem; line-height: 1.8; margin: 10px 0; color: var(--muted-2); }
-  .ok { background: #2e7d4f !important; } .bad { background: #b23a48 !important; }
+  .room-side-left {
+    position: absolute;
+    left: 16px;
+    top: 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    z-index: 5;
+  }
+  .room-side-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    background: var(--card);
+    border: 2px solid var(--line);
+    border-radius: 12px;
+    padding: 10px 14px;
+    box-shadow: var(--shadow);
+    transition: transform .1s;
+  }
+  .room-side-item:active { transform: translateY(2px); box-shadow: none; }
+  .room-side-item .si-icon { font-size: 1.6rem; }
+  .room-side-item .si-label { font-size: .7rem; font-weight: 700; color: var(--ink-soft); }
 
-  #chatBox { background: var(--card-dark); border: 2px solid var(--line); margin: 8px 0 4px; }
-  .chat-header { display: flex; align-items: center; gap: 10px; padding: 10px; border-bottom: 2px solid var(--line); font-size: .55rem; }
-  .chat-avatar { font-size: 1.8rem; }
-  .chat-status { font-size: .45rem; color: var(--ok); }
-  .chat-msgs { height: 220px; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
-  .chat-msg { max-width: 85%; padding: 8px 10px; font-size: .5rem; line-height: 1.8; border: 2px solid var(--line); }
-  .chat-msg.bot { align-self: flex-start; background: var(--card-darker); color: var(--ink); border-color: var(--line-soft); }
-  .chat-msg.me { align-self: flex-end; background: var(--accent); color: #2b1d0e; }
-  .chat-input-row { display: flex; gap: 6px; padding: 8px; border-top: 2px solid var(--line); }
-  .chat-input-row input { flex: 1; border: 2px solid var(--line); background: var(--card-darker); color: var(--ink); padding: 8px; font-family: inherit; font-size: .5rem; }
-  .chat-input-row button { padding: 8px 12px; }
-  .chat-quick { display: flex; flex-wrap: wrap; gap: 4px; padding: 0 8px 10px; }
-  .chat-chip { font-family: inherit; font-size: .45rem; padding: 5px 8px; cursor: pointer;
-    background: var(--card-darker); color: var(--muted-2); border: 2px solid var(--line); }
-  .chat-chip:hover { background: var(--line-soft); color: #fff; }
-  .chat-chip.tool { background: #1d3a2a; color: #7fae90; border-color: var(--ok-dark); }
-  .chat-chip.tool:hover { background: #2e7d4f; color: #fff; }
+  .room-pet {
+    position: absolute;
+    left: 50%;
+    top: 55%;
+    transform: translate(-50%, -50%);
+    z-index: 4;
+    text-align: center;
+  }
+  .room-pet .pet-sprite {
+    font-size: 7rem;
+    line-height: 1;
+    filter: drop-shadow(0 6px 8px rgba(0,0,0,.15));
+    animation: petBounce 2s ease-in-out infinite;
+  }
+  @keyframes petBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  .room-pet .pet-desk {
+    font-size: 4rem;
+    margin-top: -20px;
+  }
+  .pet-bubble {
+    position: absolute;
+    left: 50%;
+    top: -60px;
+    transform: translateX(-50%);
+    background: var(--card);
+    border-radius: 16px;
+    padding: 10px 16px;
+    font-size: .8rem;
+    font-weight: 700;
+    color: var(--ink);
+    box-shadow: var(--shadow);
+    white-space: nowrap;
+    z-index: 6;
+  }
+  .pet-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid var(--card);
+  }
 
-  .mood-scale { display: flex; justify-content: space-between; gap: 4px; margin: 10px 0; }
-  .mood-scale button { font-size: 1.4rem; background: var(--card-dark); border: 2px solid var(--line); padding: 8px 2px; flex: 1; cursor: pointer; }
-  .mood-scale button:hover { background: var(--line-soft); }
-  .support-msg { background: var(--card-darker); border: 2px solid var(--line); padding: 10px; font-size: .5rem; line-height: 1.8; margin-top: 8px; }
-  .mood-chart { display: flex; align-items: flex-end; gap: 6px; height: 80px; padding: 10px 0 0; border-bottom: 2px solid var(--line-soft); }
+  .room-decor-right {
+    position: absolute;
+    right: 20px;
+    top: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    z-index: 3;
+  }
+  .room-decor-right .decor { font-size: 3rem; filter: drop-shadow(0 4px 4px rgba(0,0,0,.1)); }
+
+  .room-bottom-nav {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    z-index: 5;
+  }
+
+  /* ===== STATS SCREEN ===== */
+  .stats-grid { display: grid; grid-template-columns: 1fr 200px; gap: 20px; align-items: start; }
+  .stats-section {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+    border: 2px solid var(--line);
+    box-shadow: var(--shadow);
+  }
+  .stats-section h3 {
+    font-size: 1.1rem;
+    font-weight: 800;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .achievement {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .achievement:last-child { border-bottom: none; }
+  .achievement .ach-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+  .achievement .ach-icon.done { background: var(--green-soft); color: var(--green-dark); }
+  .achievement .ach-icon.locked { background: #f0f3f7; color: var(--muted); }
+  .achievement .ach-text { flex: 1; font-weight: 700; font-size: .95rem; }
+  .achievement .ach-kp { font-weight: 800; color: var(--blue-dark); font-size: .85rem; }
+  .items-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .item-chip {
+    width: 56px; height: 56px;
+    background: var(--blue-soft);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem;
+    border: 2px solid var(--line);
+  }
+  .progress-wrap { margin-top: 4px; }
+  .progress-bar {
+    height: 20px;
+    background: #e8eef5;
+    border-radius: 999px;
+    overflow: hidden;
+    border: 2px solid var(--line);
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green), #7ee04a);
+    border-radius: 999px;
+    transition: width .5s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    font-size: .85rem;
+    font-weight: 700;
+    color: var(--ink-soft);
+  }
+  .stats-pet {
+    text-align: center;
+    font-size: 6rem;
+    filter: drop-shadow(0 6px 8px rgba(0,0,0,.12));
+    animation: petBounce 2s ease-in-out infinite;
+  }
+
+  /* ===== TODO / HABITS ===== */
+  .todo-layout { display: grid; grid-template-columns: 1fr 180px; gap: 20px; align-items: center; }
+  .todo-list { display: flex; flex-direction: column; gap: 10px; }
+  .todo-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--card);
+    border: 2px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    box-shadow: var(--shadow);
+    transition: all .2s;
+  }
+  .todo-item.done { background: var(--green-soft); border-color: var(--green); }
+  .todo-checkbox {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    border: 3px solid var(--muted);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all .2s;
+    background: #fff;
+  }
+  .todo-checkbox.checked {
+    background: var(--green);
+    border-color: var(--green);
+    color: #fff;
+    font-size: 1rem;
+  }
+  .todo-text { flex: 1; font-weight: 700; font-size: 1rem; }
+  .todo-item.done .todo-text { text-decoration: line-through; color: var(--muted); }
+  .todo-reward {
+    font-weight: 800;
+    color: var(--ink);
+    font-size: .9rem;
+    white-space: nowrap;
+  }
+  .todo-add {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .todo-add input {
+    flex: 1;
+    border: 2px solid var(--line);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-family: inherit;
+    font-size: .95rem;
+    outline: none;
+    background: var(--card);
+  }
+  .todo-add input:focus { border-color: var(--blue); }
+  .todo-pet { text-align: center; font-size: 5.5rem; filter: drop-shadow(0 6px 8px rgba(0,0,0,.12)); }
+
+  /* ===== THEORY / LESSONS ===== */
+  .theory-layout { display: grid; grid-template-columns: 280px 1fr 160px; gap: 20px; align-items: start; }
+  .theory-sidebar {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 16px;
+    border: 2px solid var(--line);
+    box-shadow: var(--shadow);
+  }
+  .theory-sidebar h4 {
+    font-size: .85rem;
+    font-weight: 800;
+    color: var(--ink-soft);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .theory-topic {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all .15s;
+    font-weight: 700;
+    font-size: .9rem;
+    border: 2px solid transparent;
+  }
+  .theory-topic:hover { background: var(--blue-soft); }
+  .theory-topic.active { background: var(--blue-soft); border-color: var(--blue); }
+  .theory-topic.danger { color: var(--red); }
+  .theory-topic .tt-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: #f0f4f9;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .95rem;
+    flex-shrink: 0;
+  }
+  .theory-topic.danger .tt-icon { background: var(--red-soft); }
+  .theory-content {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 24px;
+    border: 2px solid var(--line);
+    box-shadow: var(--shadow);
+    min-height: 300px;
+  }
+  .theory-content h3 { font-size: 1.2rem; font-weight: 800; margin-bottom: 14px; }
+  .theory-content p { line-height: 1.8; color: var(--ink-soft); font-size: .95rem; margin-bottom: 12px; }
+  .theory-pet { text-align: center; font-size: 5rem; filter: drop-shadow(0 6px 8px rgba(0,0,0,.12)); align-self: end; }
+
+  .lesson-runner {
+    background: var(--card);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    border: 2px solid var(--line);
+    box-shadow: var(--shadow-lg);
+  }
+  .lesson-runner h4 { font-size: 1.1rem; font-weight: 800; margin-bottom: 16px; color: var(--blue-dark); }
+  .lesson-runner .l-text { font-size: 1rem; line-height: 1.8; color: var(--ink); margin-bottom: 20px; }
+  .lesson-runner .l-q { font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; }
+  .lesson-answers { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+  .lesson-answer {
+    font-family: inherit;
+    font-weight: 700;
+    font-size: .95rem;
+    text-align: left;
+    padding: 16px 20px;
+    border-radius: 14px;
+    border: 2px solid var(--line);
+    background: var(--card);
+    cursor: pointer;
+    transition: all .15s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .lesson-answer:hover:not(:disabled) { border-color: var(--blue); background: var(--blue-soft); }
+  .lesson-answer .la-key {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: var(--blue);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .lesson-answer.correct { background: var(--green-soft); border-color: var(--green); }
+  .lesson-answer.correct .la-key { background: var(--green); }
+  .lesson-answer.wrong { background: var(--red-soft); border-color: var(--red); }
+  .lesson-answer.wrong .la-key { background: var(--red); }
+  .lesson-answer:disabled { cursor: default; }
+  .lesson-feedback {
+    padding: 14px 18px;
+    border-radius: 12px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    font-size: .95rem;
+  }
+  .lesson-feedback.ok { background: var(--green-soft); color: var(--green-dark); }
+  .lesson-feedback.bad { background: var(--red-soft); color: #c0392b; }
+
+  /* ===== GAMEPLAY / EVENT ===== */
+  #screen-game .game-wrap {
+    max-width: 640px;
+    margin: 0 auto;
+  }
+  .game-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .game-timer {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--card);
+    border-radius: 999px;
+    padding: 8px 16px;
+    font-weight: 800;
+    border: 2px solid var(--line);
+    box-shadow: var(--shadow);
+  }
+  .game-hearts { display: flex; gap: 4px; font-size: 1.2rem; }
+  .game-kp {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--yellow);
+    color: #6b4e00;
+    border-radius: 999px;
+    padding: 8px 16px;
+    font-weight: 800;
+    box-shadow: 0 3px 0 var(--yellow-dark);
+  }
+  .game-scene {
+    background: var(--card);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    border: 2px solid var(--line);
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 160px;
+    gap: 20px;
+    align-items: center;
+  }
+  .game-bubble {
+    background: #fff8e7;
+    border: 2px solid #ffe0a3;
+    border-radius: 16px;
+    padding: 18px 20px;
+    position: relative;
+    margin-bottom: 20px;
+  }
+  .game-bubble::before {
+    content: '⚠';
+    position: absolute;
+    top: -14px; left: 20px;
+    width: 32px; height: 32px;
+    background: var(--yellow);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    border: 3px solid #fff;
+    box-shadow: var(--shadow);
+  }
+  .game-bubble .gb-title {
+    font-weight: 800;
+    font-size: .8rem;
+    color: var(--orange-dark);
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    margin-bottom: 6px;
+    margin-top: 4px;
+  }
+  .game-bubble .gb-text { font-size: 1rem; line-height: 1.6; font-weight: 600; }
+  .game-answers { display: flex; flex-direction: column; gap: 12px; }
+  .game-answer {
+    font-family: inherit;
+    font-weight: 800;
+    font-size: 1rem;
+    text-align: left;
+    padding: 16px 20px;
+    border-radius: 14px;
+    border: none;
+    cursor: pointer;
+    transition: all .15s;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    color: #fff;
+  }
+  .game-answer .ga-key {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: rgba(255,255,255,.25);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+  .game-answer.orange { background: var(--orange); box-shadow: 0 4px 0 var(--orange-dark); }
+  .game-answer.orange:active { box-shadow: 0 1px 0 var(--orange-dark); transform: translateY(3px); }
+  .game-answer.blue { background: var(--blue); box-shadow: 0 4px 0 var(--blue-dark); }
+  .game-answer.blue:active { box-shadow: 0 1px 0 var(--blue-dark); transform: translateY(3px); }
+  .game-answer.correct { background: var(--green) !important; box-shadow: 0 4px 0 var(--green-dark) !important; }
+  .game-answer.wrong { background: var(--red) !important; box-shadow: 0 4px 0 #c0392b !important; }
+  .game-answer:disabled { cursor: default; }
+  .game-pet { text-align: center; font-size: 5.5rem; filter: drop-shadow(0 6px 8px rgba(0,0,0,.12)); animation: petBounce 2s ease-in-out infinite; }
+  .game-tools {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  .game-tool {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    background: var(--card);
+    border: 2px solid var(--line);
+    border-radius: 14px;
+    padding: 12px 16px;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: transform .1s;
+    min-width: 80px;
+  }
+  .game-tool:active { transform: translateY(2px); box-shadow: none; }
+  .game-tool .gt-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+  }
+  .game-tool .gt-icon.shield { background: var(--blue-soft); }
+  .game-tool .gt-icon.cold { background: #e0f2fe; }
+  .game-tool .gt-icon.key { background: var(--yellow); }
+  .game-tool .gt-icon.hint { background: var(--purple); color: #fff; }
+  .game-tool .gt-label { font-size: .7rem; font-weight: 700; color: var(--ink-soft); text-align: center; }
+
+  /* ===== SHOP ===== */
+  .shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 14px; }
+  .shop-item {
+    background: var(--card);
+    border: 2px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .shop-item .s-icon { font-size: 2.5rem; display: block; margin-bottom: 8px; }
+  .shop-item .s-name { font-weight: 700; font-size: .85rem; margin-bottom: 4px; display: block; }
+  .shop-item .s-price { font-weight: 800; color: #e6a817; font-size: .8rem; display: block; margin-bottom: 10px; }
+  .shop-item .btn { padding: 8px 14px; font-size: .8rem; border-radius: 10px; }
+  .shop-section-title {
+    font-size: 1rem;
+    font-weight: 800;
+    margin: 20px 0 12px;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    font-size: .8rem;
+  }
+
+  /* ===== SUPPORT / CHAT ===== */
+  .chat-box {
+    background: var(--card);
+    border-radius: var(--radius-lg);
+    border: 2px solid var(--line);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+  }
+  .chat-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    background: linear-gradient(90deg, var(--purple), #c4b0fd);
+    color: #fff;
+  }
+  .chat-header .ch-avatar { font-size: 2rem; }
+  .chat-header .ch-name { font-weight: 800; font-size: 1rem; }
+  .chat-header .ch-status { font-size: .75rem; opacity: .85; }
+  .chat-msgs {
+    height: 280px;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #f7fafd;
+  }
+  .chat-msg {
+    max-width: 80%;
+    padding: 12px 16px;
+    border-radius: 16px;
+    font-size: .9rem;
+    line-height: 1.5;
+    font-weight: 600;
+  }
+  .chat-msg.bot { align-self: flex-start; background: var(--card); border: 2px solid var(--line); border-bottom-left-radius: 4px; }
+  .chat-msg.me { align-self: flex-end; background: var(--blue); color: #fff; border-bottom-right-radius: 4px; }
+  .chat-input-row {
+    display: flex;
+    gap: 10px;
+    padding: 12px 16px;
+    border-top: 2px solid var(--line);
+    background: var(--card);
+  }
+  .chat-input-row input {
+    flex: 1;
+    border: 2px solid var(--line);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-family: inherit;
+    font-size: .9rem;
+    outline: none;
+  }
+  .chat-input-row input:focus { border-color: var(--purple); }
+  .chat-quick {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 0 16px 14px;
+    background: var(--card);
+  }
+  .chat-chip {
+    font-family: inherit;
+    font-size: .8rem;
+    font-weight: 700;
+    padding: 8px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+    background: #f0f4f9;
+    color: var(--ink-soft);
+    border: 2px solid var(--line);
+    transition: all .15s;
+  }
+  .chat-chip:hover { background: var(--purple); color: #fff; border-color: var(--purple); }
+  .chat-chip.tool { background: var(--green-soft); color: var(--green-dark); border-color: var(--green); }
+  .chat-chip.tool:hover { background: var(--green); color: #fff; }
+
+  .mood-scale { display: flex; justify-content: space-between; gap: 8px; margin: 16px 0; }
+  .mood-scale button {
+    font-size: 2rem;
+    background: var(--card);
+    border: 2px solid var(--line);
+    border-radius: 14px;
+    padding: 12px;
+    flex: 1;
+    cursor: pointer;
+    transition: all .15s;
+    box-shadow: var(--shadow);
+  }
+  .mood-scale button:hover { transform: scale(1.1); border-color: var(--purple); }
+  .support-msg {
+    background: var(--purple);
+    color: #fff;
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-weight: 700;
+    margin-top: 8px;
+  }
+  .mood-chart { display: flex; align-items: flex-end; gap: 8px; height: 100px; padding: 10px 0 0; border-bottom: 2px solid var(--line); }
   .mood-col { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; }
-  .mood-bar { width: 100%; transition: height .4s steps(8); min-height: 4px; }
-  .mood-day { text-align: center; font-size: .45rem; color: var(--muted); margin-top: 4px; }
-  .breath-wrap { text-align: center; padding: 10px 0; }
-  .breath-circle { width: 70px; height: 70px; margin: 0 auto; background: #6a5e94;
-    transition: transform 4s steps(12); border: 3px solid var(--accent); }
-  .breath-label, .ground-label { margin-top: 10px; font-size: .55rem; color: var(--muted-2); min-height: 16px; }
-  .ground-dots { display: flex; justify-content: center; gap: 8px; margin: 12px 0; }
-  .ground-dot { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
-    font-size: .55rem; background: var(--card-darker); border: 2px solid var(--line); color: var(--muted); }
-  .ground-dot.cur { background: var(--accent); color: #2b1d0e; border-color: var(--accent-dark); }
-  .ground-dot.done { background: var(--ok); color: #10261a; border-color: var(--ok-dark); }
-  .ground-text { text-align: center; font-size: .55rem; line-height: 1.9; color: var(--ink); margin: 8px 0; }
-  .hotlines { background: #3a1d2e; border: 2px solid var(--line); padding: 10px; font-size: .48rem; line-height: 1.9; margin-top: 10px; }
-  .hotlines b { color: var(--heart); }
-  .disclaimer { font-size: .45rem; color: var(--muted); margin-top: 8px; line-height: 1.7; }
+  .mood-bar { width: 100%; border-radius: 6px 6px 0 0; transition: height .4s; min-height: 4px; }
+  .mood-day { text-align: center; font-size: .7rem; color: var(--muted); margin-top: 4px; font-weight: 700; }
 
-  .modal-bg { position: fixed; inset: 0; background: rgba(10,7,18,.8); display: flex;
-    align-items: center; justify-content: center; padding: 20px; z-index: 10; }
-  .modal { background: var(--card); border: 4px solid var(--line); box-shadow: 0 6px 0 var(--line);
-    padding: 18px; max-width: 400px; width: 100%; color: var(--ink); }
-  .modal h3 { margin-bottom: 10px; font-size: .65rem; color: var(--accent); }
-  .modal .question { margin-bottom: 14px; font-size: .55rem; line-height: 1.8; }
-  .modal .btns { display: grid; gap: 6px; }
-  .modal .btns button { text-align: left; font-family: inherit; font-size: .5rem; line-height: 1.5; border: 2px solid var(--line);
-    padding: 10px; cursor: pointer; background: var(--line-soft); color: #fff; box-shadow: 0 3px 0 var(--line); }
-  .modal .btns button:hover { background: #6a5e94; }
-  .hidden { display: none; }
-  .footer { margin-top: 14px; font-size: .45rem; color: var(--muted); text-align: center; line-height: 1.8; }
+  /* ===== BOTTOM NAV ===== */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--card);
+    border-top: 2px solid var(--line);
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 20px;
+    z-index: 50;
+    box-shadow: 0 -4px 16px rgba(44,62,80,.08);
+  }
+  .bottom-nav .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    cursor: pointer;
+    padding: 6px 14px;
+    border-radius: 12px;
+    transition: all .15s;
+    background: none;
+    border: none;
+    font-family: inherit;
+  }
+  .bottom-nav .nav-item .ni-icon { font-size: 1.5rem; }
+  .bottom-nav .nav-item .ni-label { font-size: .65rem; font-weight: 700; color: var(--muted); }
+  .bottom-nav .nav-item.active { background: var(--blue-soft); }
+  .bottom-nav .nav-item.active .ni-label { color: var(--blue-dark); }
 
-  .cloud-h { font-size: .55rem; color: var(--accent); margin: 12px 0 6px; }
-  .cloud-msg { font-size: .5rem; color: var(--muted-2); line-height: 1.8; margin-bottom: 8px; }
-  .cloud-form { display: grid; gap: 6px; }
-  .cloud-form input { border: 2px solid var(--line); background: var(--card-darker); color: var(--ink);
-    padding: 8px; font-family: inherit; font-size: .5rem; }
-  .cloud-ok { font-size: .5rem; color: var(--ok); margin-top: 8px; }
-  .cloud-err { font-size: .5rem; color: var(--bad); margin-top: 8px; }
-  .room-panel { position: fixed; left: 50%; top: 50%; transform: translate(-50%,-50%); z-index: 21;
-    background: var(--card); border: 4px solid var(--line); box-shadow: 0 6px 0 var(--line); padding: 16px; max-width: 340px; width: 92%; }
-  .room-panel h3 { font-size: .6rem; color: var(--accent); margin-bottom: 10px; }
-  .room-panel .row { font-size: .5rem; line-height: 2.2; display: flex; justify-content: space-between; border-bottom: 1px dashed var(--line-soft); }
-  .room-panel .row span:last-child { color: var(--accent); }
-  .panel-text { font-size: .5rem; line-height: 1.9; }
+  /* ===== MODAL ===== */
+  .modal-bg {
+    position: fixed; inset: 0;
+    background: rgba(44,62,80,.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 100;
+    backdrop-filter: blur(4px);
+  }
+  .modal {
+    background: var(--card);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    max-width: 480px;
+    width: 100%;
+    box-shadow: var(--shadow-lg);
+    animation: fadeIn .2s ease;
+  }
+  .modal h3 { font-size: 1.3rem; font-weight: 800; margin-bottom: 14px; }
+  .modal .m-question { font-size: 1rem; line-height: 1.6; margin-bottom: 20px; font-weight: 600; }
+  .modal .m-btns { display: flex; flex-direction: column; gap: 10px; }
+  .modal .m-btns button {
+    font-family: inherit;
+    font-weight: 700;
+    font-size: .95rem;
+    text-align: left;
+    padding: 14px 18px;
+    border-radius: 12px;
+    border: 2px solid var(--line);
+    background: var(--card);
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .modal .m-btns button:hover { border-color: var(--blue); background: var(--blue-soft); }
+  .modal .m-btns button.correct { background: var(--green-soft); border-color: var(--green); }
+  .modal .m-btns button.wrong { background: var(--red-soft); border-color: var(--red); }
+  .modal .m-result {
+    margin-top: 16px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    font-weight: 700;
+  }
+  .modal .m-result.ok { background: var(--green-soft); color: var(--green-dark); }
+  .modal .m-result.bad { background: var(--red-soft); color: #c0392b; }
+
+  .hidden { display: none !important; }
+
+  .toast {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ink);
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: .9rem;
+    z-index: 200;
+    animation: toastIn .3s ease, toastOut .3s ease 2.5s forwards;
+    box-shadow: var(--shadow-lg);
+    white-space: nowrap;
+  }
+  @keyframes toastIn { from { opacity: 0; transform: translateX(-50%) translateY(-20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+  @keyframes toastOut { to { opacity: 0; transform: translateX(-50%) translateY(-20px); } }
+
+  @media (max-width: 720px) {
+    .audience-grid { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: 1fr; }
+    .stats-pet { display: none; }
+    .todo-layout { grid-template-columns: 1fr; }
+    .todo-pet { display: none; }
+    .theory-layout { grid-template-columns: 1fr; }
+    .theory-pet { display: none; }
+    .game-scene { grid-template-columns: 1fr; }
+    .game-pet { display: none; }
+    .room-side-left { flex-direction: row; top: auto; bottom: 80px; left: 16px; }
+  }
 </style>
 </head>
 <body>
-  <h1>★ ХОМЯГОЧИ ★</h1>
-  <button id="btnSound" title="звук" style="position:fixed;top:10px;right:10px;z-index:30;font-family:inherit;font-size:1rem;background:var(--card-dark);border:2px solid var(--line);color:var(--ink);padding:6px 8px;cursor:pointer;box-shadow:0 3px 0 var(--line)">🔊</button>
-  <p class="tagline">пиксельный помощник для привычек:<br>безопасность • уроки • поддержка</p>
 
-  <div class="card">
-    <div class="tabs">
-      <button data-tab="home" class="active">ДОМИК</button>
-      <button data-tab="shop">МАГАЗИН</button>
-      <button data-tab="habits">ПРИВЫЧКИ</button>
-      <button data-tab="lessons">УРОКИ</button>
-      <button data-tab="support">ПОМОЩЬ</button>
+  <!-- ===== TOP BAR ===== -->
+  <div class="topbar">
+    <div class="brand">
+      <span class="logo">🐹</span>
+      <span>Хомягочи</span>
     </div>
-
-    <div id="tab-home">
-      <div class="canvas-wrap">
-        <canvas id="scene" width="320" height="240"></canvas>
-        <span class="pix-hint">16-bit</span>
-        <span class="pet-state" id="petState"></span>
-      </div>
-      <div class="goal">
-        <div class="row"><span id="goalText">цель дня: 0/10 XP</span><span>ежедневная цель</span></div>
-        <div class="goal-track"><div class="goal-fill" id="goalFill" style="width:0%"></div></div>
-      </div>
-      <div class="bars">
-        <div class="bar-row">❤ <div class="bar-track"><div class="bar-fill" id="bHealth" style="background:#e5484d"></div></div><span id="tHealth"></span></div>
-        <div class="bar-row">🛡 <div class="bar-track"><div class="bar-fill" id="bSec" style="background:#4cc3f7"></div></div><span id="tSec"></span></div>
-        <div class="bar-row">🧠 <div class="bar-track"><div class="bar-fill" id="bMood" style="background:#a78bfa"></div></div><span id="tMood"></span></div>
-      </div>
-      <div class="stats">
-        <span>LVL <b id="lvl">1</b></span>
-        <span>🪙 <b id="coins">0</b></span>
-        <span>🔥 <b id="streak">0</b> дн</span>
-      </div>
-      <div class="actions">
-        <button class="act primary" id="btnEvent">⚠ СОБЫТИЕ</button>
-        <button class="act" id="btnFeed">🥜 КОРМИТЬ</button>
-        <button class="act" id="btnPlay">🎮 ИГРАТЬ</button>
-        <button class="act" id="btnRest">💤 СПАТЬ</button>
-      </div>
-      <div class="log" id="log"></div>
-      <div id="cloudPanel"></div>
-    </div>
-
-    <div id="tab-shop" class="hidden">
-      <h3 class="section-h">🛒 МАГАЗИН ХОМЯКА</h3>
-      <p style="font-size:.5rem;color:var(--muted);line-height:1.7">Зарабатывай монетки в событиях и уроках, наряжай хомяка и обустраивай домик!</p>
-      <h3 class="section-h">— ШАПКИ —</h3>
-      <div class="shop-grid" id="shopHats"></div>
-      <h3 class="section-h">— ОБОИ —</h3>
-      <div class="shop-grid" id="shopWalls"></div>
-      <h3 class="section-h">— ЕДА —</h3>
-      <div class="shop-grid" id="shopFood"></div>
-    </div>
-
-    <div id="tab-habits" class="hidden">
-      <h3 class="section-h">✅ ЕЖЕДНЕВНЫЕ ПРИВЫЧКИ</h3>
-      <p style="font-size:.5rem;color:var(--muted);line-height:1.7">Отмечай выполненное — растёт уровень и копятся монетки.</p>
-      <div id="habitList"></div>
-      <div class="add-habit">
-        <input id="newHabit" placeholder="своя привычка..." maxlength="60">
-        <button class="act" id="btnAddHabit">➕</button>
-      </div>
-    </div>
-
-    <div id="tab-lessons" class="hidden">
-      <h3 class="section-h">🎓 УРОКИ</h3>
-      <p style="font-size:.5rem;color:var(--muted);line-height:1.7">Короткие уроки в стиле Дуолинго: сцена → вопрос → объяснение. За завершение — XP!</p>
-      <div id="lessonList"></div>
-    </div>
-
-    <div id="tab-support" class="hidden">
-      <h3 class="section-h">🐹 ХОМЯК-ПСИХОЛОГ 24/7</h3>
-      <p style="font-size:.5rem;color:var(--muted);line-height:1.7">Анонимно, без осуждения, в любой момент. Хомяк выслушает, поймёт и подскажет.</p>
-      <div id="chatBox"></div>
-      <h3 class="section-h">💙 КАК ТЫ СЕБЯ ЧУВСТВУЕШЬ?</h3>
-      <div class="mood-scale" id="moodScale">
-        <button data-mood="1">😞</button><button data-mood="2">😕</button><button data-mood="3">😐</button>
-        <button data-mood="4">🙂</button><button data-mood="5">😄</button>
-      </div>
-      <div class="support-msg hidden" id="moodMsg"></div>
-      <h3 class="section-h">📈 ТВОЯ НЕДЕЛЯ</h3>
-      <div id="moodChart"></div>
-      </div>
-
-  <p class="footer">ХОМЯГОЧИ © 2026 — пиксельный MVP<br>заботься о хомяке и учись распознавать угрозы!</p>
-
-  <div class="modal-bg hidden" id="modalBg">
-    <div class="modal">
-      <h3 id="mTitle">⚠ СОБЫТИЕ!</h3>
-      <p class="question" id="mQuestion"></p>
-      <div class="btns" id="mBtns"></div>
-      <p class="question hidden" id="mResult" style="margin-top:12px"></p>
+    <div class="topbar-stats">
+      <span class="stat-chip hearts">❤️ <b id="topHearts">3</b></span>
+      <span class="stat-chip coins">🪙 <b id="topCoins">0</b></span>
+      <span class="stat-chip kp">🏆 <b id="topKp">0</b> KP</span>
+      <span class="stat-chip lvl">⭐ <b id="topLvl">1</b> ур.</span>
+      <button class="btn-icon" id="btnSound" title="звук">🔊</button>
     </div>
   </div>
 
-  <div class="room-panel hidden" id="roomPanel"></div>
+  <div class="app">
 
-  <script src="content/config.js?v=4"></script>
-  <script src="content/content.js?v=4"></script>
-  <script src="content/lessons.js?v=4"></script>
-  <script src="content/shop.js?v=4"></script>
-  <script type="module" src="src/ui/app.js?v=4"></script>
+    <!-- ===== AUDIENCE SELECT ===== -->
+    <div class="screen" id="screen-audience">
+      <h1 class="big-title">Выбери подходящий уровень</h1>
+      <p class="subtitle">Настрой игру под себя</p>
+      <div class="audience-grid">
+        <div class="audience-card" data-audience="school">
+          <span class="a-emoji">🎒</span>
+          <div class="a-name">Школьник</div>
+          <div class="a-desc">Простые уроки и привычки для учёбы</div>
+        </div>
+        <div class="audience-card selected" data-audience="student">
+          <span class="a-emoji">🎓</span>
+          <div class="a-name">Студент</div>
+          <div class="a-desc">Баланс учёбы, софт-скиллов и безопасности</div>
+        </div>
+        <div class="audience-card" data-audience="worker">
+          <span class="a-emoji">💼</span>
+          <div class="a-name">Работник</div>
+          <div class="a-desc">Фокус, продуктивность и кибербезопасность</div>
+        </div>
+      </div>
+      <button class="btn btn-green btn-block" id="btnStartGame" style="max-width:320px;margin:0 auto;font-size:1.1rem;padding:18px">Начать игру 🚀</button>
+    </div>
+
+    <!-- ===== HOME / ROOM ===== -->
+    <div class="screen" id="screen-home">
+      <div class="room">
+        <div class="room-floor"></div>
+        <div class="room-nav-top">
+          <button class="nav-btn play" data-goto="game">▶ Играть</button>
+          <button class="nav-btn shop" data-goto="shop">🛒 Магазин</button>
+          <button class="nav-btn stats" data-goto="stats">📊 Статистика</button>
+        </div>
+        <div class="room-side-left">
+          <button class="room-side-item" data-goto="theory">
+            <span class="si-icon">📚</span>
+            <span class="si-label">Теория</span>
+          </button>
+          <button class="room-side-item" data-goto="habits">
+            <span class="si-icon">✅</span>
+            <span class="si-label">Задачи</span>
+          </button>
+          <button class="room-side-item" data-goto="support">
+            <span class="si-icon">💬</span>
+            <span class="si-label">Помощь</span>
+          </button>
+        </div>
+        <div class="room-pet">
+          <div class="pet-bubble" id="petBubble">Привет! Давай учиться! 👋</div>
+          <div class="pet-sprite" id="petSprite">🐹</div>
+          <div class="pet-desk">🪑💻</div>
+        </div>
+        <div class="room-decor-right">
+          <span class="decor">🛏️</span>
+          <span class="decor">🛋️</span>
+          <span class="decor">🏆</span>
+        </div>
+        <div class="room-bottom-nav">
+          <button class="btn btn-blue" data-goto="theory">📖 Теория</button>
+          <button class="btn btn-ghost" data-goto="settings">⚙️ Настройки</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== STATS ===== -->
+    <div class="screen" id="screen-stats">
+      <div class="screen-title">
+        <span class="t-icon" style="background:var(--yellow)">🏆</span>
+        Статистика
+      </div>
+      <div class="stats-grid">
+        <div>
+          <div class="stats-section">
+            <h3>🏅 Достижения</h3>
+            <div id="achievementList"></div>
+          </div>
+          <div class="stats-section">
+            <h3>🎒 Предметы</h3>
+            <div class="items-row" id="itemsRow"></div>
+          </div>
+          <div class="stats-section">
+            <h3>📈 Прогресс</h3>
+            <div class="progress-wrap">
+              <div class="progress-bar"><div class="progress-fill" id="statsProgress" style="width:0%"></div></div>
+              <div class="progress-label"><span id="statsProgressText">0/100 KP</span><span id="statsStreak">🔥 0 дней</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="stats-pet">🐻‍❄️🏆</div>
+      </div>
+    </div>
+
+    <!-- ===== HABITS / TODO ===== -->
+    <div class="screen" id="screen-habits">
+      <div class="screen-title">
+        <span class="t-icon" style="background:var(--green-soft)">✅</span>
+        Список дел
+      </div>
+      <div class="todo-layout">
+        <div>
+          <div class="todo-list" id="todoList"></div>
+          <div class="todo-add">
+            <input id="newHabitInput" placeholder="Новая привычка..." maxlength="60">
+            <button class="btn btn-green" id="btnAddHabit">➕</button>
+          </div>
+        </div>
+        <div class="todo-pet">🐻💻</div>
+      </div>
+    </div>
+
+    <!-- ===== THEORY / LESSONS ===== -->
+    <div class="screen" id="screen-theory">
+      <div class="screen-title">
+        <span class="t-icon" style="background:var(--blue-soft)">📚</span>
+        <span id="theoryTitle">Теория: Безопасность браузеров</span>
+      </div>
+      <div id="theoryBrowse">
+        <div class="theory-layout">
+          <div class="theory-sidebar">
+            <h4>📋 Разделы</h4>
+            <div id="theoryTopics"></div>
+          </div>
+          <div class="theory-content" id="theoryContent">
+            <p>Выбери раздел слева, чтобы начать обучение.</p>
+          </div>
+          <div class="theory-pet">🐹💻</div>
+        </div>
+      </div>
+      <div id="theoryRunner" class="hidden">
+        <div class="lesson-runner" id="lessonRunner"></div>
+      </div>
+    </div>
+
+    <!-- ===== GAME / EVENT ===== -->
+    <div class="screen" id="screen-game">
+      <div class="game-wrap">
+        <div class="game-topbar">
+          <span class="game-timer">⏱ <b id="gameTimer">25</b></span>
+          <span class="game-hearts" id="gameHearts">❤️❤️❤️</span>
+          <span class="game-kp">🏆 <b id="gameKp">0</b> KP</span>
+        </div>
+        <div class="game-scene">
+          <div>
+            <div class="game-bubble">
+              <div class="gb-title">⚠ Внимание!</div>
+              <div class="gb-text" id="gameQuestion">Хомяку пришло письмо от «Сбербанка» с просьбой ввести код из СМС. Что делать?</div>
+            </div>
+            <div class="game-answers" id="gameAnswers"></div>
+            <div id="gameFeedback"></div>
+          </div>
+          <div class="game-pet">🐹💻</div>
+        </div>
+        <div class="game-tools">
+          <button class="game-tool" data-tool="shield">
+            <span class="gt-icon shield">🛡️</span>
+            <span class="gt-label">Защитник<br>Wi-Fi</span>
+          </button>
+          <button class="game-tool" data-tool="cold">
+            <span class="gt-icon cold">❄️</span>
+            <span class="gt-label">Холодный<br>разум</span>
+          </button>
+          <button class="game-tool" data-tool="key">
+            <span class="gt-icon key">🔑</span>
+            <span class="gt-label">Защитный<br>ключ</span>
+          </button>
+          <button class="game-tool" data-tool="hint">
+            <span class="gt-icon hint">❓</span>
+            <span class="gt-label">Подсказка</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SHOP ===== -->
+    <div class="screen" id="screen-shop">
+      <div class="screen-title">
+        <span class="t-icon" style="background:#fff3e0">🛒</span>
+        Магазин Хомяка
+      </div>
+      <p style="color:var(--ink-soft);margin-bottom:8px">Зарабатывай монетки в уроках, одевай хомяка и обустраивай домик!</p>
+      <div class="shop-section-title">— Шапки —</div>
+      <div class="shop-grid" id="shopHats"></div>
+      <div class="shop-section-title">— Обои —</div>
+      <div class="shop-grid" id="shopWalls"></div>
+      <div class="shop-section-title">— Еда —</div>
+      <div class="shop-grid" id="shopFood"></div>
+    </div>
+
+    <!-- ===== SUPPORT ===== -->
+    <div class="screen" id="screen-support">
+      <div class="screen-title">
+        <span class="t-icon" style="background:var(--purple);color:#fff">💜</span>
+        Хомя-психолог 24/7
+      </div>
+      <p style="color:var(--ink-soft);margin-bottom:12px">Анонимно, без осуждения, в любимом моменте. Хомяк выслушает, поймёт и подскажет.</p>
+      <div class="chat-box" id="chatBox"></div>
+      <div class="card" style="margin-top:16px">
+        <h3 style="font-size:1rem;font-weight:800;margin-bottom:8px">💜 Как ты себя чувствуешь?</h3>
+        <div class="mood-scale" id="moodScale">
+          <button data-mood="1">😞</button>
+          <button data-mood="2">😕</button>
+          <button data-mood="3">😐</button>
+          <button data-mood="4">🙂</button>
+          <button data-mood="5">😄</button>
+        </div>
+        <div class="support-msg hidden" id="moodMsg"></div>
+        <h3 style="font-size:1rem;font-weight:800;margin:16px 0 8px">📈 Твоя неделя</h3>
+        <div id="moodChart"></div>
+      </div>
+    </div>
+
+    <!-- ===== SETTINGS ===== -->
+    <div class="screen" id="screen-settings">
+      <div class="screen-title">
+        <span class="t-icon" style="background:#e8eef5">⚙️</span>
+        Настройки
+      </div>
+      <div class="card">
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <button class="btn btn-ghost btn-block" id="btnChangeAudience" style="justify-content:flex-start">🎯 Сменить уровень (аудиторию)</button>
+          <button class="btn btn-ghost btn-block" id="btnToggleSound" style="justify-content:flex-start">🔊 Звук: вкл</button>
+          <button class="btn btn-ghost btn-block" id="btnReset" style="justify-content:flex-start;color:var(--red)">🗑 Сбросить прогресс</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== BOTTOM NAV ===== -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-goto="home">
+      <span class="ni-icon">🏠</span>
+      <span class="ni-label">Главная</span>
+    </button>
+    <button class="nav-item" data-goto="habits">
+      <span class="ni-icon">✅</span>
+      <span class="ni-label">Задачи</span>
+    </button>
+    <button class="nav-item" data-goto="theory">
+      <span class="ni-icon">📚</span>
+      <span class="ni-label">Теория</span>
+    </button>
+    <button class="nav-item" data-goto="game">
+      <span class="ni-icon">🎮</span>
+      <span class="ni-label">Играть</span>
+    </button>
+    <button class="nav-item" data-goto="support">
+      <span class="ni-icon">💜</span>
+      <span class="ni-label">Помощь</span>
+    </button>
+  </nav>
+
+  <!-- ===== MODAL ===== -->
+  <div class="modal-bg hidden" id="modalBg">
+    <div class="modal">
+      <h3 id="mTitle">⚠ Событие!</h3>
+      <p class="m-question" id="mQuestion"></p>
+      <div class="m-btns" id="mBtns"></div>
+      <div class="hidden" id="mResult"></div>
+    </div>
+  </div>
+
+  <script src="content/config.js?v=5"></script>
+  <script src="content/content.js?v=5"></script>
+  <script src="content/lessons.js?v=5"></script>
+  <script src="content/shop.js?v=5"></script>
+  <script type="module" src="src/ui/app.js?v=5"></script>
 </body>
 </html>
