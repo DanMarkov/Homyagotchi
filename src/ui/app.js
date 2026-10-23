@@ -1,330 +1,548 @@
-import { load, save } from '../core/store.js?v=4';
-import { tick, feed, play, rest, petState, PET_STATES } from '../core/pet.js?v=4';
-import { gainXP, dayCheck, addCoins, owns, buy, habitDone, toggleHabit, logMood, answerEvent, dailyGoalProgress, todayStr, moodAvg } from '../core/game.js?v=4';
-import { RoomScene, ROOM_POINTS } from '../render/scene.js?v=4';
-import { LessonUI } from './lessons.js?v=4';
-import { CloudUI } from './cloud.js?v=4';
-import { cloudSave } from '../core/cloud.js?v=4';
-import { sfx } from './audio.js?v=4';
-import { renderMoodChart, ChatUI } from './support.js?v=4';
+import { load, save } from '../core/store.js?v=5';
+import { tick, petState } from '../core/pet.js?v=5';
+import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg } from '../core/game.js?v=5';
+import { sfx } from './audio.js?v=5';
+import { renderMoodChart, ChatUI } from './support.js?v=5';
 
 const CONTENT = window.__CONTENT__;
 const LESSONS = window.__LESSONS__;
+const SHOP = window.__SHOP__;
 
 const S = load();
 const dailyGoal = CONTENT.dailyGoalXp || 10;
 if (!S.habits || !S.habits.length) S.habits = CONTENT.habits.slice();
 
 const els = (id) => document.getElementById(id);
-const logEl = els('log');
-function log(msg) {
-  const p = document.createElement('p');
-  p.textContent = msg;
-  logEl.insertBefore(p, logEl.firstChild);
-  while (logEl.children.length > 12) logEl.removeChild(logEl.lastChild);
-}
-function persist() { save(S); render(); }
+const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => document.querySelectorAll(sel);
 
-const scene = new RoomScene(els('scene'));
-scene.rebuild(S);
-let hot = null;
-
-function render() {
-  const set = (b, t, v) => { els(b).style.width = v + '%'; els(t).textContent = v + '%'; };
-  set('bHealth', 'tHealth', Math.max(0, Math.round(S.health)));
-  set('bSec', 'tSec', Math.max(0, Math.round(S.sec)));
-  set('bMood', 'tMood', Math.max(0, Math.round(S.mood)));
-  els('lvl').textContent = S.lvl;
-  els('coins').textContent = S.coins;
-  els('streak').textContent = S.streak;
-  const goal = dailyGoalProgress(S, dailyGoal);
-  els('goalFill').style.width = goal + '%';
-  els('goalText').textContent = 'цель дня: ' + (S.dailyXp || 0) + '/' + dailyGoal + ' XP';
-  const avg = moodAvg(S.moodLog, 7);
-  if (avg !== null) els('petState').textContent = stateLabel();
+let toastTimer = null;
+function toast(msg) {
+  const old = document.querySelector('.toast');
+  if (old) old.remove();
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.remove(), 3000);
 }
 
-function stateLabel() {
-  const ps = petState(S);
-  return { idle: '😭 скучает', eating: '😈 ест', jumping: '★ радуется!', sleeping: '💤 спит', sick: '🤒 болеет — покорми!', happy: '😊 счастлив' }[ps];
-}
+function persist() { save(S); renderTopbar(); }
 
-dayCheck(S, log);
-render();
+/* ============ NAVIGATION ============ */
+const SCREENS = ['audience', 'home', 'stats', 'habits', 'theory', 'game', 'shop', 'support', 'settings'];
+const NAV_MAP = { home: 'home', habits: 'habits', theory: 'theory', game: 'game', shop: 'shop', support: 'support', stats: 'stats', settings: 'settings' };
 
-let last = performance.now();
-let running = true;
-function frame(now) {
-  if (!running) return;
-  const dt = Math.min(0.25, (now - last) / 1000);
-  last = now;
-  scene.draw(S, hot, dt);
-  els('petState').textContent = stateLabel();
-  requestAnimationFrame(frame);
-}
-requestAnimationFrame(frame);
-
-setInterval(() => { tick(S, 1); persist(); }, 4000);
-
-const cv = els('scene');
-function scenePos(e) {
-  const r = cv.getBoundingClientRect();
-  return { x: (e.clientX - r.left) * 320 / r.width, y: (e.clientY - r.top) * 240 / r.height };
-}
-cv.addEventListener('mousemove', (e) => {
-  hot = scene.hitTest(scenePos(e).x, scenePos(e).y);
-  cv.style.cursor = hot ? 'pointer' : 'default';
-});
-cv.addEventListener('click', (e) => {
-  const p = scenePos(e);
-  const pt = scene.hitTest(p.x, p.y);
-  if (pt) { sfx.click(); roomAction(pt.id); }
-  else { S.mood = Math.min(100, S.mood + 2); S._jumping = 16; scene.puff('♥', '#ff8fa3'); log('пип! хомяк рад ♥'); persist(); }
-});
-
-function roomAction(id) {
-  if (id === 'book') showPanel('📖 ДНЕВНИК ХОМЯКА', statsHtml());
-  else if (id === 'bowl') { feed(S); scene.puff('⚡', '#e8b46e'); sfx.feed(); log('🥣 хомяк поел! +❤'); persist(); }
-  else if (id === 'poster') showPanel('🛡 СОВЕТ ОТ ХОМЯКА', '<p class="panel-text">' + CONTENT.tips[Math.floor(Math.random() * CONTENT.tips.length)] + '</p>');
-  else if (id === 'window') {
-    const hr = new Date().getHours();
-    const g = hr < 6 ? '🌙 ночь тиха... спать пора!' : hr < 12 ? '🌅 доброе утро!' : hr < 18 ? '☀ добрый день!' : '🌓 добрый вечер!';
-    showPanel('🪟 ЗА ОКНОМ', '<p class="panel-text">' + g + ' Хомяк здесь для тебя ♥</p>');
-    S.mood = Math.min(100, S.mood + 2); persist();
-  } else if (id === 'flower') {
-    S.mood = Math.min(100, S.mood + 4); gainXP(S, 1); scene.puff('♥', '#7fae90'); sfx.heart();
-    log('🌱 ты полил цветок — забота возвращается!'); persist();
-  } else if (id === 'bed') { rest(S); sfx.sleep(); log('💤 хомяк приснул на лежанке.'); persist(); }
-  else if (id === 'wheel') {
-    scene.spinWheel();
-    S.mood = Math.min(100, S.mood + 10); gainXP(S, 3); S._jumping = 12;
-    scene.puff('♪', '#ffd166'); sfx.wheel(); log('🎡 хомяк гоняет в колесе! +🧠'); persist();
-  }
-  else if (id === 'ham') { S.mood = Math.min(100, S.mood + 6); S._jumping = 16; scene.puff('♥', '#ff8fa3'); sfx.pet(); log('🐹 пип! хомяк рад!'); persist(); }
-}
-
-function showPanel(title, bodyHtml) {
-  const p = els('roomPanel');
-  p.innerHTML = '<h3>' + title + '</h3>' + bodyHtml +
-    '<button class="act primary" style="margin-top:12px;width:100%" data-close>ЗАКРЫТЬ</button>';
-  p.querySelector('[data-close]').onclick = () => p.classList.add('hidden');
-  p.classList.remove('hidden');
-}
-
-function statsHtml() {
-  let done = 0;
-  S.habits.forEach((h) => { if (habitDone(S, h.id)) done++; });
-  return '<div class="row"><span>LVL</span><span>' + S.lvl + ' (XP ' + S.xp + '/10)</span></div>' +
-    '<div class="row"><span>монеты</span><span>' + S.coins + ' 🪙</span></div>' +
-    '<div class="row"><span>серия дней</span><span>' + S.streak + '</span></div>' +
-    '<div class="row"><span>привычки сегодня</span><span>' + done + '/' + S.habits.length + '</span></div>' +
-    '<div class="row"><span>чек-инов настроения</span><span>' + S.moodLog.length + '</span></div>';
-}
-
-els('btnEvent').onclick = () => spawnEvent();
-let eventTimer = null;
-function spawnEvent() {
-  if (!els('modalBg').classList.contains('hidden')) return;
-  if (eventTimer) { clearTimeout(eventTimer); eventTimer = null; }
-  const ev = CONTENT.events[Math.floor(Math.random() * CONTENT.events.length)];
-  const bg = els('modalBg');
-  els('mTitle').textContent = ev.cat;
-  els('mQuestion').textContent = ev.q;
-  const res = els('mResult');
-  res.classList.add('hidden');
-  const btns = els('mBtns');
-  btns.innerHTML = '';
-  let answered = false;
-  ev.a.forEach((opt, i) => {
-    const b = document.createElement('button');
-    b.textContent = opt;
-    b.onclick = () => {
-      if (answered) return;
-      answered = true;
-      Array.prototype.forEach.call(btns.querySelectorAll('button'), (c, j) => {
-        c.classList.add(j === ev.ok ? 'ok' : 'bad');
-        c.disabled = true;
-      });
-      const ok = answerEvent(S, ev, i);
-      res.textContent = ok ? '✅ ВЕРНО! +10🛡 +10🪙 ' + ev.tip : '❌ ОЙ! ' + ev.tip;
-      if (ok) { S._jumping = 16; scene.puff('★', '#ffd166'); sfx.correct(); } else { scene.puff('?', '#e5484d'); sfx.wrong(); }
-      res.classList.remove('hidden');
-      persist();
-      const next = document.createElement('button');
-      next.className = 'act primary';
-      next.style.marginTop = '12px';
-      next.style.width = '100%';
-      next.textContent = 'ПРОДОЛЖИТЬ →';
-      next.onclick = () => { bg.classList.add('hidden'); next.remove(); };
-      res.appendChild(next);
-    };
-    btns.appendChild(b);
+function gotoScreen(name) {
+  if (name === 'audience') return showAudience();
+  SCREENS.forEach((s) => {
+    const el = els('screen-' + s);
+    if (el) el.classList.toggle('active', s === name);
   });
-  bg.classList.remove('hidden');
+  $$('.bottom-nav .nav-item').forEach((b) => {
+    b.classList.toggle('active', b.dataset.goto === name);
+  });
+  if (name === 'stats') renderStats();
+  if (name === 'habits') renderHabits();
+  if (name === 'theory') renderTheory();
+  if (name === 'game') startGame();
+  if (name === 'shop') renderShop();
+  if (name === 'support') {
+    renderMoodChart(S, els('moodChart'));
+    if (!chatUI) initChat();
+  }
+  if (name === 'home') renderPetBubble();
 }
 
-els('btnFeed').onclick = () => { feed(S); scene.puff('⚡', '#e8b46e'); sfx.feed(); log('🥜 хомяк хрустит! +❤'); persist(); };
-els('btnPlay').onclick = () => { play(S); gainXP(S, 3); scene.puff('♪', '#a78bfa'); sfx.play(); log('🎮 игра! +🧠'); persist(); };
-els('btnRest').onclick = () => { rest(S); sfx.sleep(); log('💤 хомяк поспал.'); persist(); };
-els('btnSound').onclick = () => {
-  const on = sfx.toggle();
-  els('btnSound').textContent = on ? '🔊' : '🔇';
-};
+$$('[data-goto]').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    sfx.click();
+    gotoScreen(btn.dataset.goto);
+  });
+});
 
-const SHOP = window.__SHOP__;
+/* ============ TOP BAR ============ */
+function renderTopbar() {
+  els('topHearts').textContent = '❤️'.repeat(Math.max(1, Math.ceil(S.health / 34)));
+  els('topCoins').textContent = S.coins;
+  els('topKp').textContent = S.lvl * 10 + S.xp;
+  els('topLvl').textContent = S.lvl;
+  els('gameKp').textContent = S.lvl * 10 + S.xp;
+  const hearts = Math.max(0, Math.min(5, Math.ceil(S.health / 20)));
+  els('gameHearts').textContent = '❤️'.repeat(hearts) + '🖤'.repeat(Math.max(0, 5 - hearts));
+}
+
+/* ============ AUDIENCE ============ */
+function showAudience() {
+  SCREENS.forEach((s) => {
+    const el = els('screen-' + s);
+    if (el) el.classList.toggle('active', s === 'audience');
+  });
+  $$('.bottom-nav .nav-item').forEach((b) => b.classList.remove('active'));
+}
+
+$$('.audience-card').forEach((card) => {
+  card.addEventListener('click', () => {
+    $$('.audience-card').forEach((c) => c.classList.remove('selected'));
+    card.classList.add('selected');
+    S.audience = card.dataset.audience;
+    sfx.click();
+  });
+});
+
+els('btnStartGame').addEventListener('click', () => {
+  const sel = $('.audience-card.selected');
+  S.audience = sel ? sel.dataset.audience : 'student';
+  S.onboarded = true;
+  sfx.correct();
+  persist();
+  toast('Добро пожаловать, Хомя! 🐹');
+  gotoScreen('home');
+});
+
+els('btnChangeAudience').addEventListener('click', () => {
+  showAudience();
+});
+
+/* ============ PET BUBBLE ============ */
+function petBubbleText() {
+  const ps = petState(S);
+  const msgs = {
+    idle: ['Привет! Давай учиться! 👋', 'Готов к новым урокам? 📚', 'Не забудь про привычки! ✅'],
+    eating: ['Ням-ням! Вкусно! 😋', 'Спасибо за заботу! ❤️'],
+    jumping: ['Ура! Весело! 🎉', 'Ещё! Ещё! 🚀'],
+    sleeping: ['Сладких снов... 💤', 'Хррр... не буди 😴'],
+    sick: ['Мне плохо... 🤒', 'Покорми меня, пожалуйста!'],
+    happy: ['Я счастлив! 😍', 'Лучший день! ✨']
+  };
+  const arr = msgs[ps] || msgs.idle;
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function renderPetBubble() {
+  const el = els('petBubble');
+  if (el) el.textContent = petBubbleText();
+}
+
+/* ============ STATS ============ */
+const ACHIEVEMENTS = [
+  { id: 'first_lesson', icon: '🎓', name: 'Первый урок', check: (s) => Object.keys(s.lessons || {}).length > 0 },
+  { id: 'streak3', icon: '🔥', name: '3 дня подряд', check: (s) => s.streak >= 3 },
+  { id: 'lvl5', icon: '⭐', name: '5 уровень', check: (s) => s.lvl >= 5 },
+  { id: 'habits10', icon: '✅', name: '10 привычек выполнено', check: (s) => Object.values(s.habitState || {}).reduce((a, h) => a + (h.streak || 0), 0) >= 10 },
+  { id: 'coins100', icon: '🪙', name: '100 монет', check: (s) => s.coins >= 100 },
+  { id: 'mood5', icon: '💜', name: '5+ записей настроения', check: (s) => (s.moodLog || []).length >= 5 },
+  { id: 'wifi', icon: '🛡️', name: 'Защити Wi-Fi', check: (s) => s.sec >= 80 },
+  { id: 'master', icon: '👑', name: 'Мастер безопасности', check: (s) => s.sec >= 100 && s.lvl >= 3 }
+];
+
+function renderStats() {
+  const list = els('achievementList');
+  list.innerHTML = '';
+  ACHIEVEMENTS.forEach((a) => {
+    const done = a.check(S);
+    const div = document.createElement('div');
+    div.className = 'achievement';
+    div.innerHTML =
+      '<span class="ach-icon ' + (done ? 'done' : 'locked') + '">' + (done ? '✓' : a.icon) + '</span>' +
+      '<span class="ach-text">' + a.name + '</span>' +
+      '<span class="ach-kp">+' + (done ? '10' : '??') + ' KP</span>';
+    list.appendChild(div);
+  });
+  const items = els('itemsRow');
+  items.innerHTML = '';
+  (S.owned || []).forEach((id) => {
+    const chip = document.createElement('div');
+    chip.className = 'item-chip';
+    const found = [...(SHOP.hats || []), ...(SHOP.walls || []), ...(SHOP.food || [])].find((i) => i.id === id);
+    chip.textContent = found ? found.icon : '🎁';
+    items.appendChild(chip);
+  });
+  const totalKp = S.lvl * 10 + S.xp;
+  const pct = Math.min(100, totalKp);
+  els('statsProgress').style.width = pct + '%';
+  els('statsProgressText').textContent = totalKp + '/100 KP';
+  els('statsStreak').textContent = '🔥 ' + (S.streak || 0) + ' дней';
+}
+
+/* ============ HABITS / TODO ============ */
+function renderHabits() {
+  const list = els('todoList');
+  list.innerHTML = '';
+  S.habits.forEach((h) => {
+    const done = habitDone(S, h.id);
+    const div = document.createElement('div');
+    div.className = 'todo-item' + (done ? ' done' : '');
+    const cb = document.createElement('div');
+    cb.className = 'todo-checkbox' + (done ? ' checked' : '');
+    cb.textContent = done ? '✓' : '';
+    cb.addEventListener('click', () => {
+      toggleHabit(S, h.id, !done);
+      if (!done) { sfx.correct(); toast('+2 XP +3 🪙'); }
+      renderHabits();
+      persist();
+    });
+    const text = document.createElement('span');
+    text.className = 'todo-text';
+    text.textContent = h.emoji + ' ' + h.text;
+    const reward = document.createElement('span');
+    reward.className = 'todo-reward';
+    reward.textContent = '+10 KP';
+    div.appendChild(cb);
+    div.appendChild(text);
+    div.appendChild(reward);
+    list.appendChild(div);
+  });
+}
+
+els('btnAddHabit').addEventListener('click', () => {
+  const inp = els('newHabitInput');
+  const txt = inp.value.trim();
+  if (!txt) return;
+  S.habits.push({ id: 'h_' + Date.now(), emoji: '⭐', text: txt });
+  inp.value = '';
+  renderHabits();
+  save(S);
+});
+
+/* ============ THEORY ============ */
+const THEORY_TOPICS = [
+  { id: 'fingerprint', icon: '🔍', name: 'Цифровой отпечаток', danger: false, text: 'Сайты собирают уникальные данные о твоём браузере: версию, разрешение экрана, шрифты, плагины. Эта комбинация — как отпечаток пальца — позволяет идентифицировать и отслеживать тебя в интернете, даже без cookies. Используй режим инкогнито и ограничивай доступ к данным.' },
+  { id: 'phishing', icon: '🛡️', name: 'Фишинг и мошенничество', danger: false, text: 'Фишинг — когда мошенники притворяются известным сервисом, чтобы украсть твои данные. Проверяй адрес сайта, не переходи по подозрительным ссылкам из писем и SMS. Банки никогда не просят коды из SMS.' },
+  { id: 'scripts', icon: '⚠️', name: 'Вредоносные скрипты', danger: true, text: 'Вредоносные скрипты могут красть пароли, майнить криптовалюту на твоём устройстве или перенаправлять на фишинговые сайты. Устанавливай расширения только из официальных магазинов и держи браузер обновлённым.' },
+  { id: 'exploits', icon: '➕', name: 'Эксплойты', danger: false, text: 'Эксплойты — это использование уязвимостей в программах для взлома. Регулярно обновляй ОС, браузер и приложения — большинство атак нацелены на известные, уже исправленные дыры.' },
+  { id: 'dns', icon: '🌐', name: 'DNS и WebRTC', danger: false, text: 'DNS-запросы и WebRTC могут раскрывать твой реальный IP даже при использовании VPN. Отключи WebRTC в настройках браузера и используй надёжные DNS-серверы с шифрованием (DoH).' }
+];
+
+function renderTheory() {
+  const topics = els('theoryTopics');
+  topics.innerHTML = '';
+  THEORY_TOPICS.forEach((t) => {
+    const div = document.createElement('div');
+    div.className = 'theory-topic' + (t.danger ? ' danger' : '');
+    div.innerHTML =
+      '<span class="tt-icon">' + t.icon + '</span>' +
+      '<span>' + t.name + '</span>';
+    div.addEventListener('click', () => {
+      $$('.theory-topic').forEach((x) => x.classList.remove('active'));
+      div.classList.add('active');
+      const content = els('theoryContent');
+      content.innerHTML = '<h3>' + t.icon + ' ' + t.name + '</h3><p>' + t.text + '</p>' +
+        '<button class="btn btn-blue" style="margin-top:8px" data-start-lesson="' + t.id + '">▶ Пройти урок</button>';
+      const btn = content.querySelector('[data-start-lesson]');
+      btn.addEventListener('click', () => startLessonByTopic(t.id));
+    });
+    topics.appendChild(div);
+  });
+  if (!topics.querySelector('.active')) {
+    topics.firstChild && topics.firstChild.classList.add('active');
+    const t = THEORY_TOPICS[0];
+    els('theoryContent').innerHTML = '<h3>' + t.icon + ' ' + t.name + '</h3><p>' + t.text + '</p>' +
+      '<button class="btn btn-blue" style="margin-top:8px" data-start-lesson="' + t.id + '">▶ Пройти урок</button>';
+    els('theoryContent').querySelector('[data-start-lesson]').addEventListener('click', () => startLessonByTopic(t.id));
+  }
+}
+
+function startLessonByTopic(topicId) {
+  els('theoryBrowse').classList.add('hidden');
+  els('theoryRunner').classList.remove('hidden');
+  const course = LESSONS.courses[0];
+  const lessonMap = { fingerprint: 'phishing', phishing: 'phishing', scripts: 'social', exploits: 'passwords', dns: 'passwords' };
+  const lessonId = lessonMap[topicId] || 'phishing';
+  const lesson = course.lessons.find((l) => l.id === lessonId) || course.lessons[0];
+  lessonUI.start(course, lesson, els('lessonRunner'));
+}
+
+/* ============ LESSON RUNNER (Duolingo style) ============ */
+class LessonRunnerUI {
+  constructor(lessons, state, { onSave, onToast }) {
+    this.courses = lessons.courses;
+    this.state = state;
+    this.onSave = onSave;
+    this.onToast = onToast;
+    this.active = null;
+  }
+
+  start(course, lesson, container) {
+    this.active = { course, lesson, idx: this.state.lessons[course.id + ':' + lesson.id] || 0, container };
+    this.showScene();
+  }
+
+  showScene() {
+    const { course, lesson, idx, container } = this.active;
+    if (idx >= lesson.scenes.length) { this.finish(); return; }
+    const sc = lesson.scenes[idx];
+    container.innerHTML = '';
+    const head = document.createElement('h4');
+    head.textContent = course.emoji + ' ' + lesson.title + ' — сцена ' + (idx + 1) + '/' + lesson.scenes.length;
+    container.appendChild(head);
+    if (sc.text) {
+      const p = document.createElement('p');
+      p.className = 'l-text';
+      p.textContent = sc.text;
+      container.appendChild(p);
+      const next = document.createElement('button');
+      next.className = 'btn btn-blue btn-block';
+      next.textContent = 'Далее →';
+      next.onclick = () => this.advance();
+      container.appendChild(next);
+    } else if (sc.q) {
+      const q = document.createElement('p');
+      q.className = 'l-q';
+      q.textContent = sc.q;
+      container.appendChild(q);
+      const answers = document.createElement('div');
+      answers.className = 'lesson-answers';
+      const keys = ['A', 'B', 'C', 'D'];
+      sc.a.forEach((opt, i) => {
+        const b = document.createElement('button');
+        b.className = 'lesson-answer';
+        b.innerHTML = '<span class="la-key">' + keys[i] + '</span><span>' + opt + '</span>';
+        b.onclick = () => {
+          $$('.lesson-answer').forEach((c, j) => {
+            c.disabled = true;
+            if (j === sc.ok) c.classList.add('correct');
+            else if (j === i) c.classList.add('wrong');
+          });
+          const fb = document.createElement('div');
+          fb.className = 'lesson-feedback ' + (i === sc.ok ? 'ok' : 'bad');
+          fb.textContent = (i === sc.ok ? '✅ Верно! ' : '❌ Ой! ') + (sc.tip || '');
+          container.appendChild(fb);
+          if (i === sc.ok) { sfx.correct(); this.onToast('+5 XP 🪙'); }
+          else sfx.wrong();
+          const next = document.createElement('button');
+          next.className = 'btn btn-green btn-block';
+          next.textContent = 'Далее →';
+          next.onclick = () => this.advance();
+          container.appendChild(next);
+        };
+        answers.appendChild(b);
+      });
+      container.appendChild(answers);
+    }
+  }
+
+  advance() {
+    const { course, lesson, idx } = this.active;
+    const sc = lesson.scenes[idx];
+    if (sc.xp) gainXP(this.state, sc.xp);
+    this.state.lessons = this.state.lessons || {};
+    this.state.lessons[course.id + ':' + lesson.id] = idx + 1;
+    this.onSave();
+    this.active.idx++;
+    this.showScene();
+  }
+
+  finish() {
+    this.onToast('🎓 Урок пройден! +10 XP');
+    els('theoryRunner').classList.add('hidden');
+    els('theoryBrowse').classList.remove('hidden');
+    renderTheory();
+    this.active = null;
+  }
+}
+
+const lessonUI = new LessonRunnerUI(LESSONS, S, { onSave: persist, onToast: toast });
+
+/* ============ GAME / EVENT ============ */
+let gameTimer = null;
+let gameTimeLeft = 25;
+let currentEvent = null;
+
+function startGame() {
+  if (currentEvent) return;
+  currentEvent = CONTENT.events[Math.floor(Math.random() * CONTENT.events.length)];
+  gameTimeLeft = 25;
+  els('gameTimer').textContent = gameTimeLeft;
+  els('gameQuestion').textContent = currentEvent.q;
+  const answers = els('gameAnswers');
+  answers.innerHTML = '';
+  els('gameFeedback').innerHTML = '';
+  const colors = ['orange', 'blue', 'orange', 'blue'];
+  const keys = ['A', 'B', 'C', 'D'];
+  currentEvent.a.forEach((opt, i) => {
+    const b = document.createElement('button');
+    b.className = 'game-answer ' + colors[i % 2];
+    b.innerHTML = '<span class="ga-key">' + keys[i] + '</span><span>' + opt + '</span>';
+    b.onclick = () => answerGame(i);
+    answers.appendChild(b);
+  });
+  renderTopbar();
+  clearInterval(gameTimer);
+  gameTimer = setInterval(() => {
+    gameTimeLeft--;
+    els('gameTimer').textContent = Math.max(0, gameTimeLeft);
+    if (gameTimeLeft <= 0) {
+      clearInterval(gameTimer);
+      gameTimer = null;
+      endGame(false);
+    }
+  }, 1000);
+}
+
+function answerGame(idx) {
+  if (!currentEvent) return;
+  clearInterval(gameTimer);
+  gameTimer = null;
+  const ok = answerEvent(S, currentEvent, idx);
+  $$('.game-answer').forEach((b, j) => {
+    b.disabled = true;
+    if (j === currentEvent.ok) b.classList.add('correct');
+    else if (j === idx) b.classList.add('wrong');
+  });
+  const fb = els('gameFeedback');
+  fb.innerHTML = '<div class="lesson-feedback ' + (ok ? 'ok' : 'bad') + '">' +
+    (ok ? '✅ Верно! +10 🛡️ +10 🪙 ' : '❌ Мимо! ') + currentEvent.tip + '</div>' +
+    '<button class="btn btn-green btn-block" id="btnNextEvent" style="margin-top:12px">Следующее задание →</button>';
+  if (ok) { sfx.correct(); toast('+10 XP +10 🪙'); }
+  else sfx.wrong();
+  els('btnNextEvent').onclick = () => {
+    currentEvent = null;
+    persist();
+    startGame();
+  };
+  persist();
+}
+
+function endGame(won) {
+  currentEvent = null;
+  els('gameFeedback').innerHTML =
+    '<div class="lesson-feedback bad">⏰ Время вышло! Попробуй ещё раз.</div>' +
+    '<button class="btn btn-blue btn-block" id="btnRetryEvent" style="margin-top:12px">Ещё раз →</button>';
+  els('btnRetryEvent').onclick = startGame;
+}
+
+$$('.game-tool').forEach((t) => {
+  t.addEventListener('click', () => {
+    const labels = { shield: '🛡️ Защитник Wi-Fi', cold: '❄️ Холодный разум', key: '🔑 Защитный ключ', hint: '❓ Подсказка' };
+    toast(labels[t.dataset.tool] + ' активирован!');
+    sfx.click();
+    if (t.dataset.tool === 'hint' && currentEvent) {
+      const fb = els('gameFeedback');
+      fb.innerHTML = '<div class="lesson-feedback ok">💡 Подсказка: ' + currentEvent.tip + '</div>';
+    }
+  });
+});
+
+/* ============ SHOP ============ */
 function renderShop() {
   const cell = (item, type, equipped) => {
     const div = document.createElement('div');
     div.className = 'shop-item';
-    div.innerHTML = '<span class="icon">' + item.icon + '</span><span class="name">' + item.name + '</span>';
+    div.innerHTML = '<span class="s-icon">' + item.icon + '</span><span class="s-name">' + item.name + '</span>';
     const price = document.createElement('span');
+    price.className = 's-price';
     const btn = document.createElement('button');
-    if (equipped) { btn.textContent = 'НАДЕТО ✓'; btn.className = 'equip'; btn.disabled = true; price.textContent = '—'; }
-    else if (owns(S, item.id) && type !== 'food') { btn.textContent = 'НАДЕТЬ'; btn.className = 'owned'; price.textContent = 'куплено'; }
-    else { btn.textContent = 'КУПИТЬ'; price.textContent = item.price + ' 🪙'; if (S.coins < item.price) btn.disabled = true; }
-    price.className = 'price';
-    div.appendChild(price); div.appendChild(btn);
+    btn.className = 'btn';
+    if (equipped) {
+      btn.textContent = 'Надето ✓';
+      btn.className += ' btn-green';
+      btn.disabled = true;
+      price.textContent = '—';
+    } else if (owns(S, item.id) && type !== 'food') {
+      btn.textContent = 'Надеть';
+      btn.className += ' btn-blue';
+      price.textContent = 'куплено';
+    } else {
+      btn.textContent = 'Купить';
+      btn.className += ' btn-orange';
+      price.textContent = item.price + ' 🪙';
+      if (S.coins < item.price) btn.disabled = true;
+    }
+    price.className = 's-price';
+    div.appendChild(price);
+    div.appendChild(btn);
     btn.onclick = () => {
       const r = buy(S, item, type);
-      if (!r.ok) return;
+      if (!r.ok) { toast('Не хватает монет!'); return; }
       if (r.action === 'consume') {
         if (item.id === 'food_seeds') S.health = Math.min(100, S.health + 15);
         if (item.id === 'food_cake') S.mood = Math.min(100, S.mood + 20);
         if (item.id === 'food_tea') { S.health = Math.min(100, S.health + 8); S.mood = Math.min(100, S.mood + 8); }
-        S._eating = 8; scene.puff(item.icon, '#ffd166');
-        log('куплено: ' + item.name);
+        toast('Ням! ' + item.name);
       } else {
-        log('обновлено: ' + item.name + '!');
-        scene.puff('♥', '#ff8fa3');
+        toast('Обновлено: ' + item.name + '!');
       }
-      scene.rebuild(S);
-      persist(); renderShop();
+      persist();
+      renderShop();
     };
     return div;
   };
   const fill = (id, items, type) => {
-    const el2 = els(id);
-    el2.innerHTML = '';
-    items.forEach((it) => el2.appendChild(cell(it, type, type !== 'food' && S.equipped[type] === it.id)));
+    const el = els(id);
+    el.innerHTML = '';
+    items.forEach((it) => el.appendChild(cell(it, type, type !== 'food' && S.equipped[type] === it.id)));
   };
   fill('shopHats', SHOP.hats, 'hat');
   fill('shopWalls', SHOP.walls, 'wall');
   fill('shopFood', SHOP.food, 'food');
 }
 
-function renderHabits() {
-  const list = els('habitList');
-  list.innerHTML = '';
-  S.habits.forEach((h) => {
-    const div = document.createElement('div');
-    div.className = 'habit' + (habitDone(S, h.id) ? ' done' : '');
-    const cb = document.createElement('input');
-    cb.type = 'checkbox';
-    cb.checked = !!habitDone(S, h.id);
-    cb.onchange = () => {
-      toggleHabit(S, h.id, cb.checked);
-      if (cb.checked) { S._jumping = 16; scene.puff('★', '#ffd166'); sfx.correct(); log('✅ серия ' + S.habitState[h.id].streak + '!'); }
-      renderHabits(); persist();
-    };
-    const label = document.createElement('span');
-    label.textContent = h.emoji + ' ' + h.text;
-    const st = document.createElement('span');
-    st.className = 'st';
-    st.textContent = '🔥' + ((S.habitState[h.id] && S.habitState[h.id].streak) || 0);
-    div.appendChild(cb); div.appendChild(label); div.appendChild(st);
-    list.appendChild(div);
-  });
-}
-
+/* ============ SUPPORT / CHAT ============ */
 let chatUI = null;
-function openSupportTool(target, label) {
-  log('→ ' + label);
-  if (target === 'home') { document.querySelector('[data-tab="home"]').click(); return; }
-  if (target === 'lessons') { document.querySelector('[data-tab="lessons"]').click(); return; }
-  if (target === 'habit') { document.querySelector('[data-tab="habits"]').click(); return; }
-  document.querySelector('[data-tab="support"]').click();
-  if (target === 'mood') setTimeout(() => els('moodScale').scrollIntoView({ behavior: 'smooth' }), 200);
+function initChat() {
+  chatUI = new ChatUI(CONTENT, S, {
+    onLog: toast,
+    sfx,
+    actions: { goTo: (target, label) => { toast('→ ' + label); if (NAV_MAP[target]) gotoScreen(NAV_MAP[target]); } }
+  });
+  chatUI.mount(els('chatBox'));
 }
 
-const lessonUI = new LessonUI(LESSONS, S, { onSave: persist, onLog: log, onPuff: (c, col) => scene.puff(c, col) });
-function renderLessons() { lessonUI.renderList(els('lessonList')); }
-
-document.querySelectorAll('.tabs button').forEach((btn) => {
-  btn.onclick = () => {
-    sfx.tab();
-    document.querySelectorAll('.tabs button').forEach((b) => b.classList.remove('active'));
-    btn.classList.add('active');
-    ['home', 'shop', 'habits', 'lessons', 'support'].forEach((t) => {
-      els('tab-' + t).classList.toggle('hidden', t !== btn.dataset.tab);
-    });
-    if (btn.dataset.tab === 'shop') renderShop();
-    if (btn.dataset.tab === 'habits') renderHabits();
-    if (btn.dataset.tab === 'lessons') renderLessons();
-    if (btn.dataset.tab === 'support') {
-      renderMoodChart(S, els('moodChart'));
-      if (!chatUI) {
-        chatUI = new ChatUI(CONTENT, S, {
-          onLog: log, sfx,
-          actions: { goTo: (target, label) => openSupportTool(target, label) }
-        });
-        chatUI.mount(els('chatBox'));
-      }
-    }
-  };
-});
-
-els('btnAddHabit').onclick = () => {
-  const inp = els('newHabit');
-  const txt = inp.value.trim();
-  if (!txt) return;
-  S.habits.push({ id: 'h_' + Date.now(), emoji: '⭐', text: txt });
-  inp.value = '';
-  renderHabits(); save(S);
-};
-
-document.querySelectorAll('#moodScale button').forEach((b) => {
-  b.onclick = () => {
+$$('#moodScale button').forEach((b) => {
+  b.addEventListener('click', () => {
     const m = +b.dataset.mood;
     logMood(S, m);
     const msg = els('moodMsg');
     msg.textContent = CONTENT.moodMsgs[m];
     msg.classList.remove('hidden');
-    if (m >= 4) { S.mood = Math.min(100, S.mood + 6); S._jumping = 16; scene.puff('♥', '#ff8fa3'); sfx.heart(); }
+    if (m >= 4) { S.mood = Math.min(100, S.mood + 6); sfx.heart(); }
     else S.mood = Math.min(100, S.mood + 3);
     gainXP(S, 1);
-    log('💙 чек-ин записан');
-    persist(); renderMoodChart(S, els('moodChart'));
-  };
+    toast('💜 Чек-ин записан');
+    persist();
+    renderMoodChart(S, els('moodChart'));
+  });
 });
 
+/* ============ SETTINGS ============ */
+els('btnToggleSound').addEventListener('click', () => {
+  const on = sfx.toggle();
+  els('btnToggleSound').textContent = '🔊 Звук: ' + (on ? 'вкл' : 'выкл');
+  els('btnSound').textContent = on ? '🔊' : '🔇';
+});
 
+els('btnSound').addEventListener('click', () => {
+  const on = sfx.toggle();
+  els('btnSound').textContent = on ? '🔊' : '🔇';
+  els('btnToggleSound').textContent = '🔊 Звук: ' + (on ? 'вкл' : 'выкл');
+});
+
+els('btnReset').addEventListener('click', () => {
+  if (!confirm('Точно сбросить весь прогресс?')) return;
+  localStorage.removeItem('khomyagochi_pixel');
+  location.reload();
+});
+
+/* ============ INIT ============ */
+dayCheck(S, toast);
+renderTopbar();
+renderPetBubble();
+
+if (S.onboarded) {
+  gotoScreen('home');
+} else {
+  showAudience();
+}
+
+setInterval(() => { tick(S, 1); persist(); }, 4000);
+setInterval(renderPetBubble, 8000);
 
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') els('roomPanel').classList.add('hidden');
+  if (e.key === 'Escape') els('modalBg').classList.add('hidden');
 });
 
-log('🐹 добро пожаловать в домик!');
-renderHabits();
-
-const cloudUI = new CloudUI({ state: S, onSave: () => save(S), onLog: log, onRender: render });
-cloudUI.init();
-
-setInterval(() => {
-  if (cloudUI.user && cloudUI.user.access_token) cloudSave(S).catch(() => {});
-}, 60000);
-
 window.addEventListener('error', function (e) {
-  var cv = document.getElementById('scene');
-  if (cv) {
-    var c = cv.getContext('2d');
-    c.fillStyle = '#171225';
-    c.fillRect(0, 0, 320, 240);
-    c.fillStyle = '#e5484d';
-    c.font = '8px monospace';
-    var msg = (e.message || 'error').slice(0, 40);
-    c.fillText('XOMYAKI OFFLINE:', 10, 100);
-    c.fillText(msg, 10, 116);
-    c.fillStyle = '#9d94b8';
-    c.fillText('F12 - Console', 10, 140);
-  }
+  console.error('App error:', e.message);
 });
