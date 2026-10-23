@@ -1,8 +1,8 @@
-import { load, save } from '../core/store.js?v=5';
-import { tick, petState } from '../core/pet.js?v=5';
-import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg } from '../core/game.js?v=5';
-import { sfx } from './audio.js?v=5';
-import { renderMoodChart, ChatUI } from './support.js?v=5';
+import { load, save } from '../core/store.js?v=6';
+import { tick, petState } from '../core/pet.js?v=6';
+import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg } from '../core/game.js?v=6';
+import { sfx } from './audio.js?v=6';
+import { renderMoodChart, ChatUI } from './support.js?v=6';
 
 const CONTENT = window.__CONTENT__;
 const LESSONS = window.__LESSONS__;
