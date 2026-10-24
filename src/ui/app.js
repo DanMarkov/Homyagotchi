@@ -3,6 +3,7 @@ import { tick, petState } from '../core/pet.js?v=7';
 import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg } from '../core/game.js?v=7';
 import { sfx } from './audio.js?v=7';
 import { renderMoodChart, ChatUI } from './support.js?v=7';
+import { createSprite } from '../render/pixel-sprites.js?v=7';
 
 const CONTENT = window.__CONTENT__;
 const LESSONS = window.__LESSONS__;
@@ -30,6 +31,124 @@ function toast(msg) {
 
 function persist() { save(S); renderTopbar(); }
 
+/* ============ PIXEL SPRITE HELPERS ============ */
+function mountSprite(containerId, spriteName, ...args) {
+  const container = els(containerId);
+  if (!container) return;
+  container.innerHTML = '';
+  const sprite = createSprite(spriteName, ...args);
+  if (sprite) container.appendChild(sprite);
+}
+
+function mountDecorSprites() {
+  const decor = els('roomDecorRight');
+  if (!decor) return;
+  decor.innerHTML = '';
+  const items = [
+    ['bed'], ['sofa'], ['lamp'],
+    ['shelf', () => {
+      const wrap = document.createElement('div');
+      wrap.style.display = 'flex';
+      wrap.style.flexDirection = 'column';
+      wrap.style.alignItems = 'center';
+      const trophy = createSprite('trophy');
+      const books = createSprite('books');
+      if (trophy) { trophy.style.transform = 'scale(1.2)'; wrap.appendChild(trophy); }
+      if (books) { books.style.transform = 'scale(1.2)'; books.style.marginTop = '4px'; wrap.appendChild(books); }
+      return wrap;
+    }],
+    ['chair']
+  ];
+  items.forEach(([name, factory]) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'decor-item';
+    if (factory) {
+      const el = factory();
+      if (el) wrap.appendChild(el);
+    } else {
+      const sprite = createSprite(name);
+      if (sprite) wrap.appendChild(sprite);
+    }
+    decor.appendChild(wrap);
+  });
+}
+
+function renderPetSprite() {
+  const ps = petState(S);
+  const stateMap = { idle: 'hamster', sitting: 'hamster_sit', happy: 'hamster_happy' };
+  mountSprite('petSpriteWrap', stateMap[ps] || 'hamster');
+  mountSprite('petDeskWrap', 'desk');
+}
+
+function renderGameTools() {
+  const tools = els('gameTools');
+  if (!tools) return;
+  tools.innerHTML = '';
+  const defs = [
+    { key: 'shield', sprite: 'shield', label: 'ЗАЩИТА<br>WI-FI', bg: 'var(--blue-soft)' },
+    { key: 'cold', sprite: 'snowflake', label: 'ХОЛОДНЫЙ<br>РАЗУМ', bg: '#d4f0fa' },
+    { key: 'key', sprite: 'key', label: 'ЗАЩИТНЫЙ<br>КЛЮЧ', bg: 'var(--yellow)' },
+    { key: 'hint', sprite: 'question', label: 'ПОДСКАЗКА', bg: 'var(--purple)' }
+  ];
+  defs.forEach((d) => {
+    const btn = document.createElement('button');
+    btn.className = 'game-tool';
+    btn.dataset.tool = d.key;
+    const iconWrap = document.createElement('span');
+    iconWrap.className = 'gt-icon';
+    iconWrap.style.background = d.bg;
+    const sprite = createSprite(d.sprite);
+    if (sprite) { sprite.style.transform = 'scale(1.3)'; iconWrap.appendChild(sprite); }
+    const label = document.createElement('span');
+    label.className = 'gt-label';
+    label.innerHTML = d.label;
+    btn.appendChild(iconWrap);
+    btn.appendChild(label);
+    btn.addEventListener('click', () => {
+      const labels = { shield: '🛡️ Защитник Wi-Fi', cold: '❄️ Холодный разум', key: '🔑 Защитный ключ', hint: '❓ Подсказка' };
+      toast(labels[d.key] + ' активирован!');
+      sfx.click();
+      if (d.key === 'hint' && currentEvent) {
+        const fb = els('gameFeedback');
+        fb.innerHTML = '<div class="lesson-feedback ok">💡 Подсказка: ' + currentEvent.tip + '</div>';
+      }
+    });
+    tools.appendChild(btn);
+  });
+}
+
+function renderTopbarSprites() {
+  mountSprite('brandLogo', 'hamster_happy');
+  const heartsContainer = els('topHearts');
+  if (heartsContainer) {
+    heartsContainer.innerHTML = '';
+    const count = Math.max(1, Math.ceil(S.health / 34));
+    for (let i = 0; i < Math.min(count, 5); i++) {
+      const h = createSprite('heart', 2);
+      if (h) heartsContainer.appendChild(h);
+    }
+  }
+  mountSprite('topCoinsIcon', 'coin', 2);
+  mountSprite('topKpIcon', 'trophy_icon', 2);
+  mountSprite('topLvlIcon', 'star', 2);
+  mountSprite('gameKpIcon', 'trophy_icon', 2);
+  const gameHearts = els('gameHearts');
+  if (gameHearts) {
+    gameHearts.innerHTML = '';
+    const hearts = Math.max(0, Math.min(5, Math.ceil(S.health / 20)));
+    for (let i = 0; i < hearts; i++) {
+      const h = createSprite('heart', 3);
+      if (h) gameHearts.appendChild(h);
+    }
+    for (let i = hearts; i < 5; i++) {
+      const span = document.createElement('span');
+      span.textContent = '🖤';
+      span.style.fontSize = '1.2rem';
+      gameHearts.appendChild(span);
+    }
+  }
+}
+
 /* ============ NAVIGATION ============ */
 const SCREENS = ['audience', 'home', 'stats', 'habits', 'theory', 'game', 'shop', 'support', 'settings'];
 const NAV_MAP = { home: 'home', habits: 'habits', theory: 'theory', game: 'game', shop: 'shop', support: 'support', stats: 'stats', settings: 'settings' };
@@ -52,7 +171,7 @@ function gotoScreen(name) {
     renderMoodChart(S, els('moodChart'));
     if (!chatUI) initChat();
   }
-  if (name === 'home') renderPetBubble();
+  if (name === 'home') { renderPetBubble(); renderPetSprite(); mountDecorSprites(); }
 }
 
 $$('[data-goto]').forEach((btn) => {
@@ -64,13 +183,11 @@ $$('[data-goto]').forEach((btn) => {
 
 /* ============ TOP BAR ============ */
 function renderTopbar() {
-  els('topHearts').textContent = '❤️'.repeat(Math.max(1, Math.ceil(S.health / 34)));
   els('topCoins').textContent = S.coins;
   els('topKp').textContent = S.lvl * 10 + S.xp;
   els('topLvl').textContent = S.lvl;
   els('gameKp').textContent = S.lvl * 10 + S.xp;
-  const hearts = Math.max(0, Math.min(5, Math.ceil(S.health / 20)));
-  els('gameHearts').textContent = '❤️'.repeat(hearts) + '🖤'.repeat(Math.max(0, 5 - hearts));
+  renderTopbarSprites();
 }
 
 /* ============ AUDIENCE ============ */
@@ -163,7 +280,8 @@ function renderStats() {
   const pct = Math.min(100, totalKp);
   els('statsProgress').style.width = pct + '%';
   els('statsProgressText').textContent = totalKp + '/100 KP';
-  els('statsStreak').textContent = '🔥 ' + (S.streak || 0) + ' дней';
+  els('statsStreak').textContent = '🔥 ' + (S.streak || 0) + ' ДНЕЙ';
+  mountSprite('statsPet', 'bear_trophy');
 }
 
 /* ============ HABITS / TODO ============ */
@@ -179,7 +297,7 @@ function renderHabits() {
     cb.textContent = done ? '✓' : '';
     cb.addEventListener('click', () => {
       toggleHabit(S, h.id, !done);
-      if (!done) { sfx.correct(); toast('+2 XP +3 🪙'); }
+      if (!done) { sfx.correct(); toast('+2 XP +3 монеты'); }
       renderHabits();
       persist();
     });
@@ -194,6 +312,7 @@ function renderHabits() {
     div.appendChild(reward);
     list.appendChild(div);
   });
+  mountSprite('todoPet', 'bear_laptop');
 }
 
 els('btnAddHabit').addEventListener('click', () => {
@@ -242,6 +361,7 @@ function renderTheory() {
       '<button class="btn btn-blue" style="margin-top:8px" data-start-lesson="' + t.id + '">▶ Пройти урок</button>';
     els('theoryContent').querySelector('[data-start-lesson]').addEventListener('click', () => startLessonByTopic(t.id));
   }
+  mountSprite('theoryPet', 'hamster_sit');
 }
 
 function startLessonByTopic(topicId) {
@@ -254,7 +374,7 @@ function startLessonByTopic(topicId) {
   lessonUI.start(course, lesson, els('lessonRunner'));
 }
 
-/* ============ LESSON RUNNER (Duolingo style) ============ */
+/* ============ LESSON RUNNER ============ */
 class LessonRunnerUI {
   constructor(lessons, state, { onSave, onToast }) {
     this.courses = lessons.courses;
@@ -284,7 +404,7 @@ class LessonRunnerUI {
       container.appendChild(p);
       const next = document.createElement('button');
       next.className = 'btn btn-blue btn-block';
-      next.textContent = 'Далее →';
+      next.textContent = 'ДАЛЕЕ →';
       next.onclick = () => this.advance();
       container.appendChild(next);
     } else if (sc.q) {
@@ -309,11 +429,11 @@ class LessonRunnerUI {
           fb.className = 'lesson-feedback ' + (i === sc.ok ? 'ok' : 'bad');
           fb.textContent = (i === sc.ok ? '✅ Верно! ' : '❌ Ой! ') + (sc.tip || '');
           container.appendChild(fb);
-          if (i === sc.ok) { sfx.correct(); this.onToast('+5 XP 🪙'); }
+          if (i === sc.ok) { sfx.correct(); this.onToast('+5 XP'); }
           else sfx.wrong();
           const next = document.createElement('button');
           next.className = 'btn btn-green btn-block';
-          next.textContent = 'Далее →';
+          next.textContent = 'ДАЛЕЕ →';
           next.onclick = () => this.advance();
           container.appendChild(next);
         };
@@ -369,6 +489,7 @@ function startGame() {
     answers.appendChild(b);
   });
   renderTopbar();
+  mountSprite('gamePet', 'hamster_sit');
   clearInterval(gameTimer);
   gameTimer = setInterval(() => {
     gameTimeLeft--;
@@ -393,9 +514,9 @@ function answerGame(idx) {
   });
   const fb = els('gameFeedback');
   fb.innerHTML = '<div class="lesson-feedback ' + (ok ? 'ok' : 'bad') + '">' +
-    (ok ? '✅ Верно! +10 🛡️ +10 🪙 ' : '❌ Мимо! ') + currentEvent.tip + '</div>' +
-    '<button class="btn btn-green btn-block" id="btnNextEvent" style="margin-top:12px">Следующее задание →</button>';
-  if (ok) { sfx.correct(); toast('+10 XP +10 🪙'); }
+    (ok ? '✅ Верно! +10 🛡️ +10 монет ' : '❌ Мимо! ') + currentEvent.tip + '</div>' +
+    '<button class="btn btn-green btn-block" id="btnNextEvent" style="margin-top:12px">СЛЕДУЮЩЕЕ ЗАДАНИЕ →</button>';
+  if (ok) { sfx.correct(); toast('+10 XP +10 монет'); }
   else sfx.wrong();
   els('btnNextEvent').onclick = () => {
     currentEvent = null;
@@ -405,25 +526,13 @@ function answerGame(idx) {
   persist();
 }
 
-function endGame(won) {
+function endGame() {
   currentEvent = null;
   els('gameFeedback').innerHTML =
     '<div class="lesson-feedback bad">⏰ Время вышло! Попробуй ещё раз.</div>' +
-    '<button class="btn btn-blue btn-block" id="btnRetryEvent" style="margin-top:12px">Ещё раз →</button>';
+    '<button class="btn btn-blue btn-block" id="btnRetryEvent" style="margin-top:12px">ЕЩЁ РАЗ →</button>';
   els('btnRetryEvent').onclick = startGame;
 }
-
-$$('.game-tool').forEach((t) => {
-  t.addEventListener('click', () => {
-    const labels = { shield: '🛡️ Защитник Wi-Fi', cold: '❄️ Холодный разум', key: '🔑 Защитный ключ', hint: '❓ Подсказка' };
-    toast(labels[t.dataset.tool] + ' активирован!');
-    sfx.click();
-    if (t.dataset.tool === 'hint' && currentEvent) {
-      const fb = els('gameFeedback');
-      fb.innerHTML = '<div class="lesson-feedback ok">💡 Подсказка: ' + currentEvent.tip + '</div>';
-    }
-  });
-});
 
 /* ============ SHOP ============ */
 function renderShop() {
@@ -436,18 +545,18 @@ function renderShop() {
     const btn = document.createElement('button');
     btn.className = 'btn';
     if (equipped) {
-      btn.textContent = 'Надето ✓';
+      btn.textContent = 'НАДЕТО ✓';
       btn.className += ' btn-green';
       btn.disabled = true;
       price.textContent = '—';
     } else if (owns(S, item.id) && type !== 'food') {
-      btn.textContent = 'Надеть';
+      btn.textContent = 'НАДЕТЬ';
       btn.className += ' btn-blue';
-      price.textContent = 'куплено';
+      price.textContent = 'КУПЛЕНО';
     } else {
-      btn.textContent = 'Купить';
+      btn.textContent = 'КУПИТЬ';
       btn.className += ' btn-orange';
-      price.textContent = item.price + ' 🪙';
+      price.textContent = item.price + ' МОНЕТ';
       if (S.coins < item.price) btn.disabled = true;
     }
     price.className = 's-price';
@@ -488,6 +597,16 @@ function initChat() {
     actions: { goTo: (target, label) => { toast('→ ' + label); if (NAV_MAP[target]) gotoScreen(NAV_MAP[target]); } }
   });
   chatUI.mount(els('chatBox'));
+  const header = els('chatBox').querySelector('.chat-header');
+  if (header) {
+    const avatarWrap = header.querySelector('.ch-avatar');
+    if (avatarWrap) {
+      avatarWrap.className = 'ch-avatar-wrap';
+      avatarWrap.innerHTML = '';
+      const sprite = createSprite('hamster_happy');
+      if (sprite) { sprite.style.transform = 'scale(1.3)'; avatarWrap.appendChild(sprite); }
+    }
+  }
 }
 
 $$('#moodScale button').forEach((b) => {
@@ -527,6 +646,15 @@ els('btnReset').addEventListener('click', () => {
 
 /* ============ INIT ============ */
 dayCheck(S, toast);
+renderTopbarSprites();
+renderGameTools();
+renderPetSprite();
+mountDecorSprites();
+mountSprite('theoryPet', 'hamster_sit');
+mountSprite('todoPet', 'bear_laptop');
+mountSprite('statsPet', 'bear_trophy');
+mountSprite('statsTitleIcon', 'trophy_icon', 3);
+mountSprite('supportTitleIcon', 'heart', 3);
 renderTopbar();
 renderPetBubble();
 
