@@ -1,9 +1,9 @@
-import { load, save } from '../core/store.js?v=7';
-import { tick, petState } from '../core/pet.js?v=7';
-import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg } from '../core/game.js?v=7';
-import { sfx } from './audio.js?v=7';
-import { renderMoodChart, ChatUI } from './support.js?v=7';
-import { createSprite } from '../render/pixel-sprites.js?v=7';
+import { load, save } from '../core/store.js?v=8';
+import { tick, petState } from '../core/pet.js?v=8';
+import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg } from '../core/game.js?v=8';
+import { sfx } from './audio.js?v=8';
+import { renderMoodChart, ChatUI } from './support.js?v=8';
+import { createSprite } from '../render/pixel-sprites.js?v=8';
 
 const CONTENT = window.__CONTENT__;
 const LESSONS = window.__LESSONS__;
@@ -53,8 +53,8 @@ function mountDecorSprites() {
       wrap.style.alignItems = 'center';
       const trophy = createSprite('trophy');
       const books = createSprite('books');
-      if (trophy) { trophy.style.transform = 'scale(1.2)'; wrap.appendChild(trophy); }
-      if (books) { books.style.transform = 'scale(1.2)'; books.style.marginTop = '4px'; wrap.appendChild(books); }
+      if (trophy) wrap.appendChild(trophy);
+      if (books) { books.style.marginTop = '4px'; wrap.appendChild(books); }
       return wrap;
     }],
     ['chair']
@@ -98,7 +98,7 @@ function renderGameTools() {
     iconWrap.className = 'gt-icon';
     iconWrap.style.background = d.bg;
     const sprite = createSprite(d.sprite);
-    if (sprite) { sprite.style.transform = 'scale(1.3)'; iconWrap.appendChild(sprite); }
+    if (sprite) iconWrap.appendChild(sprite);
     const label = document.createElement('span');
     label.className = 'gt-label';
     label.innerHTML = d.label;
@@ -604,7 +604,7 @@ function initChat() {
       avatarWrap.className = 'ch-avatar-wrap';
       avatarWrap.innerHTML = '';
       const sprite = createSprite('hamster_happy');
-      if (sprite) { sprite.style.transform = 'scale(1.3)'; avatarWrap.appendChild(sprite); }
+      if (sprite) avatarWrap.appendChild(sprite);
     }
   }
 }
