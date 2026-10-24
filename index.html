@@ -4,48 +4,50 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🐹 Хомягочи</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
   :root {
-    --sky: #bfe3f7;
-    --sky-deep: #9fd0f0;
-    --wall: #a8d4f0;
-    --floor: #c49a6c;
-    --floor-dark: #a87e4f;
+    --bg: #cfe9f9;
+    --bg-deep: #a8d4f0;
+    --wall: #b8dcf5;
+    --floor: #e8b46e;
+    --floor-dark: #c49a6c;
     --card: #ffffff;
-    --ink: #2c3e50;
-    --ink-soft: #5b7085;
+    --ink: #1a3a5c;
+    --ink-soft: #4a6a8c;
     --muted: #8fa5b8;
-    --line: #d0e0ee;
+    --line: #1a3a5c;
+    --line-soft: #a8c4dc;
     --green: #58cc02;
-    --green-dark: #46a302;
-    --green-soft: #e8f8dc;
+    --green-dark: #3d8b01;
+    --green-soft: #d4f0c0;
     --red: #ea4b4b;
-    --red-soft: #fde8e8;
+    --red-dark: #c0392b;
+    --red-soft: #fcd5d5;
     --orange: #ff9f1c;
-    --orange-dark: #e07f00;
+    --orange-dark: #d4820a;
     --blue: #1cb0f6;
-    --blue-dark: #1899d6;
-    --blue-soft: #e3f5fd;
+    --blue-dark: #0d8ec9;
+    --blue-soft: #d4eefb;
     --purple: #a78bfa;
-    --purple-dark: #8b5cf6;
-    --purple-deep: #7c3aed;
+    --purple-dark: #7c5cd6;
     --yellow: #ffd166;
-    --yellow-dark: #e6a817;
+    --yellow-dark: #d4a817;
     --pink: #ff8fab;
-    --pink-dark: #f06292;
-    --brown: #8d6e63;
-    --brown-dark: #6d4c41;
-    --shadow: 0 4px 0 rgba(44,62,80,.08);
-    --shadow-lg: 0 8px 24px rgba(44,62,80,.12);
-    --radius: 16px;
-    --radius-lg: 24px;
+    --pink-dark: #d6608a;
+    --pix: 4px;
+    --shadow: 4px 4px 0 rgba(26,58,92,.15);
+    --shadow-lg: 6px 6px 0 rgba(26,58,92,.2);
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; image-rendering: pixelated; }
   html, body { height: 100%; }
   body {
-    font-family: 'Nunito', system-ui, sans-serif;
-    background: var(--sky);
+    font-family: 'Press Start 2P', monospace;
+    background: var(--bg);
+    background-image:
+      linear-gradient(rgba(255,255,255,.03) 2px, transparent 2px),
+      linear-gradient(90deg, rgba(255,255,255,.03) 2px, transparent 2px);
+    background-size: 32px 32px;
     min-height: 100vh;
     color: var(--ink);
     display: flex;
@@ -53,40 +55,46 @@
     align-items: center;
     padding: 0;
     overflow-x: hidden;
+    font-size: 10px;
+    line-height: 1.8;
   }
+
+  /* ===== PIXEL BORDER UTILITY ===== */
+  .px-border { border: var(--pix) solid var(--line); }
+  .px-shadow { box-shadow: var(--shadow); }
+  .px-shadow-lg { box-shadow: var(--shadow-lg); }
 
   /* ===== TOP BAR ===== */
   .topbar {
     width: 100%;
-    max-width: 1100px;
+    max-width: 960px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
-    padding: 14px 20px;
+    gap: 8px;
+    padding: 16px 20px;
     flex-wrap: wrap;
   }
   .brand {
     display: flex;
     align-items: center;
     gap: 10px;
-    font-weight: 900;
-    font-size: 1.5rem;
+    font-size: .8rem;
     color: var(--ink);
+    text-shadow: 2px 2px 0 rgba(255,255,255,.5);
   }
   .brand .logo {
-    width: 48px; height: 48px;
+    width: 40px; height: 40px;
     background: var(--card);
-    border-radius: 16px;
+    border: var(--pix) solid var(--line);
     display: flex; align-items: center; justify-content: center;
-    font-size: 1.8rem;
+    font-size: 1.2rem;
     box-shadow: var(--shadow);
-    border: 2px solid var(--line);
   }
   .topbar-stats {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     flex-wrap: wrap;
   }
   .stat-chip {
@@ -94,132 +102,125 @@
     align-items: center;
     gap: 6px;
     background: var(--card);
-    border-radius: 14px;
-    padding: 10px 16px;
-    font-weight: 800;
-    font-size: 1rem;
-    box-shadow: var(--shadow);
-    border: 2px solid var(--line);
-    min-width: 70px;
-    justify-content: center;
+    border: 3px solid var(--line);
+    padding: 8px 12px;
+    font-size: .55rem;
+    box-shadow: 3px 3px 0 rgba(26,58,92,.15);
   }
-  .stat-chip.hearts { color: #ff5b7f; }
-  .stat-chip.hearts .hearts-row { font-size: 1.1rem; letter-spacing: 2px; }
-  .stat-chip.coins { color: #e6a817; }
+  .stat-chip.hearts { color: var(--red); }
+  .stat-chip.coins { color: var(--yellow-dark); }
   .stat-chip.kp { color: var(--blue-dark); }
   .stat-chip.lvl { color: var(--purple-dark); }
   .btn-icon {
-    width: 48px; height: 48px;
-    border-radius: 14px;
-    border: 2px solid var(--line);
+    width: 40px; height: 40px;
+    border: 3px solid var(--line);
     background: var(--card);
     cursor: pointer;
-    font-size: 1.3rem;
+    font-size: 1rem;
     display: flex; align-items: center; justify-content: center;
-    box-shadow: var(--shadow);
-    transition: transform .1s;
+    box-shadow: 3px 3px 0 rgba(26,58,92,.15);
+    transition: transform .05s;
+    font-family: inherit;
   }
-  .btn-icon:active { transform: translateY(2px); box-shadow: none; }
+  .btn-icon:active { transform: translate(2px, 2px); box-shadow: none; }
 
   /* ===== MAIN LAYOUT ===== */
   .app {
     width: 100%;
-    max-width: 1100px;
+    max-width: 960px;
     flex: 1;
     display: flex;
     flex-direction: column;
     padding: 0 20px 100px;
   }
-  .screen { display: none; animation: fadeIn .25s ease; }
+  .screen { display: none; animation: fadeIn .15s steps(3); }
   .screen.active { display: block; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
   .card {
     background: var(--card);
-    border-radius: var(--radius-lg);
+    border: var(--pix) solid var(--line);
     box-shadow: var(--shadow-lg);
-    padding: 24px;
-    border: 2px solid var(--line);
+    padding: 20px;
   }
   .screen-title {
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 1.5rem;
-    font-weight: 800;
+    gap: 12px;
+    font-size: .7rem;
     margin-bottom: 20px;
     color: var(--ink);
+    text-shadow: 2px 2px 0 rgba(255,255,255,.5);
   }
   .screen-title .t-icon {
-    width: 44px; height: 44px;
-    border-radius: 12px;
+    width: 40px; height: 40px;
+    border: 3px solid var(--line);
     display: flex; align-items: center; justify-content: center;
-    font-size: 1.4rem;
+    font-size: 1.1rem;
+    box-shadow: 3px 3px 0 rgba(26,58,92,.15);
   }
 
   /* ===== BUTTONS ===== */
   .btn {
-    font-family: inherit;
-    font-weight: 800;
-    font-size: 1rem;
-    border: none;
-    border-radius: 14px;
-    padding: 14px 24px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: .55rem;
+    border: 3px solid var(--line);
+    padding: 12px 16px;
     cursor: pointer;
-    transition: transform .1s, box-shadow .1s, filter .15s;
+    transition: transform .05s, box-shadow .05s;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
     text-decoration: none;
+    line-height: 1.6;
+    box-shadow: 4px 4px 0 rgba(26,58,92,.2);
   }
-  .btn:hover { filter: brightness(1.05); }
-  .btn:active { transform: translateY(3px); }
-  .btn-green { background: var(--green); color: #fff; box-shadow: 0 4px 0 var(--green-dark); }
-  .btn-green:active { box-shadow: 0 1px 0 var(--green-dark); }
-  .btn-blue { background: var(--blue); color: #fff; box-shadow: 0 4px 0 var(--blue-dark); }
-  .btn-blue:active { box-shadow: 0 1px 0 var(--blue-dark); }
-  .btn-orange { background: var(--orange); color: #fff; box-shadow: 0 4px 0 var(--orange-dark); }
-  .btn-orange:active { box-shadow: 0 1px 0 var(--orange-dark); }
-  .btn-purple { background: var(--purple); color: #fff; box-shadow: 0 4px 0 var(--purple-dark); }
-  .btn-purple:active { box-shadow: 0 1px 0 var(--purple-dark); }
-  .btn-pink { background: var(--pink); color: #fff; box-shadow: 0 4px 0 var(--pink-dark); }
-  .btn-pink:active { box-shadow: 0 1px 0 var(--pink-dark); }
-  .btn-white { background: var(--card); color: var(--ink); border: 2px solid var(--line); box-shadow: var(--shadow); }
-  .btn-white:active { box-shadow: none; }
-  .btn-ghost { background: var(--card); color: var(--ink-soft); border: 2px solid var(--line); box-shadow: var(--shadow); }
+  .btn:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 rgba(26,58,92,.2); }
+  .btn-green { background: var(--green); color: #fff; border-color: var(--green-dark); box-shadow: 4px 4px 0 var(--green-dark); }
+  .btn-green:active { box-shadow: 1px 1px 0 var(--green-dark); }
+  .btn-blue { background: var(--blue); color: #fff; border-color: var(--blue-dark); box-shadow: 4px 4px 0 var(--blue-dark); }
+  .btn-blue:active { box-shadow: 1px 1px 0 var(--blue-dark); }
+  .btn-orange { background: var(--orange); color: #fff; border-color: var(--orange-dark); box-shadow: 4px 4px 0 var(--orange-dark); }
+  .btn-orange:active { box-shadow: 1px 1px 0 var(--orange-dark); }
+  .btn-purple { background: var(--purple); color: #fff; border-color: var(--purple-dark); box-shadow: 4px 4px 0 var(--purple-dark); }
+  .btn-purple:active { box-shadow: 1px 1px 0 var(--purple-dark); }
+  .btn-pink { background: var(--pink); color: #fff; border-color: var(--pink-dark); box-shadow: 4px 4px 0 var(--pink-dark); }
+  .btn-pink:active { box-shadow: 1px 1px 0 var(--pink-dark); }
+  .btn-white { background: var(--card); color: var(--ink); box-shadow: 4px 4px 0 rgba(26,58,92,.2); }
+  .btn-white:active { box-shadow: 1px 1px 0 rgba(26,58,92,.2); }
+  .btn-ghost { background: var(--card); color: var(--ink-soft); box-shadow: 3px 3px 0 rgba(26,58,92,.15); }
   .btn-ghost:active { box-shadow: none; }
   .btn-block { width: 100%; }
   .btn:disabled { opacity: .5; cursor: not-allowed; transform: none !important; }
 
-  /* ===== ONBOARDING / AUDIENCE ===== */
-  #screen-audience { text-align: center; padding-top: 30px; }
+  /* ===== AUDIENCE ===== */
+  #screen-audience { text-align: center; padding-top: 24px; }
   #screen-audience .big-title {
-    font-size: 2.2rem;
-    font-weight: 900;
-    margin-bottom: 8px;
+    font-size: .85rem;
+    margin-bottom: 12px;
+    text-shadow: 3px 3px 0 rgba(255,255,255,.5);
   }
   #screen-audience .subtitle {
     color: var(--ink-soft);
-    font-size: 1.15rem;
-    margin-bottom: 36px;
+    font-size: .5rem;
+    margin-bottom: 28px;
   }
   .audience-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-    margin-bottom: 36px;
-    max-width: 800px;
+    gap: 20px;
+    margin-bottom: 28px;
+    max-width: 720px;
     margin-left: auto;
     margin-right: auto;
   }
   .audience-card {
     background: var(--card);
-    border: 3px solid var(--blue);
-    border-radius: var(--radius-lg);
-    padding: 28px 20px;
+    border: 3px solid var(--line-soft);
+    padding: 20px 12px;
     cursor: pointer;
-    transition: all .2s;
+    transition: transform .1s, border-color .1s;
     box-shadow: var(--shadow);
     position: relative;
   }
@@ -231,174 +232,146 @@
   .audience-card.selected::after {
     content: '✓';
     position: absolute;
-    top: -12px; right: -12px;
-    width: 36px; height: 36px;
+    top: -14px; right: -14px;
+    width: 28px; height: 28px;
     background: var(--green);
     color: #fff;
-    border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    font-weight: 900;
-    font-size: 1.1rem;
-    border: 3px solid #fff;
+    font-size: .7rem;
+    border: 3px solid var(--card);
   }
-  .audience-card .a-emoji { font-size: 4.5rem; display: block; margin-bottom: 14px; }
-  .audience-card .a-name { font-weight: 900; font-size: 1.3rem; margin-bottom: 6px; }
-  .audience-card .a-desc { color: var(--ink-soft); font-size: .9rem; line-height: 1.5; }
+  .audience-card .a-emoji { font-size: 3rem; display: block; margin-bottom: 14px; }
+  .audience-card .a-name { font-size: .55rem; margin-bottom: 8px; }
+  .audience-card .a-desc { color: var(--ink-soft); font-size: .4rem; line-height: 1.8; }
 
   /* ===== HOME / ROOM ===== */
   #screen-home .room {
     position: relative;
-    background: linear-gradient(180deg, var(--wall) 0%, var(--wall) 65%, var(--floor) 65%, var(--floor) 100%);
-    border-radius: var(--radius-lg);
-    min-height: 560px;
+    background: var(--wall);
+    border: var(--pix) solid var(--line);
+    min-height: 520px;
     overflow: hidden;
     box-shadow: var(--shadow-lg);
-    border: 3px solid var(--line);
   }
-  .room-floor-line {
-    position: absolute;
-    top: 65%; left: 0; right: 0;
-    height: 8px;
-    background: var(--floor-dark);
-    z-index: 1;
-  }
-  .room-floor-texture {
+  .room-floor {
     position: absolute;
     bottom: 0; left: 0; right: 0;
-    height: 35%;
-    background:
-      repeating-linear-gradient(90deg, transparent 0 80px, rgba(0,0,0,.05) 80px 82px),
-      repeating-linear-gradient(0deg, transparent 0 30px, rgba(0,0,0,.03) 30px 32px);
+    height: 32%;
+    background: var(--floor);
+    border-top: var(--pix) solid var(--floor-dark);
   }
-
-  /* Top action buttons */
+  .room-floor::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      repeating-linear-gradient(90deg, transparent 0 48px, rgba(0,0,0,.06) 48px 50px),
+      repeating-linear-gradient(0deg, transparent 0 24px, rgba(0,0,0,.04) 24px 26px);
+  }
   .room-actions-top {
     position: absolute;
-    top: 20px; left: 20px; right: 20px;
+    top: 16px; left: 16px; right: 16px;
     display: flex;
-    gap: 16px;
+    gap: 12px;
     z-index: 10;
     justify-content: center;
   }
   .room-action-btn {
     flex: 1;
-    max-width: 200px;
-    font-family: inherit;
-    font-weight: 900;
-    font-size: 1.1rem;
-    border: none;
-    border-radius: 16px;
-    padding: 16px 24px;
+    max-width: 180px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: .5rem;
+    border: 3px solid var(--line);
+    padding: 14px 10px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    transition: transform .1s, filter .15s;
+    gap: 8px;
+    transition: transform .05s, box-shadow .05s;
     color: #fff;
+    box-shadow: 4px 4px 0 rgba(26,58,92,.2);
+    line-height: 1.4;
   }
-  .room-action-btn:hover { filter: brightness(1.08); }
-  .room-action-btn:active { transform: translateY(3px); }
-  .room-action-btn .ra-icon {
-    width: 36px; height: 36px;
-    border-radius: 10px;
-    background: rgba(255,255,255,.25);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.2rem;
-  }
-  .room-action-btn.play { background: var(--purple); box-shadow: 0 5px 0 var(--purple-dark); }
-  .room-action-btn.play:active { box-shadow: 0 2px 0 var(--purple-dark); }
-  .room-action-btn.shop { background: var(--card); color: var(--ink); box-shadow: 0 5px 0 rgba(44,62,80,.15); border: 2px solid var(--line); }
-  .room-action-btn.shop:active { box-shadow: 0 2px 0 rgba(44,62,80,.15); }
-  .room-action-btn.stats { background: var(--pink); box-shadow: 0 5px 0 var(--pink-dark); }
-  .room-action-btn.stats:active { box-shadow: 0 2px 0 var(--pink-dark); }
+  .room-action-btn:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 rgba(26,58,92,.2); }
+  .room-action-btn .ra-icon { font-size: 1rem; }
+  .room-action-btn.play { background: var(--purple); border-color: var(--purple-dark); box-shadow: 4px 4px 0 var(--purple-dark); }
+  .room-action-btn.play:active { box-shadow: 1px 1px 0 var(--purple-dark); }
+  .room-action-btn.shop { background: var(--card); color: var(--ink); }
+  .room-action-btn.stats { background: var(--pink); border-color: var(--pink-dark); box-shadow: 4px 4px 0 var(--pink-dark); }
+  .room-action-btn.stats:active { box-shadow: 1px 1px 0 var(--pink-dark); }
 
-  /* Left side panel */
   .room-side-left {
     position: absolute;
-    left: 20px;
-    top: 100px;
+    left: 16px;
+    top: 90px;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 12px;
     z-index: 10;
   }
   .room-side-btn {
-    width: 90px;
+    width: 72px;
     background: var(--card);
     border: 3px solid var(--line);
-    border-radius: 16px;
-    padding: 14px 10px;
+    padding: 10px 6px;
     cursor: pointer;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 6px;
-    box-shadow: var(--shadow);
-    transition: transform .1s, filter .15s;
-    font-family: inherit;
+    box-shadow: 3px 3px 0 rgba(26,58,92,.15);
+    transition: transform .05s;
+    font-family: 'Press Start 2P', monospace;
   }
-  .room-side-btn:hover { filter: brightness(1.03); transform: translateY(-2px); }
-  .room-side-btn:active { transform: translateY(2px); box-shadow: none; }
+  .room-side-btn:active { transform: translate(2px, 2px); box-shadow: none; }
   .room-side-btn .rs-icon {
-    width: 48px; height: 48px;
-    border-radius: 12px;
+    width: 36px; height: 36px;
+    border: 2px solid var(--line);
     display: flex; align-items: center; justify-content: center;
-    font-size: 1.6rem;
+    font-size: 1rem;
   }
-  .room-side-btn .rs-label {
-    font-size: .75rem;
-    font-weight: 800;
-    color: var(--ink-soft);
-  }
+  .room-side-btn .rs-label { font-size: .35rem; color: var(--ink-soft); line-height: 1.4; }
   .room-side-btn.theory .rs-icon { background: var(--blue-soft); }
   .room-side-btn.habits .rs-icon { background: var(--green-soft); }
-  .room-side-btn.support .rs-icon { background: #f3e8ff; }
+  .room-side-btn.support .rs-icon { background: #ede4ff; }
 
-  /* Right side decor */
   .room-decor-right {
     position: absolute;
-    right: 24px;
-    top: 100px;
+    right: 20px;
+    top: 90px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     z-index: 5;
   }
   .room-decor-right .decor-item {
-    font-size: 3.5rem;
-    filter: drop-shadow(0 4px 4px rgba(0,0,0,.12));
+    font-size: 2.5rem;
     line-height: 1;
   }
-  .room-decor-right .decor-shelf {
-    font-size: 2.5rem;
-    filter: drop-shadow(0 4px 4px rgba(0,0,0,.12));
-    margin-top: 4px;
-  }
+  .room-decor-right .decor-shelf { font-size: 2rem; margin-top: 4px; }
 
-  /* Center pet */
   .room-pet {
     position: absolute;
     left: 50%;
-    top: 62%;
+    top: 58%;
     transform: translate(-50%, -50%);
     z-index: 8;
     text-align: center;
   }
   .room-pet .pet-bubble {
     background: var(--card);
-    border-radius: 20px;
-    padding: 14px 22px;
-    font-size: 1rem;
-    font-weight: 800;
+    border: 3px solid var(--line);
+    padding: 10px 14px;
+    font-size: .45rem;
     color: var(--ink);
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shadow);
     white-space: nowrap;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     position: relative;
     display: inline-block;
-    border: 2px solid var(--line);
+    line-height: 1.6;
   }
   .room-pet .pet-bubble::after {
     content: '';
@@ -406,667 +379,592 @@
     bottom: -10px;
     left: 50%;
     transform: translateX(-50%);
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-top: 10px solid var(--card);
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 10px solid var(--line);
   }
   .room-pet .pet-sprite {
-    font-size: 8rem;
+    font-size: 6rem;
     line-height: 1;
-    filter: drop-shadow(0 8px 12px rgba(0,0,0,.18));
-    animation: petBounce 2.5s ease-in-out infinite;
     display: block;
+    animation: petBounce 1.5s steps(2) infinite;
   }
-  .room-pet .pet-desk {
-    font-size: 5rem;
-    margin-top: -30px;
-    filter: drop-shadow(0 4px 6px rgba(0,0,0,.12));
-  }
+  .room-pet .pet-desk { font-size: 3.5rem; margin-top: -20px; line-height: 1; }
   @keyframes petBounce {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+    50% { transform: translateY(-6px); }
   }
 
-  /* Bottom buttons */
   .room-bottom-btns {
     position: absolute;
-    bottom: 24px;
+    bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 16px;
+    gap: 12px;
     z-index: 10;
   }
-  .room-bottom-btns .btn {
-    padding: 14px 32px;
-    font-size: 1rem;
-    font-weight: 900;
-  }
-
-  /* Wall decor - picture frame */
   .room-wall-decor {
     position: absolute;
     left: 50%;
-    top: 18%;
+    top: 16%;
     transform: translateX(-50%);
     z-index: 2;
-    font-size: 4rem;
-    filter: drop-shadow(0 4px 6px rgba(0,0,0,.1));
+    font-size: 3rem;
+    opacity: .6;
   }
 
-  /* ===== STATS SCREEN ===== */
-  .stats-grid { display: grid; grid-template-columns: 1fr 220px; gap: 24px; align-items: start; }
+  /* ===== STATS ===== */
+  .stats-grid { display: grid; grid-template-columns: 1fr 180px; gap: 20px; align-items: start; }
   .stats-section {
     background: var(--card);
-    border-radius: var(--radius);
-    padding: 22px;
-    margin-bottom: 16px;
-    border: 2px solid var(--line);
+    border: 3px solid var(--line);
+    padding: 16px;
+    margin-bottom: 14px;
     box-shadow: var(--shadow);
   }
-  .stats-section h3 {
-    font-size: 1.15rem;
-    font-weight: 900;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+  .stats-section h3 { font-size: .5rem; margin-bottom: 14px; }
   .achievement {
     display: flex;
     align-items: center;
-    gap: 14px;
-    padding: 12px 0;
-    border-bottom: 2px solid var(--line);
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 2px solid var(--line-soft);
   }
   .achievement:last-child { border-bottom: none; }
   .achievement .ach-icon {
-    width: 42px; height: 42px;
-    border-radius: 12px;
+    width: 32px; height: 32px;
+    border: 2px solid var(--line);
     display: flex; align-items: center; justify-content: center;
-    font-size: 1.2rem;
+    font-size: .8rem;
     flex-shrink: 0;
-    font-weight: 900;
   }
   .achievement .ach-icon.done { background: var(--green-soft); color: var(--green-dark); }
-  .achievement .ach-icon.locked { background: #f0f3f7; color: var(--muted); }
-  .achievement .ach-text { flex: 1; font-weight: 800; font-size: 1rem; }
-  .achievement .ach-kp { font-weight: 900; color: var(--blue-dark); font-size: .9rem; }
-  .items-row { display: flex; gap: 14px; flex-wrap: wrap; }
+  .achievement .ach-icon.locked { background: #eef2f7; color: var(--muted); }
+  .achievement .ach-text { flex: 1; font-size: .45rem; line-height: 1.6; }
+  .achievement .ach-kp { font-size: .4rem; color: var(--blue-dark); }
+  .items-row { display: flex; gap: 10px; flex-wrap: wrap; }
   .item-chip {
-    width: 64px; height: 64px;
+    width: 48px; height: 48px;
     background: var(--blue-soft);
-    border-radius: 16px;
+    border: 2px solid var(--line);
     display: flex; align-items: center; justify-content: center;
-    font-size: 1.8rem;
-    border: 2px solid var(--line);
+    font-size: 1.3rem;
   }
-  .progress-wrap { margin-top: 4px; }
   .progress-bar {
-    height: 24px;
+    height: 18px;
     background: #e8eef5;
-    border-radius: 999px;
-    overflow: hidden;
     border: 2px solid var(--line);
+    overflow: hidden;
   }
   .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--green), #7ee04a);
-    border-radius: 999px;
-    transition: width .5s ease;
+    background: repeating-linear-gradient(90deg, var(--green) 0 8px, #6ee02a 8px 16px);
+    transition: width .3s steps(10);
   }
   .progress-label {
     display: flex;
     justify-content: space-between;
-    margin-top: 8px;
-    font-size: .9rem;
-    font-weight: 800;
+    margin-top: 6px;
+    font-size: .4rem;
     color: var(--ink-soft);
   }
   .stats-pet {
     text-align: center;
-    font-size: 7rem;
-    filter: drop-shadow(0 8px 12px rgba(0,0,0,.12));
-    animation: petBounce 2.5s ease-in-out infinite;
+    font-size: 5rem;
     line-height: 1;
+    animation: petBounce 1.5s steps(2) infinite;
   }
 
-  /* ===== TODO / HABITS ===== */
-  .todo-layout { display: grid; grid-template-columns: 1fr 200px; gap: 24px; align-items: center; }
-  .todo-list { display: flex; flex-direction: column; gap: 12px; }
+  /* ===== TODO ===== */
+  .todo-layout { display: grid; grid-template-columns: 1fr 160px; gap: 20px; align-items: center; }
+  .todo-list { display: flex; flex-direction: column; gap: 10px; }
   .todo-item {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
     background: var(--card);
-    border: 2px solid var(--line);
-    border-radius: var(--radius);
-    padding: 18px 20px;
+    border: 3px solid var(--line);
+    padding: 14px 16px;
     box-shadow: var(--shadow);
-    transition: all .2s;
+    transition: background .1s;
   }
-  .todo-item.done { background: var(--green-soft); border-color: var(--green); }
+  .todo-item.done { background: var(--green-soft); border-color: var(--green-dark); }
   .todo-checkbox {
-    width: 32px; height: 32px;
-    border-radius: 10px;
-    border: 3px solid var(--muted);
+    width: 24px; height: 24px;
+    border: 3px solid var(--line);
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
-    transition: all .2s;
+    transition: all .1s;
     background: #fff;
-    font-weight: 900;
-  }
-  .todo-checkbox.checked {
-    background: var(--green);
-    border-color: var(--green);
+    font-size: .7rem;
     color: #fff;
-    font-size: 1.1rem;
+    font-family: 'Press Start 2P', monospace;
   }
-  .todo-text { flex: 1; font-weight: 800; font-size: 1.05rem; }
+  .todo-checkbox.checked { background: var(--green); border-color: var(--green-dark); }
+  .todo-text { flex: 1; font-size: .45rem; line-height: 1.6; }
   .todo-item.done .todo-text { text-decoration: line-through; color: var(--muted); }
-  .todo-reward {
-    font-weight: 900;
-    color: var(--ink);
-    font-size: .95rem;
-    white-space: nowrap;
-  }
-  .todo-add {
-    display: flex;
-    gap: 12px;
-    margin-top: 18px;
-  }
+  .todo-reward { font-size: .4rem; white-space: nowrap; }
+  .todo-add { display: flex; gap: 10px; margin-top: 14px; }
   .todo-add input {
     flex: 1;
-    border: 2px solid var(--line);
-    border-radius: 14px;
-    padding: 14px 18px;
-    font-family: inherit;
-    font-size: 1rem;
+    border: 3px solid var(--line);
+    padding: 12px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: .45rem;
     outline: none;
     background: var(--card);
-    font-weight: 600;
+    color: var(--ink);
+    box-shadow: inset 2px 2px 0 rgba(26,58,92,.08);
   }
   .todo-add input:focus { border-color: var(--blue); }
-  .todo-pet { text-align: center; font-size: 6.5rem; filter: drop-shadow(0 8px 12px rgba(0,0,0,.12)); line-height: 1; }
+  .todo-pet { text-align: center; font-size: 5rem; line-height: 1; }
 
-  /* ===== THEORY / LESSONS ===== */
-  .theory-layout { display: grid; grid-template-columns: 300px 1fr 180px; gap: 24px; align-items: start; }
+  /* ===== THEORY ===== */
+  .theory-layout { display: grid; grid-template-columns: 260px 1fr 140px; gap: 20px; align-items: start; }
   .theory-sidebar {
     background: var(--card);
-    border-radius: var(--radius);
-    padding: 18px;
-    border: 2px solid var(--line);
+    border: 3px solid var(--line);
+    padding: 14px;
     box-shadow: var(--shadow);
   }
-  .theory-sidebar h4 {
-    font-size: .9rem;
-    font-weight: 900;
-    color: var(--ink-soft);
-    margin-bottom: 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+  .theory-sidebar h4 { font-size: .45rem; color: var(--ink-soft); margin-bottom: 12px; }
   .theory-topic {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 14px;
-    border-radius: 14px;
+    gap: 10px;
+    padding: 10px;
     cursor: pointer;
-    transition: all .15s;
-    font-weight: 800;
-    font-size: .95rem;
+    transition: background .1s;
+    font-size: .4rem;
+    line-height: 1.6;
     border: 2px solid transparent;
     margin-bottom: 4px;
   }
   .theory-topic:hover { background: var(--blue-soft); }
-  .theory-topic.active { background: var(--blue-soft); border-color: var(--blue); }
+  .theory-topic.active { background: var(--blue-soft); border-color: var(--blue-dark); }
   .theory-topic.danger { color: var(--red); }
   .theory-topic .tt-icon {
-    width: 38px; height: 38px;
-    border-radius: 10px;
-    background: #f0f4f9;
+    width: 28px; height: 28px;
+    border: 2px solid var(--line);
+    background: #eef2f7;
     display: flex; align-items: center; justify-content: center;
-    font-size: 1rem;
+    font-size: .7rem;
     flex-shrink: 0;
   }
   .theory-topic.danger .tt-icon { background: var(--red-soft); }
   .theory-content {
     background: var(--card);
-    border-radius: var(--radius);
-    padding: 28px;
-    border: 2px solid var(--line);
+    border: 3px solid var(--line);
+    padding: 20px;
     box-shadow: var(--shadow);
-    min-height: 320px;
+    min-height: 280px;
   }
-  .theory-content h3 { font-size: 1.3rem; font-weight: 900; margin-bottom: 16px; }
-  .theory-content p { line-height: 1.8; color: var(--ink-soft); font-size: 1rem; margin-bottom: 14px; }
-  .theory-pet { text-align: center; font-size: 6rem; filter: drop-shadow(0 8px 12px rgba(0,0,0,.12)); align-self: end; line-height: 1; }
+  .theory-content h3 { font-size: .55rem; margin-bottom: 14px; }
+  .theory-content p { line-height: 2; color: var(--ink-soft); font-size: .4rem; margin-bottom: 12px; }
+  .theory-pet { text-align: center; font-size: 4.5rem; line-height: 1; align-self: end; }
 
   .lesson-runner {
     background: var(--card);
-    border-radius: var(--radius-lg);
-    padding: 32px;
-    border: 2px solid var(--line);
+    border: var(--pix) solid var(--line);
+    padding: 24px;
     box-shadow: var(--shadow-lg);
   }
-  .lesson-runner h4 { font-size: 1.15rem; font-weight: 900; margin-bottom: 18px; color: var(--blue-dark); }
-  .lesson-runner .l-text { font-size: 1.05rem; line-height: 1.8; color: var(--ink); margin-bottom: 22px; font-weight: 600; }
-  .lesson-runner .l-q { font-size: 1.15rem; font-weight: 800; margin-bottom: 22px; }
-  .lesson-answers { display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px; }
+  .lesson-runner h4 { font-size: .5rem; margin-bottom: 16px; color: var(--blue-dark); line-height: 1.8; }
+  .lesson-runner .l-text { font-size: .45rem; line-height: 2; color: var(--ink); margin-bottom: 18px; }
+  .lesson-runner .l-q { font-size: .5rem; margin-bottom: 18px; line-height: 1.8; }
+  .lesson-answers { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
   .lesson-answer {
-    font-family: inherit;
-    font-weight: 800;
-    font-size: 1rem;
+    font-family: 'Press Start 2P', monospace;
+    font-size: .45rem;
     text-align: left;
-    padding: 18px 22px;
-    border-radius: 16px;
-    border: 2px solid var(--line);
+    padding: 14px 16px;
+    border: 3px solid var(--line);
     background: var(--card);
     cursor: pointer;
-    transition: all .15s;
+    transition: all .1s;
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
+    box-shadow: 3px 3px 0 rgba(26,58,92,.15);
+    line-height: 1.6;
   }
-  .lesson-answer:hover:not(:disabled) { border-color: var(--blue); background: var(--blue-soft); }
+  .lesson-answer:hover:not(:disabled) { border-color: var(--blue-dark); background: var(--blue-soft); }
   .lesson-answer .la-key {
-    width: 36px; height: 36px;
-    border-radius: 10px;
+    width: 28px; height: 28px;
+    border: 2px solid var(--blue-dark);
     background: var(--blue);
     color: #fff;
     display: flex; align-items: center; justify-content: center;
-    font-weight: 900;
+    font-size: .5rem;
     flex-shrink: 0;
   }
-  .lesson-answer.correct { background: var(--green-soft); border-color: var(--green); }
-  .lesson-answer.correct .la-key { background: var(--green); }
-  .lesson-answer.wrong { background: var(--red-soft); border-color: var(--red); }
-  .lesson-answer.wrong .la-key { background: var(--red); }
+  .lesson-answer.correct { background: var(--green-soft); border-color: var(--green-dark); }
+  .lesson-answer.correct .la-key { background: var(--green); border-color: var(--green-dark); }
+  .lesson-answer.wrong { background: var(--red-soft); border-color: var(--red-dark); }
+  .lesson-answer.wrong .la-key { background: var(--red); border-color: var(--red-dark); }
   .lesson-answer:disabled { cursor: default; }
   .lesson-feedback {
-    padding: 16px 20px;
-    border-radius: 14px;
-    font-weight: 800;
-    margin-bottom: 18px;
-    font-size: 1rem;
+    padding: 14px 16px;
+    border: 3px solid var(--line);
+    margin-bottom: 16px;
+    font-size: .4rem;
+    line-height: 1.8;
+    box-shadow: var(--shadow);
   }
-  .lesson-feedback.ok { background: var(--green-soft); color: var(--green-dark); }
-  .lesson-feedback.bad { background: var(--red-soft); color: #c0392b; }
+  .lesson-feedback.ok { background: var(--green-soft); color: var(--green-dark); border-color: var(--green-dark); }
+  .lesson-feedback.bad { background: var(--red-soft); color: var(--red-dark); border-color: var(--red-dark); }
 
-  /* ===== GAMEPLAY / EVENT ===== */
-  #screen-game .game-wrap {
-    max-width: 680px;
-    margin: 0 auto;
-  }
+  /* ===== GAMEPLAY ===== */
+  #screen-game .game-wrap { max-width: 640px; margin: 0 auto; }
   .game-topbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 24px;
+    gap: 10px;
+    margin-bottom: 20px;
     flex-wrap: wrap;
   }
   .game-timer {
-    display: flex; align-items: center; gap: 8px;
+    display: flex; align-items: center; gap: 6px;
     background: var(--card);
-    border-radius: 999px;
-    padding: 10px 20px;
-    font-weight: 900;
-    font-size: 1.1rem;
-    border: 2px solid var(--line);
+    border: 3px solid var(--line);
+    padding: 10px 14px;
+    font-size: .55rem;
     box-shadow: var(--shadow);
   }
-  .game-hearts { display: flex; gap: 4px; font-size: 1.4rem; letter-spacing: 2px; }
+  .game-hearts { display: flex; gap: 2px; font-size: 1.2rem; letter-spacing: 2px; }
   .game-kp {
-    display: flex; align-items: center; gap: 8px;
+    display: flex; align-items: center; gap: 6px;
     background: var(--yellow);
     color: #6b4e00;
-    border-radius: 999px;
-    padding: 10px 20px;
-    font-weight: 900;
-    font-size: 1.1rem;
-    box-shadow: 0 3px 0 var(--yellow-dark);
+    border: 3px solid var(--yellow-dark);
+    padding: 10px 14px;
+    font-size: .55rem;
+    box-shadow: 3px 3px 0 var(--yellow-dark);
   }
   .game-scene {
     background: var(--card);
-    border-radius: var(--radius-lg);
-    padding: 32px;
-    border: 2px solid var(--line);
+    border: var(--pix) solid var(--line);
+    padding: 24px;
     box-shadow: var(--shadow-lg);
-    position: relative;
     display: grid;
-    grid-template-columns: 1fr 180px;
-    gap: 24px;
+    grid-template-columns: 1fr 160px;
+    gap: 20px;
     align-items: center;
   }
   .game-bubble {
     background: #fff8e7;
-    border: 3px solid #ffe0a3;
-    border-radius: 20px;
-    padding: 20px 24px;
+    border: 3px solid var(--yellow-dark);
+    padding: 16px 18px;
     position: relative;
-    margin-bottom: 24px;
+    margin-bottom: 18px;
   }
   .game-bubble::before {
-    content: '⚠';
+    content: '!';
     position: absolute;
-    top: -16px; left: 24px;
-    width: 36px; height: 36px;
+    top: -14px; left: 16px;
+    width: 28px; height: 28px;
     background: var(--yellow);
-    border-radius: 50%;
+    border: 2px solid var(--yellow-dark);
     display: flex; align-items: center; justify-content: center;
-    font-size: 1.1rem;
-    border: 3px solid #fff;
-    box-shadow: var(--shadow);
+    font-size: .7rem;
+    color: #6b4e00;
+    font-family: 'Press Start 2P', monospace;
   }
   .game-bubble .gb-title {
-    font-weight: 900;
-    font-size: .85rem;
+    font-size: .4rem;
     color: var(--orange-dark);
-    text-transform: uppercase;
-    letter-spacing: .5px;
     margin-bottom: 8px;
     margin-top: 4px;
   }
-  .game-bubble .gb-text { font-size: 1.05rem; line-height: 1.6; font-weight: 700; }
-  .game-answers { display: flex; flex-direction: column; gap: 14px; }
+  .game-bubble .gb-text { font-size: .45rem; line-height: 1.8; }
+  .game-answers { display: flex; flex-direction: column; gap: 10px; }
   .game-answer {
-    font-family: inherit;
-    font-weight: 900;
-    font-size: 1.05rem;
+    font-family: 'Press Start 2P', monospace;
+    font-size: .45rem;
     text-align: left;
-    padding: 18px 22px;
-    border-radius: 16px;
-    border: none;
+    padding: 14px 16px;
+    border: 3px solid var(--line);
     cursor: pointer;
-    transition: all .15s;
+    transition: all .1s;
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
     color: #fff;
+    line-height: 1.6;
+    box-shadow: 4px 4px 0 rgba(26,58,92,.2);
   }
   .game-answer .ga-key {
-    width: 40px; height: 40px;
-    border-radius: 12px;
-    background: rgba(255,255,255,.25);
+    width: 28px; height: 28px;
+    border: 2px solid rgba(255,255,255,.4);
+    background: rgba(255,255,255,.2);
     display: flex; align-items: center; justify-content: center;
-    font-weight: 900;
-    font-size: 1.1rem;
+    font-size: .5rem;
     flex-shrink: 0;
   }
-  .game-answer.orange { background: var(--orange); box-shadow: 0 5px 0 var(--orange-dark); }
-  .game-answer.orange:active { box-shadow: 0 2px 0 var(--orange-dark); transform: translateY(3px); }
-  .game-answer.blue { background: var(--blue); box-shadow: 0 5px 0 var(--blue-dark); }
-  .game-answer.blue:active { box-shadow: 0 2px 0 var(--blue-dark); transform: translateY(3px); }
-  .game-answer.correct { background: var(--green) !important; box-shadow: 0 5px 0 var(--green-dark) !important; }
-  .game-answer.wrong { background: var(--red) !important; box-shadow: 0 5px 0 #c0392b !important; }
+  .game-answer.orange { background: var(--orange); border-color: var(--orange-dark); box-shadow: 4px 4px 0 var(--orange-dark); }
+  .game-answer.orange:active { box-shadow: 1px 1px 0 var(--orange-dark); transform: translate(3px, 3px); }
+  .game-answer.blue { background: var(--blue); border-color: var(--blue-dark); box-shadow: 4px 4px 0 var(--blue-dark); }
+  .game-answer.blue:active { box-shadow: 1px 1px 0 var(--blue-dark); transform: translate(3px, 3px); }
+  .game-answer.correct { background: var(--green) !important; border-color: var(--green-dark) !important; box-shadow: 4px 4px 0 var(--green-dark) !important; }
+  .game-answer.wrong { background: var(--red) !important; border-color: var(--red-dark) !important; box-shadow: 4px 4px 0 var(--red-dark) !important; }
   .game-answer:disabled { cursor: default; }
-  .game-pet { text-align: center; font-size: 6.5rem; filter: drop-shadow(0 8px 12px rgba(0,0,0,.12)); animation: petBounce 2.5s ease-in-out infinite; line-height: 1; }
+  .game-pet { text-align: center; font-size: 5rem; line-height: 1; animation: petBounce 1.5s steps(2) infinite; }
   .game-tools {
     display: flex;
     justify-content: center;
-    gap: 18px;
-    margin-top: 24px;
+    gap: 14px;
+    margin-top: 18px;
     flex-wrap: wrap;
   }
   .game-tool {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     background: var(--card);
-    border: 2px solid var(--line);
-    border-radius: 16px;
-    padding: 14px 18px;
+    border: 3px solid var(--line);
+    padding: 10px 12px;
     cursor: pointer;
-    box-shadow: var(--shadow);
-    transition: transform .1s;
-    min-width: 90px;
-    font-family: inherit;
+    box-shadow: 3px 3px 0 rgba(26,58,92,.15);
+    transition: transform .05s;
+    min-width: 72px;
+    font-family: 'Press Start 2P', monospace;
   }
-  .game-tool:active { transform: translateY(2px); box-shadow: none; }
+  .game-tool:active { transform: translate(2px, 2px); box-shadow: none; }
   .game-tool .gt-icon {
-    width: 50px; height: 50px;
-    border-radius: 14px;
+    width: 36px; height: 36px;
+    border: 2px solid var(--line);
     display: flex; align-items: center; justify-content: center;
-    font-size: 1.5rem;
+    font-size: 1rem;
   }
   .game-tool .gt-icon.shield { background: var(--blue-soft); }
-  .game-tool .gt-icon.cold { background: #e0f2fe; }
+  .game-tool .gt-icon.cold { background: #d4f0fa; }
   .game-tool .gt-icon.key { background: var(--yellow); }
   .game-tool .gt-icon.hint { background: var(--purple); color: #fff; }
-  .game-tool .gt-label { font-size: .75rem; font-weight: 800; color: var(--ink-soft); text-align: center; line-height: 1.3; }
+  .game-tool .gt-label { font-size: .35rem; color: var(--ink-soft); text-align: center; line-height: 1.5; }
 
   /* ===== SHOP ===== */
-  .shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; }
+  .shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; }
   .shop-item {
     background: var(--card);
-    border: 2px solid var(--line);
-    border-radius: var(--radius);
-    padding: 18px;
+    border: 3px solid var(--line);
+    padding: 14px;
     text-align: center;
     box-shadow: var(--shadow);
   }
-  .shop-item .s-icon { font-size: 2.8rem; display: block; margin-bottom: 10px; }
-  .shop-item .s-name { font-weight: 800; font-size: .9rem; margin-bottom: 4px; display: block; }
-  .shop-item .s-price { font-weight: 900; color: #e6a817; font-size: .85rem; display: block; margin-bottom: 12px; }
-  .shop-item .btn { padding: 10px 16px; font-size: .85rem; border-radius: 12px; }
+  .shop-item .s-icon { font-size: 2.2rem; display: block; margin-bottom: 8px; }
+  .shop-item .s-name { font-size: .4rem; margin-bottom: 4px; display: block; line-height: 1.6; }
+  .shop-item .s-price { font-size: .4rem; color: var(--yellow-dark); display: block; margin-bottom: 10px; }
+  .shop-item .btn { padding: 8px 10px; font-size: .35rem; box-shadow: 2px 2px 0 rgba(26,58,92,.2); }
   .shop-section-title {
-    font-size: .85rem;
-    font-weight: 900;
-    margin: 24px 0 14px;
+    font-size: .45rem;
+    margin: 20px 0 12px;
     color: var(--ink-soft);
-    text-transform: uppercase;
-    letter-spacing: .5px;
   }
 
   /* ===== SUPPORT / CHAT ===== */
   .chat-box {
     background: var(--card);
-    border-radius: var(--radius-lg);
-    border: 2px solid var(--line);
+    border: var(--pix) solid var(--line);
     box-shadow: var(--shadow-lg);
     overflow: hidden;
   }
   .chat-header {
     display: flex;
     align-items: center;
-    gap: 14px;
-    padding: 18px 22px;
-    background: linear-gradient(90deg, var(--purple), #c4b0fd);
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--purple);
     color: #fff;
+    border-bottom: 3px solid var(--purple-dark);
   }
-  .chat-header .ch-avatar { font-size: 2.2rem; }
-  .chat-header .ch-name { font-weight: 900; font-size: 1.05rem; }
-  .chat-header .ch-status { font-size: .8rem; opacity: .9; font-weight: 600; }
+  .chat-header .ch-avatar { font-size: 1.8rem; }
+  .chat-header .ch-name { font-size: .5rem; }
+  .chat-header .ch-status { font-size: .35rem; opacity: .85; }
   .chat-msgs {
-    height: 300px;
+    height: 260px;
     overflow-y: auto;
-    padding: 18px;
+    padding: 14px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    background: #f7fafd;
+    gap: 10px;
+    background: #f0f6fc;
   }
   .chat-msg {
-    max-width: 80%;
-    padding: 14px 18px;
-    border-radius: 18px;
-    font-size: .95rem;
-    line-height: 1.5;
-    font-weight: 600;
+    max-width: 85%;
+    padding: 10px 14px;
+    border: 2px solid var(--line);
+    font-size: .4rem;
+    line-height: 1.8;
   }
-  .chat-msg.bot { align-self: flex-start; background: var(--card); border: 2px solid var(--line); border-bottom-left-radius: 6px; }
-  .chat-msg.me { align-self: flex-end; background: var(--blue); color: #fff; border-bottom-right-radius: 6px; }
+  .chat-msg.bot { align-self: flex-start; background: var(--card); }
+  .chat-msg.me { align-self: flex-end; background: var(--blue); color: #fff; border-color: var(--blue-dark); }
   .chat-input-row {
     display: flex;
-    gap: 12px;
-    padding: 14px 18px;
-    border-top: 2px solid var(--line);
+    gap: 10px;
+    padding: 12px 14px;
+    border-top: 3px solid var(--line);
     background: var(--card);
   }
   .chat-input-row input {
     flex: 1;
     border: 2px solid var(--line);
-    border-radius: 14px;
-    padding: 14px 18px;
-    font-family: inherit;
-    font-size: .95rem;
+    padding: 10px 12px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: .4rem;
     outline: none;
-    font-weight: 600;
   }
-  .chat-input-row input:focus { border-color: var(--purple); }
+  .chat-input-row input:focus { border-color: var(--purple-dark); }
   .chat-quick {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    padding: 0 18px 16px;
+    gap: 8px;
+    padding: 0 14px 12px;
     background: var(--card);
   }
   .chat-chip {
-    font-family: inherit;
-    font-size: .85rem;
-    font-weight: 800;
-    padding: 10px 16px;
-    border-radius: 999px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: .35rem;
+    padding: 8px 12px;
     cursor: pointer;
-    background: #f0f4f9;
+    background: #eef2f7;
     color: var(--ink-soft);
     border: 2px solid var(--line);
-    transition: all .15s;
+    transition: all .1s;
   }
-  .chat-chip:hover { background: var(--purple); color: #fff; border-color: var(--purple); }
-  .chat-chip.tool { background: var(--green-soft); color: var(--green-dark); border-color: var(--green); }
+  .chat-chip:hover { background: var(--purple); color: #fff; border-color: var(--purple-dark); }
+  .chat-chip.tool { background: var(--green-soft); color: var(--green-dark); border-color: var(--green-dark); }
   .chat-chip.tool:hover { background: var(--green); color: #fff; }
 
-  .mood-scale { display: flex; justify-content: space-between; gap: 10px; margin: 18px 0; }
+  .mood-scale { display: flex; justify-content: space-between; gap: 8px; margin: 14px 0; }
   .mood-scale button {
-    font-size: 2.2rem;
+    font-size: 1.8rem;
     background: var(--card);
-    border: 2px solid var(--line);
-    border-radius: 16px;
-    padding: 14px;
+    border: 3px solid var(--line);
+    padding: 10px;
     flex: 1;
     cursor: pointer;
-    transition: all .15s;
-    box-shadow: var(--shadow);
+    transition: all .1s;
+    box-shadow: 3px 3px 0 rgba(26,58,92,.15);
   }
-  .mood-scale button:hover { transform: scale(1.1); border-color: var(--purple); }
+  .mood-scale button:hover { transform: translateY(-3px); border-color: var(--purple-dark); }
   .support-msg {
     background: var(--purple);
     color: #fff;
-    border-radius: 14px;
-    padding: 16px 20px;
-    font-weight: 800;
+    border: 3px solid var(--purple-dark);
+    padding: 12px 16px;
+    font-size: .4rem;
+    line-height: 1.8;
     margin-top: 10px;
+    box-shadow: var(--shadow);
   }
-  .mood-chart { display: flex; align-items: flex-end; gap: 10px; height: 110px; padding: 12px 0 0; border-bottom: 2px solid var(--line); }
+  .mood-chart { display: flex; align-items: flex-end; gap: 8px; height: 90px; padding: 10px 0 0; border-bottom: 3px solid var(--line); }
   .mood-col { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; }
-  .mood-bar { width: 100%; border-radius: 8px 8px 0 0; transition: height .4s; min-height: 4px; }
-  .mood-day { text-align: center; font-size: .75rem; color: var(--muted); margin-top: 6px; font-weight: 800; }
+  .mood-bar { width: 100%; transition: height .3s steps(8); min-height: 4px; }
+  .mood-day { text-align: center; font-size: .35rem; color: var(--muted); margin-top: 4px; }
 
   /* ===== BOTTOM NAV ===== */
   .bottom-nav {
     position: fixed;
     bottom: 0; left: 0; right: 0;
     background: var(--card);
-    border-top: 2px solid var(--line);
+    border-top: var(--pix) solid var(--line);
     display: flex;
     justify-content: space-around;
-    padding: 12px 20px;
+    padding: 10px 16px;
     z-index: 50;
-    box-shadow: 0 -4px 16px rgba(44,62,80,.08);
+    box-shadow: 0 -4px 0 rgba(26,58,92,.1);
   }
   .bottom-nav .nav-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 3px;
+    gap: 4px;
     cursor: pointer;
-    padding: 8px 16px;
-    border-radius: 14px;
-    transition: all .15s;
+    padding: 8px 12px;
+    transition: all .1s;
     background: none;
-    border: none;
-    font-family: inherit;
+    border: 2px solid transparent;
+    font-family: 'Press Start 2P', monospace;
   }
-  .bottom-nav .nav-item .ni-icon { font-size: 1.6rem; }
-  .bottom-nav .nav-item .ni-label { font-size: .7rem; font-weight: 800; color: var(--muted); }
-  .bottom-nav .nav-item.active { background: var(--blue-soft); }
+  .bottom-nav .nav-item .ni-icon { font-size: 1.3rem; }
+  .bottom-nav .nav-item .ni-label { font-size: .35rem; color: var(--muted); }
+  .bottom-nav .nav-item.active { background: var(--blue-soft); border-color: var(--blue-dark); }
   .bottom-nav .nav-item.active .ni-label { color: var(--blue-dark); }
 
   /* ===== MODAL ===== */
   .modal-bg {
     position: fixed; inset: 0;
-    background: rgba(44,62,80,.5);
+    background: rgba(26,58,92,.6);
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 20px;
     z-index: 100;
-    backdrop-filter: blur(4px);
   }
   .modal {
     background: var(--card);
-    border-radius: var(--radius-lg);
-    padding: 32px;
-    max-width: 500px;
+    border: var(--pix) solid var(--line);
+    padding: 24px;
+    max-width: 440px;
     width: 100%;
     box-shadow: var(--shadow-lg);
-    animation: fadeIn .2s ease;
+    animation: fadeIn .1s steps(2);
   }
-  .modal h3 { font-size: 1.4rem; font-weight: 900; margin-bottom: 16px; }
-  .modal .m-question { font-size: 1.05rem; line-height: 1.6; margin-bottom: 22px; font-weight: 700; }
-  .modal .m-btns { display: flex; flex-direction: column; gap: 12px; }
+  .modal h3 { font-size: .55rem; margin-bottom: 14px; }
+  .modal .m-question { font-size: .45rem; line-height: 1.8; margin-bottom: 18px; }
+  .modal .m-btns { display: flex; flex-direction: column; gap: 10px; }
   .modal .m-btns button {
-    font-family: inherit;
-    font-weight: 800;
-    font-size: 1rem;
+    font-family: 'Press Start 2P', monospace;
+    font-size: .4rem;
     text-align: left;
-    padding: 16px 20px;
-    border-radius: 14px;
-    border: 2px solid var(--line);
+    padding: 12px 14px;
+    border: 3px solid var(--line);
     background: var(--card);
     cursor: pointer;
-    transition: all .15s;
+    transition: all .1s;
+    line-height: 1.6;
+    box-shadow: 3px 3px 0 rgba(26,58,92,.15);
   }
-  .modal .m-btns button:hover { border-color: var(--blue); background: var(--blue-soft); }
-  .modal .m-btns button.correct { background: var(--green-soft); border-color: var(--green); }
-  .modal .m-btns button.wrong { background: var(--red-soft); border-color: var(--red); }
+  .modal .m-btns button:hover { border-color: var(--blue-dark); background: var(--blue-soft); }
+  .modal .m-btns button.correct { background: var(--green-soft); border-color: var(--green-dark); }
+  .modal .m-btns button.wrong { background: var(--red-soft); border-color: var(--red-dark); }
   .modal .m-result {
-    margin-top: 18px;
-    padding: 16px 20px;
-    border-radius: 14px;
-    font-weight: 800;
+    margin-top: 14px;
+    padding: 12px 14px;
+    border: 3px solid var(--line);
+    font-size: .4rem;
+    line-height: 1.8;
+    box-shadow: var(--shadow);
   }
-  .modal .m-result.ok { background: var(--green-soft); color: var(--green-dark); }
-  .modal .m-result.bad { background: var(--red-soft); color: #c0392b; }
+  .modal .m-result.ok { background: var(--green-soft); color: var(--green-dark); border-color: var(--green-dark); }
+  .modal .m-result.bad { background: var(--red-soft); color: var(--red-dark); border-color: var(--red-dark); }
 
   .hidden { display: none !important; }
 
   .toast {
     position: fixed;
-    top: 90px;
+    top: 80px;
     left: 50%;
     transform: translateX(-50%);
     background: var(--ink);
     color: #fff;
-    padding: 14px 28px;
-    border-radius: 999px;
-    font-weight: 800;
-    font-size: .95rem;
+    padding: 12px 20px;
+    border: 3px solid var(--card);
+    font-size: .45rem;
     z-index: 200;
-    animation: toastIn .3s ease, toastOut .3s ease 2.5s forwards;
+    animation: toastIn .2s steps(4), toastOut .2s steps(4) 2.3s forwards;
     box-shadow: var(--shadow-lg);
     white-space: nowrap;
+    line-height: 1.6;
   }
-  @keyframes toastIn { from { opacity: 0; transform: translateX(-50%) translateY(-20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
-  @keyframes toastOut { to { opacity: 0; transform: translateX(-50%) translateY(-20px); } }
+  @keyframes toastIn { from { opacity: 0; transform: translateX(-50%) translateY(-16px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+  @keyframes toastOut { to { opacity: 0; transform: translateX(-50%) translateY(-16px); } }
 
-  @media (max-width: 768px) {
+  @media (max-width: 720px) {
     .audience-grid { grid-template-columns: 1fr; }
     .stats-grid { grid-template-columns: 1fr; }
     .stats-pet { display: none; }
@@ -1076,7 +974,7 @@
     .theory-pet { display: none; }
     .game-scene { grid-template-columns: 1fr; }
     .game-pet { display: none; }
-    .room-side-left { flex-direction: row; top: auto; bottom: 100px; left: 16px; }
+    .room-side-left { flex-direction: row; top: auto; bottom: 90px; left: 12px; }
     .room-decor-right { display: none; }
     .room-actions-top { flex-wrap: wrap; }
     .room-action-btn { max-width: none; flex: 1 1 45%; }
@@ -1091,13 +989,13 @@
   <div class="topbar">
     <div class="brand">
       <span class="logo">🐹</span>
-      <span>Хомягочи</span>
+      <span>ХОМЯГОЧИ</span>
     </div>
     <div class="topbar-stats">
-      <span class="stat-chip hearts"><span class="hearts-row" id="topHearts">❤️❤️</span></span>
-      <span class="stat-chip coins">🪙 <b id="topCoins">453</b></span>
-      <span class="stat-chip kp">🏆 <b id="topKp">251</b> KP</span>
-      <span class="stat-chip lvl">⭐ <b id="topLvl">25</b> ур.</span>
+      <span class="stat-chip hearts"><span id="topHearts">❤️❤️</span></span>
+      <span class="stat-chip coins">🪙 <b id="topCoins">0</b></span>
+      <span class="stat-chip kp">🏆 <b id="topKp">0</b> KP</span>
+      <span class="stat-chip lvl">⭐ <b id="topLvl">1</b></span>
       <button class="btn-icon" id="btnSound" title="звук">⚙️</button>
     </div>
   </div>
@@ -1106,64 +1004,60 @@
 
     <!-- ===== AUDIENCE SELECT ===== -->
     <div class="screen" id="screen-audience">
-      <h1 class="big-title">Выбери подходящий уровень</h1>
-      <p class="subtitle">Настрой игру под себя</p>
+      <h1 class="big-title">ВЫБЕРИ УРОВЕНЬ</h1>
+      <p class="subtitle">НАСТРОЙ ИГРУ ПОД СЕБЯ</p>
       <div class="audience-grid">
         <div class="audience-card" data-audience="school">
           <span class="a-emoji">🎒</span>
-          <div class="a-name">Школьник</div>
-          <div class="a-desc">Простые уроки и привычки для учёбы</div>
+          <div class="a-name">ШКОЛЬНИК</div>
+          <div class="a-desc">ПРОСТЫЕ УРОКИ И ПРИВЫЧКИ</div>
         </div>
         <div class="audience-card selected" data-audience="student">
           <span class="a-emoji">🎓</span>
-          <div class="a-name">Студент</div>
-          <div class="a-desc">Баланс учёбы, софт-скиллов и безопасности</div>
+          <div class="a-name">СТУДЕНТ</div>
+          <div class="a-desc">УЧЁБА, СОФТ-СКИЛЛЫ, БЕЗОПАСНОСТЬ</div>
         </div>
         <div class="audience-card" data-audience="worker">
           <span class="a-emoji">💼</span>
-          <div class="a-name">Работник</div>
-          <div class="a-desc">Фокус, продуктивность и кибербезопасность</div>
+          <div class="a-name">РАБОТНИК</div>
+          <div class="a-desc">ФОКУС, ПРОДУКТИВНОСТЬ, ЗАЩИТА</div>
         </div>
       </div>
-      <button class="btn btn-green btn-block" id="btnStartGame" style="max-width:340px;margin:0 auto;font-size:1.2rem;padding:20px">Начать игру 🚀</button>
+      <button class="btn btn-green btn-block" id="btnStartGame" style="max-width:280px;margin:0 auto;font-size:.6rem;padding:16px">НАЧАТЬ ИГРУ ▶</button>
     </div>
 
     <!-- ===== HOME / ROOM ===== -->
     <div class="screen" id="screen-home">
       <div class="room">
-        <div class="room-floor-line"></div>
-        <div class="room-floor-texture"></div>
+        <div class="room-floor"></div>
 
-        <!-- Top action buttons -->
         <div class="room-actions-top">
           <button class="room-action-btn play" data-goto="game">
-            <span class="ra-icon">▶</span> Играть
+            <span class="ra-icon">▶</span> ИГРАТЬ
           </button>
           <button class="room-action-btn shop" data-goto="shop">
-            <span class="ra-icon">🛒</span> Магазин
+            <span class="ra-icon">🛒</span> МАГАЗИН
           </button>
           <button class="room-action-btn stats" data-goto="stats">
-            <span class="ra-icon">📊</span> Статистика
+            <span class="ra-icon">📊</span> СТАТИСТИКА
           </button>
         </div>
 
-        <!-- Left side panel -->
         <div class="room-side-left">
           <button class="room-side-btn theory" data-goto="theory">
             <span class="rs-icon">📚</span>
-            <span class="rs-label">Теория</span>
+            <span class="rs-label">ТЕОРИЯ</span>
           </button>
           <button class="room-side-btn habits" data-goto="habits">
             <span class="rs-icon">✅</span>
-            <span class="rs-label">Задачи</span>
+            <span class="rs-label">ЗАДАЧИ</span>
           </button>
           <button class="room-side-btn support" data-goto="support">
             <span class="rs-icon">💬</span>
-            <span class="rs-label">Помощь</span>
+            <span class="rs-label">ПОМОЩЬ</span>
           </button>
         </div>
 
-        <!-- Right side decor: furniture -->
         <div class="room-decor-right">
           <span class="decor-item">🛏️</span>
           <span class="decor-item">🛋️</span>
@@ -1172,20 +1066,17 @@
           <span class="decor-item">🪑</span>
         </div>
 
-        <!-- Wall picture -->
-        <div class="room-wall-decor">🖼️🌳</div>
+        <div class="room-wall-decor">🖼️</div>
 
-        <!-- Center pet -->
         <div class="room-pet">
-          <div class="pet-bubble" id="petBubble">Мне плохо...</div>
+          <div class="pet-bubble" id="petBubble">МНЕ ПЛОХО...</div>
           <span class="pet-sprite" id="petSprite">🐹</span>
-          <div class="pet-desk">🪑💻🍵</div>
+          <div class="pet-desk">🪑💻</div>
         </div>
 
-        <!-- Bottom buttons -->
         <div class="room-bottom-btns">
-          <button class="btn btn-blue" data-goto="theory">📖 Теория</button>
-          <button class="btn btn-green" data-goto="settings">⚙️ Настройки</button>
+          <button class="btn btn-blue" data-goto="theory">📖 ТЕОРИЯ</button>
+          <button class="btn btn-green" data-goto="settings">⚙️ НАСТРОЙКИ</button>
         </div>
       </div>
     </div>
@@ -1194,24 +1085,22 @@
     <div class="screen" id="screen-stats">
       <div class="screen-title">
         <span class="t-icon" style="background:var(--yellow)">🏆</span>
-        Статистика
+        СТАТИСТИКА
       </div>
       <div class="stats-grid">
         <div>
           <div class="stats-section">
-            <h3>🏅 Достижения</h3>
+            <h3>🏅 ДОСТИЖЕНИЯ</h3>
             <div id="achievementList"></div>
           </div>
           <div class="stats-section">
-            <h3>🎒 Предметы</h3>
+            <h3>🎒 ПРЕДМЕТЫ</h3>
             <div class="items-row" id="itemsRow"></div>
           </div>
           <div class="stats-section">
-            <h3>📈 Прогресс</h3>
-            <div class="progress-wrap">
-              <div class="progress-bar"><div class="progress-fill" id="statsProgress" style="width:0%"></div></div>
-              <div class="progress-label"><span id="statsProgressText">0/100 KP</span><span id="statsStreak">🔥 0 дней</span></div>
-            </div>
+            <h3>📈 ПРОГРЕСС</h3>
+            <div class="progress-bar"><div class="progress-fill" id="statsProgress" style="width:0%"></div></div>
+            <div class="progress-label"><span id="statsProgressText">0/100 KP</span><span id="statsStreak">🔥 0 ДНЕЙ</span></div>
           </div>
         </div>
         <div class="stats-pet">🐻‍❄️🏆</div>
@@ -1222,14 +1111,14 @@
     <div class="screen" id="screen-habits">
       <div class="screen-title">
         <span class="t-icon" style="background:var(--green-soft)">✅</span>
-        Список дел
+        СПИСОК ДЕЛ
       </div>
       <div class="todo-layout">
         <div>
           <div class="todo-list" id="todoList"></div>
           <div class="todo-add">
-            <input id="newHabitInput" placeholder="Новая привычка..." maxlength="60">
-            <button class="btn btn-green" id="btnAddHabit">➕</button>
+            <input id="newHabitInput" placeholder="НОВАЯ ПРИВЫЧКА..." maxlength="60">
+            <button class="btn btn-green" id="btnAddHabit">+</button>
           </div>
         </div>
         <div class="todo-pet">🐻💻</div>
@@ -1240,16 +1129,16 @@
     <div class="screen" id="screen-theory">
       <div class="screen-title">
         <span class="t-icon" style="background:var(--blue-soft)">📚</span>
-        <span id="theoryTitle">Теория: Безопасность браузеров</span>
+        <span id="theoryTitle">ТЕОРИЯ: БЕЗОПАСНОСТЬ БРАУЗЕРОВ</span>
       </div>
       <div id="theoryBrowse">
         <div class="theory-layout">
           <div class="theory-sidebar">
-            <h4>📋 Разделы</h4>
+            <h4>📋 РАЗДЕЛЫ</h4>
             <div id="theoryTopics"></div>
           </div>
           <div class="theory-content" id="theoryContent">
-            <p>Выбери раздел слева, чтобы начать обучение.</p>
+            <p>ВЫБЕРИ РАЗДЕЛ СЛЕВА.</p>
           </div>
           <div class="theory-pet">🐹💻</div>
         </div>
@@ -1270,7 +1159,7 @@
         <div class="game-scene">
           <div>
             <div class="game-bubble">
-              <div class="gb-title">⚠ Внимание!</div>
+              <div class="gb-title">ВНИМАНИЕ!</div>
               <div class="gb-text" id="gameQuestion">Хомяку пришло письмо от «Сбербанка» с просьбой ввести код из СМС. Что делать?</div>
             </div>
             <div class="game-answers" id="gameAnswers"></div>
@@ -1281,19 +1170,19 @@
         <div class="game-tools">
           <button class="game-tool" data-tool="shield">
             <span class="gt-icon shield">🛡️</span>
-            <span class="gt-label">Защитник<br>Wi-Fi</span>
+            <span class="gt-label">ЗАЩИТА<br>WI-FI</span>
           </button>
           <button class="game-tool" data-tool="cold">
             <span class="gt-icon cold">❄️</span>
-            <span class="gt-label">Холодный<br>разум</span>
+            <span class="gt-label">ХОЛОДНЫЙ<br>РАЗУМ</span>
           </button>
           <button class="game-tool" data-tool="key">
             <span class="gt-icon key">🔑</span>
-            <span class="gt-label">Защитный<br>ключ</span>
+            <span class="gt-label">ЗАЩИТНЫЙ<br>КЛЮЧ</span>
           </button>
           <button class="game-tool" data-tool="hint">
             <span class="gt-icon hint">❓</span>
-            <span class="gt-label">Подсказка</span>
+            <span class="gt-label">ПОДСКАЗКА</span>
           </button>
         </div>
       </div>
@@ -1303,14 +1192,14 @@
     <div class="screen" id="screen-shop">
       <div class="screen-title">
         <span class="t-icon" style="background:#fff3e0">🛒</span>
-        Магазин Хомяка
+        МАГАЗИН ХОМЯКА
       </div>
-      <p style="color:var(--ink-soft);margin-bottom:8px;font-weight:600">Зарабатывай монетки в уроках, одевай хомяка и обустраивай домик!</p>
-      <div class="shop-section-title">— Шапки —</div>
+      <p style="color:var(--ink-soft);font-size:.4rem;margin-bottom:8px;line-height:1.8">ЗАРАБАТЫВАЙ МОНЕТКИ, ОДЕВАЙ ХОМЯКА!</p>
+      <div class="shop-section-title">— ШАПКИ —</div>
       <div class="shop-grid" id="shopHats"></div>
-      <div class="shop-section-title">— Обои —</div>
+      <div class="shop-section-title">— ОБОИ —</div>
       <div class="shop-grid" id="shopWalls"></div>
-      <div class="shop-section-title">— Еда —</div>
+      <div class="shop-section-title">— ЕДА —</div>
       <div class="shop-grid" id="shopFood"></div>
     </div>
 
@@ -1318,12 +1207,12 @@
     <div class="screen" id="screen-support">
       <div class="screen-title">
         <span class="t-icon" style="background:var(--purple);color:#fff">💜</span>
-        Хомя-психолог 24/7
+        ХОМЯ-ПСИХОЛОГ 24/7
       </div>
-      <p style="color:var(--ink-soft);margin-bottom:14px;font-weight:600">Анонимно, без осуждения, в любимом моменте. Хомяк выслушает, поймёт и подскажет.</p>
+      <p style="color:var(--ink-soft);font-size:.4rem;margin-bottom:12px;line-height:1.8">АНОНИМНО, БЕЗ ОСУЖДЕНИЯ. ХОМЯК ВЫСЛУШАЕТ И ПОДСКАЖЕТ.</p>
       <div class="chat-box" id="chatBox"></div>
-      <div class="card" style="margin-top:18px">
-        <h3 style="font-size:1.05rem;font-weight:900;margin-bottom:10px">💜 Как ты себя чувствуешь?</h3>
+      <div class="card" style="margin-top:14px">
+        <h3 style="font-size:.45rem;margin-bottom:10px">💜 КАК ТЫ СЕБЯ ЧУВСТВУЕШЬ?</h3>
         <div class="mood-scale" id="moodScale">
           <button data-mood="1">😞</button>
           <button data-mood="2">😕</button>
@@ -1332,7 +1221,7 @@
           <button data-mood="5">😄</button>
         </div>
         <div class="support-msg hidden" id="moodMsg"></div>
-        <h3 style="font-size:1.05rem;font-weight:900;margin:18px 0 10px">📈 Твоя неделя</h3>
+        <h3 style="font-size:.45rem;margin:14px 0 8px">📈 ТВоя НЕДЕЛЯ</h3>
         <div id="moodChart"></div>
       </div>
     </div>
@@ -1341,13 +1230,13 @@
     <div class="screen" id="screen-settings">
       <div class="screen-title">
         <span class="t-icon" style="background:#e8eef5">⚙️</span>
-        Настройки
+        НАСТРОЙКИ
       </div>
       <div class="card">
-        <div style="display:flex;flex-direction:column;gap:16px">
-          <button class="btn btn-ghost btn-block" id="btnChangeAudience" style="justify-content:flex-start">🎯 Сменить уровень (аудиторию)</button>
-          <button class="btn btn-ghost btn-block" id="btnToggleSound" style="justify-content:flex-start">🔊 Звук: вкл</button>
-          <button class="btn btn-ghost btn-block" id="btnReset" style="justify-content:flex-start;color:var(--red)">🗑 Сбросить прогресс</button>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <button class="btn btn-ghost btn-block" id="btnChangeAudience" style="justify-content:flex-start">🎯 СМЕНИТЬ УРОВЕНЬ</button>
+          <button class="btn btn-ghost btn-block" id="btnToggleSound" style="justify-content:flex-start">🔊 ЗВУК: ВКЛ</button>
+          <button class="btn btn-ghost btn-block" id="btnReset" style="justify-content:flex-start;color:var(--red-dark)">🗑 СБРОСИТЬ ПРОГРЕСС</button>
         </div>
       </div>
     </div>
@@ -1358,40 +1247,40 @@
   <nav class="bottom-nav">
     <button class="nav-item active" data-goto="home">
       <span class="ni-icon">🏠</span>
-      <span class="ni-label">Главная</span>
+      <span class="ni-label">ДОМ</span>
     </button>
     <button class="nav-item" data-goto="habits">
       <span class="ni-icon">✅</span>
-      <span class="ni-label">Задачи</span>
+      <span class="ni-label">ЗАДАЧИ</span>
     </button>
     <button class="nav-item" data-goto="theory">
       <span class="ni-icon">📚</span>
-      <span class="ni-label">Теория</span>
+      <span class="ni-label">ТЕОРИЯ</span>
     </button>
     <button class="nav-item" data-goto="game">
       <span class="ni-icon">🎮</span>
-      <span class="ni-label">Играть</span>
+      <span class="ni-label">ИГРА</span>
     </button>
     <button class="nav-item" data-goto="support">
       <span class="ni-icon">💜</span>
-      <span class="ni-label">Помощь</span>
+      <span class="ni-label">ПОМОЩЬ</span>
     </button>
   </nav>
 
   <!-- ===== MODAL ===== -->
   <div class="modal-bg hidden" id="modalBg">
     <div class="modal">
-      <h3 id="mTitle">⚠ Событие!</h3>
+      <h3 id="mTitle">⚠ СОБЫТИЕ!</h3>
       <p class="m-question" id="mQuestion"></p>
       <div class="m-btns" id="mBtns"></div>
       <div class="hidden" id="mResult"></div>
     </div>
   </div>
 
-  <script src="content/config.js?v=6"></script>
-  <script src="content/content.js?v=6"></script>
-  <script src="content/lessons.js?v=6"></script>
-  <script src="content/shop.js?v=6"></script>
-  <script type="module" src="src/ui/app.js?v=6"></script>
+  <script src="content/config.js?v=7"></script>
+  <script src="content/content.js?v=7"></script>
+  <script src="content/lessons.js?v=7"></script>
+  <script src="content/shop.js?v=7"></script>
+  <script type="module" src="src/ui/app.js?v=7"></script>
 </body>
 </html>
