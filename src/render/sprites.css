@@ -1,0 +1,25 @@
+.px-sprite {
+  display: inline-block;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  flex-shrink: 0;
+}
+
+.sprite-hamster {
+  animation: spriteBounce 1.5s steps(2) infinite;
+}
+
+@keyframes spriteBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.sprite-room-scale {
+  transform: scale(2);
+  transform-origin: center bottom;
+}
+
+.sprite-room-scale-sm {
+  transform: scale(1.5);
+  transform-origin: center bottom;
+}
