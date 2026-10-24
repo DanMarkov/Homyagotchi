@@ -1,9 +1,9 @@
-import { load, save } from '../core/store.js?v=9';
-import { tick, petState } from '../core/pet.js?v=9';
-import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg } from '../core/game.js?v=9';
-import { sfx } from './audio.js?v=9';
-import { renderMoodChart, ChatUI } from './support.js?v=9';
-import { createSprite } from '../render/pixel-sprites.js?v=9';
+import { load, save } from '../core/store.js?v=10';
+import { tick, petState } from '../core/pet.js?v=10';
+import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg } from '../core/game.js?v=10';
+import { sfx } from './audio.js?v=10';
+import { renderMoodChart, ChatUI } from './support.js?v=10';
+import { createSprite } from '../render/pixel-sprites.js?v=10';
 
 const CONTENT = window.__CONTENT__;
 const LESSONS = window.__LESSONS__;
