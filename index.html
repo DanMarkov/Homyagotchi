@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🐹 Хомягочи</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="src/render/sprites.css?v=13">
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="src/render/sprites.css?v=14">
 <style>
   :root {
     --bg: #cfe9f9;
@@ -43,7 +43,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; }
   body {
-    font-family: 'Nunito', system-ui, sans-serif;
+    font-family: 'Comfortaa', 'Nunito', sans-serif;
     font-size: 17px;
     line-height: 1.5;
     background: var(--bg);
@@ -60,7 +60,7 @@
     overflow-x: hidden;
   }
 
-  .px-font { font-family: 'Fredoka One', 'Nunito', cursive; }
+  .px-font { font-family: 'Comfortaa', 'Nunito', sans-serif; }
 
   /* ===== TOP BAR ===== */
   .topbar {
@@ -77,7 +77,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    font-family: 'Fredoka One', 'Nunito', cursive;
+    font-family: 'Comfortaa', 'Nunito', sans-serif;
     font-size: 1rem;
     color: var(--ink);
     text-shadow: 2px 2px 0 rgba(255,255,255,.5);
@@ -103,7 +103,7 @@
     background: var(--card);
     border: 3px solid var(--line);
     padding: 10px 14px;
-    font-family: 'Fredoka One', 'Nunito', cursive;
+    font-family: 'Comfortaa', 'Nunito', sans-serif;
     font-size: 1rem;
     box-shadow: 3px 3px 0 rgba(26,58,92,.15);
   }
@@ -147,7 +147,7 @@
     display: flex;
     align-items: center;
     gap: 14px;
-    font-family: 'Fredoka One', 'Nunito', cursive;
+    font-family: 'Comfortaa', 'Nunito', sans-serif;
     font-size: .85rem;
     margin-bottom: 24px;
     color: var(--ink);
@@ -163,7 +163,7 @@
 
   /* ===== BUTTONS ===== */
   .btn {
-    font-family: 'Fredoka One', 'Nunito', cursive;
+    font-family: 'Comfortaa', 'Nunito', sans-serif;
     font-size: 1rem;
     border: 3px solid var(--line);
     padding: 14px 20px;
@@ -198,7 +198,7 @@
   /* ===== AUDIENCE ===== */
   #screen-audience { text-align: center; padding-top: 24px; }
   #screen-audience .big-title {
-    font-family: 'Fredoka One', 'Nunito', cursive;
+    font-family: 'Comfortaa', 'Nunito', sans-serif;
     font-size: 1.1rem;
     margin-bottom: 14px;
     }
@@ -239,12 +239,12 @@
     background: var(--green);
     color: #fff;
     display: flex; align-items: center; justify-content: center;
-    font-family: 'Fredoka One', 'Nunito', cursive;
+    font-family: 'Comfortaa', 'Nunito', sans-serif;
     font-size: .7rem;
     border: 3px solid var(--card);
   }
   .audience-card .a-emoji { font-size: 3.5rem; display: block; margin-bottom: 16px; }
-  .audience-card .a-name { font-family: 'Fredoka One', 'Nunito', cursive; font-size: 1rem; margin-bottom: 10px; }
+  .audience-card .a-name { font-family: 'Comfortaa', 'Nunito', sans-serif; font-size: 1rem; margin-bottom: 10px; }
   .audience-card .a-desc { color: var(--ink-soft); font-size: 1rem; line-height: 1.5; font-weight: 500; }
 
   /* ===== HOME / ROOM ===== */
@@ -282,7 +282,7 @@
   .room-action-btn {
     flex: 1;
     max-width: 190px;
-    font-family: 'Fredoka One', 'Nunito', cursive;
+    font-family: 'Comfortaa', 'Nunito', sans-serif;
     font-size: .9rem;
     border: 3px solid var(--line);
     padding: 16px 12px;
@@ -303,6 +303,23 @@
   .room-action-btn.shop { background: var(--card); color: var(--ink); }
   .room-action-btn.stats { background: var(--pink); border-color: var(--pink-dark); box-shadow: 4px 4px 0 var(--pink-dark); }
   .room-action-btn.stats:active { box-shadow: 1px 1px 0 var(--pink-dark); }
+  .room-action-btn .ra-icon { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; }
+  .room-action-btn .ra-icon canvas { width: 30px !important; height: 30px !important; image-rendering: pixelated; }
+  .name-plate {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--card);
+    border: 3px solid var(--line);
+    box-shadow: 4px 4px 0 rgba(26,58,92,.2);
+    padding: 10px 16px;
+    font-family: 'Comfortaa', 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .name-plate .np-pet { display: inline-flex; }
+  .name-plate .np-pet canvas { width: 40px !important; height: 40px !important; image-rendering: pixelated; }
+  .name-plate .np-heart { color: var(--pink-dark); }
 
   .room-side-left {
     position: absolute;
@@ -325,18 +342,19 @@
     gap: 8px;
     box-shadow: 3px 3px 0 rgba(26,58,92,.15);
     transition: transform .05s;
-    font-family: 'Fredoka One', 'Nunito', cursive;
+    font-family: 'Comfortaa', 'Nunito', sans-serif;
   }
   .room-side-btn:active { transform: translate(2px, 2px); box-shadow: none; }
   .room-side-btn .rs-icon {
     width: 40px; height: 40px;
     border: 2px solid var(--line);
     display: flex; align-items: center; justify-content: center;
-    font-size: 1.2rem;
+    overflow: hidden;
   }
+  .room-side-btn .rs-icon canvas { width: 32px !important; height: 32px !important; image-rendering: pixelated; }
   .room-side-btn .rs-label { font-size: .7rem; color: var(--ink-soft); }
-  .room-side-btn.theory .rs-icon { background: var(--blue-soft); }
   .room-side-btn.habits .rs-icon { background: var(--green-soft); }
+  .room-side-btn.shop .rs-icon { background: #fff3d6; }
   .room-side-btn.support .rs-icon { background: #ede4ff; }
 
   .room-decor-right {
@@ -389,16 +407,9 @@
     border-top: 10px solid var(--line);
   }
   .room-pet .pet-sprite-wrap {
-    transform: scale(1.2);
     transform-origin: center bottom;
     display: inline-block;
     margin-bottom: 8px;
-  }
-  .room-pet .pet-desk-wrap {
-   
-    transform-origin: center top;
-    display: inline-block;
-    margin-top: -12px;
   }
 
   .room-bottom-btns {
@@ -417,8 +428,8 @@
     transform: translateX(-50%);
     z-index: 2;
     opacity: .5;
-    font-size: 3rem;
   }
+  .room-wall-decor canvas { width: 56px !important; height: 56px !important; image-rendering: pixelated; }
 
   /* ===== STATS ===== */
   .stats-grid { display: grid; grid-template-columns: 1fr 200px; gap: 24px; align-items: start; }
@@ -429,7 +440,7 @@
     margin-bottom: 16px;
     box-shadow: var(--shadow);
   }
-  .stats-section h3 { font-family: 'Fredoka One', 'Nunito', cursive; font-size: .95rem; margin-bottom: 16px; }
+  .stats-section h3 { font-family: 'Comfortaa', 'Nunito', sans-serif; font-size: .95rem; margin-bottom: 16px; }
   .achievement {
     display: flex;
     align-items: center;
@@ -448,7 +459,7 @@
   .achievement .ach-icon.done { background: var(--green-soft); color: var(--green-dark); }
   .achievement .ach-icon.locked { background: #eef2f7; color: var(--muted); }
   .achievement .ach-text { flex: 1; font-size: 1.1rem; font-weight: 600; }
-  .achievement .ach-kp { font-family: 'Fredoka One', 'Nunito', cursive; font-size: .75rem; color: var(--blue-dark); }
+  .achievement .ach-kp { font-family: 'Comfortaa', 'Nunito', sans-serif; font-size: .75rem; color: var(--blue-dark); }
   .items-row { display: flex; gap: 12px; flex-wrap: wrap; }
   .item-chip {
     width: 56px; height: 56px;
@@ -472,7 +483,7 @@
     display: flex;
     justify-content: space-between;
     margin-top: 8px;
-    font-family: 'Fredoka One', 'Nunito', cursive;
+    font-family: 'Comfortaa', 'Nunito', sans-serif;
     font-size: .7rem;
     color: var(--ink-soft);
   }
@@ -506,14 +517,14 @@
     flex-shrink: 0;
     transition: all .1s;
     background: #fff;
-    font-family: 'Fredoka One', 'Nunito', cursive;
+    font-family: 'Comfortaa', 'Nunito', sans-serif;
     font-size: .7rem;
     color: #fff;
   }
   .todo-checkbox.checked { background: var(--green); border-color: var(--green-dark); }
   .todo-text { flex: 1; font-size: 1.15rem; font-weight: 600; }
   .todo-item.done .todo-text { text-decoration: line-through; color: var(--muted); }
-  .todo-reward { font-family: 'Fredoka One', 'Nunito', cursive; font-size: .75rem; white-space: nowrap; }
+  .todo-reward { font-family: 'Comfortaa', 'Nunito', sans-serif; font-size: .75rem; white-space: nowrap; }
   .todo-add { display: flex; gap: 12px; margin-top: 16px; }
   .todo-add input {
     flex: 1;
@@ -538,7 +549,7 @@
     padding: 16px;
     box-shadow: var(--shadow);
   }
-  .theory-sidebar h4 { font-family: 'Fredoka One', 'Nunito', cursive; font-size: .8rem; color: var(--ink-soft); margin-bottom: 14px; }
+  .theory-sidebar h4 { font-family: 'Comfortaa', 'Nunito', sans-serif; font-size: .8rem; color: var(--ink-soft); margin-bottom: 14px; }
   .theory-topic {
     display: flex;
     align-items: center;
@@ -570,7 +581,7 @@
     box-shadow: var(--shadow);
     min-height: 300px;
   }
-  .theory-content h3 { font-family: 'Fredoka One', 'Nunito', cursive; font-size: .65rem; margin-bottom: 16px; }
+  .theory-content h3 { font-family: 'Comfortaa', 'Nunito', sans-serif; font-size: .65rem; margin-bottom: 16px; }
   .theory-content p { line-height: 1.7; color: var(--ink-soft); font-size: 1.1rem; font-weight: 500; margin-bottom: 14px; }
   .theory-pet { text-align: center; transform: scale(1.1); transform-origin: center bottom; align-self: end; display: inline-block; line-height: 1; }
 
@@ -580,9 +591,9 @@
     padding: 28px;
     box-shadow: var(--shadow-lg);
   }
-  .lesson-runner h4 { font-family: 'Fredoka One', 'Nunito', cursive; font-size: .9rem; margin-bottom: 18px; color: var(--blue-dark); line-height: 1.4; }
+  .lesson-runner h4 { font-family: 'Comfortaa', 'Nunito', sans-serif; font-size: .9rem; margin-bottom: 18px; color: var(--blue-dark); line-height: 1.4; }
   .lesson-runner .l-text { font-size: 1.15rem; line-height: 1.7; color: var(--ink); margin-bottom: 20px; font-weight: 500; }
-  .lesson-runner .l-q { font-family: 'Fredoka One', 'Nunito', cursive; font-size: .9rem; margin-bottom: 20px; line-height: 1.5; }
+  .lesson-runner .l-q { font-family: 'Comfortaa', 'Nunito', sans-serif; font-size: .9rem; margin-bottom: 20px; line-height: 1.5; }
   .lesson-answers { display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px; }
   .lesson-answer {
     font-family: 'Nunito', sans-serif;
@@ -606,7 +617,7 @@
     background: var(--blue);
     color: #fff;
     display: flex; align-items: center; justify-content: center;
-    font-family: 'Fredoka One', 'Nunito', cursive;
+    font-family: 'Comfortaa', 'Nunito', sans-serif;
     font-size: .85rem;
     flex-shrink: 0;
   }
@@ -641,7 +652,7 @@
     background: var(--card);
     border: 3px solid var(--line);
     padding: 12px 16px;
-    font-family: 'Fredoka One', 'Nunito', cursive;
+    font-family: 'Comfortaa', 'Nunito', sans-serif;
     font-size: .65rem;
     box-shadow: var(--shadow);
   }
@@ -652,7 +663,7 @@
     color: #6b4e00;
     border: 3px solid var(--yellow-dark);
     padding: 12px 16px;
-    font-family: 'Fredoka One', 'Nunito', cursive;
+    font-family: 'Comfortaa', 'Nunito', sans-serif;
     font-size: .65rem;
     box-shadow: 3px 3px 0 var(--yellow-dark);
   }
@@ -681,12 +692,12 @@
     background: var(--yellow);
     border: 2px solid var(--yellow-dark);
     display: flex; align-items: center; justify-content: center;
-    font-family: 'Fredoka One', 'Nunito', cursive;
+    font-family: 'Comfortaa', 'Nunito', sans-serif;
     font-size: .7rem;
     color: #6b4e00;
   }
   .game-bubble .gb-title {
-    font-family: 'Fredoka One', 'Nunito', cursive;
+    font-family: 'Comfortaa', 'Nunito', sans-serif;
     font-size: .5rem;
     color: var(--orange-dark);
     margin-bottom: 10px;
@@ -714,7 +725,7 @@
     border: 2px solid rgba(255,255,255,.4);
     background: rgba(255,255,255,.2);
     display: flex; align-items: center; justify-content: center;
-    font-family: 'Fredoka One', 'Nunito', cursive;
+    font-family: 'Comfortaa', 'Nunito', sans-serif;
     font-size: .85rem;
     flex-shrink: 0;
   }
@@ -745,7 +756,7 @@
     box-shadow: 3px 3px 0 rgba(26,58,92,.15);
     transition: transform .05s;
     min-width: 80px;
-    font-family: 'Fredoka One', 'Nunito', cursive;
+    font-family: 'Comfortaa', 'Nunito', sans-serif;
   }
   .game-tool:active { transform: translate(2px, 2px); box-shadow: none; }
   .game-tool .gt-icon {
@@ -770,11 +781,11 @@
     box-shadow: var(--shadow);
   }
   .shop-item .s-icon { font-size: 2.5rem; display: block; margin-bottom: 10px; min-height: 48px; }
-  .shop-item .s-name { font-family: 'Fredoka One', 'Nunito', cursive; font-size: .7rem; margin-bottom: 6px; display: block; line-height: 1.4; }
-  .shop-item .s-price { font-family: 'Fredoka One', 'Nunito', cursive; font-size: .8rem; color: var(--yellow-dark); display: block; margin-bottom: 12px; }
+  .shop-item .s-name { font-family: 'Comfortaa', 'Nunito', sans-serif; font-size: .7rem; margin-bottom: 6px; display: block; line-height: 1.4; }
+  .shop-item .s-price { font-family: 'Comfortaa', 'Nunito', sans-serif; font-size: .8rem; color: var(--yellow-dark); display: block; margin-bottom: 12px; }
   .shop-item .btn { padding: 10px 12px; font-size: .4rem; box-shadow: 2px 2px 0 rgba(26,58,92,.2); }
   .shop-section-title {
-    font-family: 'Fredoka One', 'Nunito', cursive;
+    font-family: 'Comfortaa', 'Nunito', sans-serif;
     font-size: .8rem;
     margin: 24px 0 14px;
     color: var(--ink-soft);
@@ -803,7 +814,7 @@
     display: flex; align-items: center; justify-content: center;
     overflow: hidden;
   }
-  .chat-header .ch-name { font-family: 'Fredoka One', 'Nunito', cursive; font-size: .6rem; }
+  .chat-header .ch-name { font-family: 'Comfortaa', 'Nunito', sans-serif; font-size: .6rem; }
   .chat-header .ch-status { font-size: 1rem; opacity: .9; font-weight: 500; }
   .chat-msgs {
     height: 280px;
@@ -912,7 +923,7 @@
     transition: all .1s;
     background: none;
     border: 2px solid transparent;
-    font-family: 'Fredoka One', 'Nunito', cursive;
+    font-family: 'Comfortaa', 'Nunito', sans-serif;
   }
   .bottom-nav .nav-item .ni-icon { font-size: 1.5rem; }
   .bottom-nav .nav-item .ni-label { font-size: .4rem; color: var(--muted); }
@@ -938,7 +949,7 @@
     box-shadow: var(--shadow-lg);
     animation: fadeIn .1s steps(2);
   }
-  .modal h3 { font-family: 'Fredoka One', 'Nunito', cursive; font-size: 1rem; margin-bottom: 16px; }
+  .modal h3 { font-family: 'Comfortaa', 'Nunito', sans-serif; font-size: 1rem; margin-bottom: 16px; }
   .modal .m-question { font-size: 1.1rem; line-height: 1.6; margin-bottom: 20px; font-weight: 500; }
   .modal .m-btns { display: flex; flex-direction: column; gap: 12px; }
   .modal .m-btns button {
@@ -978,7 +989,7 @@
     color: #fff;
     padding: 14px 24px;
     border: 3px solid var(--card);
-    font-family: 'Fredoka One', 'Nunito', cursive;
+    font-family: 'Comfortaa', 'Nunito', sans-serif;
     font-size: 1rem;
     z-index: 200;
     animation: toastIn .2s steps(4), toastOut .2s steps(4) 2.3s forwards;
@@ -1005,27 +1016,29 @@
     .room-action-btn { max-width: none; flex: 1 1 45%; }
     .topbar { justify-content: center; }
     .topbar-stats { justify-content: center; }
-    .room-pet .pet-sprite-wrap { transform: scale(0.9); }
-    .room-pet .pet-sprite-wrap canvas { width: 130px !important; height: 130px !important; }
-    .room-pet .pet-desk-wrap canvas { width: 90px !important; height: 34px !important; }
+    .room-pet .pet-sprite-wrap { transform: scale(0.85); }
+    .room-pet .pet-sprite-wrap canvas { width: 132px !important; height: 155px !important; }
+    .name-plate { font-size: .85rem; padding: 8px 12px; }
+    .name-plate .np-pet canvas { width: 32px !important; height: 32px !important; }
   }
 
   /* ===== PIXEL SPRITE SIZES ===== */
+  /* Hori at desk: 62x73 art px, aspect ~0.85. Keep proportions. */
   .sprite-hamster { width: auto !important; height: auto !important; }
-  .room-pet .pet-sprite-wrap canvas { width: 150px !important; height: 150px !important; }
-  .room-pet .pet-desk-wrap canvas { width: 110px !important; height: 42px !important; }
-  .room-decor-right .decor-item canvas { width: 90px !important; height: auto !important; }
-  .stats-pet canvas { width: 110px !important; height: auto !important; }
-  .todo-pet canvas { width: 110px !important; height: auto !important; }
-  .theory-pet canvas { width: 120px !important; height: auto !important; }
-  .game-pet canvas { width: 120px !important; height: auto !important; }
+  .room-pet .pet-sprite-wrap canvas { width: 176px !important; height: 208px !important; }
+  .room-decor-right .decor-item canvas { width: 96px !important; height: auto !important; }
+  .stats-pet canvas { width: 110px !important; height: 130px !important; }
+  .todo-pet canvas { width: 110px !important; height: 130px !important; }
+  .theory-pet canvas { width: 120px !important; height: 142px !important; }
+  .game-pet canvas { width: 120px !important; height: 142px !important; }
   .game-tool .gt-icon canvas { width: 48px !important; height: 48px !important; }
-  .brand .logo canvas { width: 32px !important; height: 32px !important; }
+  .brand .logo canvas { width: 24px !important; height: 28px !important; }
   .stat-chip canvas { width: 24px !important; height: auto !important; }
   .game-hearts canvas { width: 36px !important; height: auto !important; }
-  .ch-avatar-wrap canvas { width: 40px !important; height: 40px !important; }
+  .ch-avatar-wrap canvas { width: 34px !important; height: 40px !important; }
   .t-icon canvas { width: 32px !important; height: auto !important; }
   #statsTitleIcon canvas, #supportTitleIcon canvas { width: 36px !important; height: auto !important; }
+  .room-bottom-btns .btn span[id] canvas { width: 22px !important; height: 22px !important; }
 
 </style>
 </head>
@@ -1079,44 +1092,44 @@
 
         <div class="room-actions-top">
           <button class="room-action-btn play" data-goto="game">
-            <span class="ra-icon">▶</span> ИГРАТЬ
+            <span class="ra-icon" id="roomPlayIcon"></span> ИГРАТЬ
           </button>
-          <button class="room-action-btn shop" data-goto="shop">
-            <span class="ra-icon">🛒</span> МАГАЗИН
-          </button>
+          <div class="name-plate">
+            <span class="np-pet" id="namePlatePet"></span>
+            Хори <span class="np-heart">❤</span>
+          </div>
           <button class="room-action-btn stats" data-goto="stats">
-            <span class="ra-icon">📊</span> СТАТИСТИКА
+            <span class="ra-icon" id="roomStatsIcon"></span> СТАТИСТИКА
           </button>
         </div>
 
         <div class="room-side-left">
-          <button class="room-side-btn theory" data-goto="theory">
-            <span class="rs-icon">📚</span>
-            <span class="rs-label">ТЕОРИЯ</span>
-          </button>
           <button class="room-side-btn habits" data-goto="habits">
-            <span class="rs-icon">✅</span>
+            <span class="rs-icon" id="roomHabitsIcon"></span>
             <span class="rs-label">ЗАДАЧИ</span>
           </button>
+          <button class="room-side-btn shop" data-goto="shop">
+            <span class="rs-icon" id="roomShopIcon"></span>
+            <span class="rs-label">МАГАЗИН</span>
+          </button>
           <button class="room-side-btn support" data-goto="support">
-            <span class="rs-icon">💬</span>
+            <span class="rs-icon" id="roomSupportIcon"></span>
             <span class="rs-label">ПОМОЩЬ</span>
           </button>
         </div>
 
         <div class="room-decor-right" id="roomDecorRight"></div>
 
-        <div class="room-wall-decor">🖼️</div>
+        <div class="room-wall-decor" id="roomWallDecor"></div>
 
         <div class="room-pet">
           <div class="pet-bubble" id="petBubble">Мне плохо...</div>
           <div class="pet-sprite-wrap" id="petSpriteWrap"></div>
-          <div class="pet-desk-wrap" id="petDeskWrap"></div>
         </div>
 
         <div class="room-bottom-btns">
-          <button class="btn btn-blue" data-goto="theory">📖 ТЕОРИЯ</button>
-          <button class="btn btn-green" data-goto="settings">⚙️ НАСТРОЙКИ</button>
+          <button class="btn btn-blue" data-goto="theory"><span id="roomTheoryIcon" style="display:inline-flex;vertical-align:middle;margin-right:6px"></span>ТЕОРИЯ</button>
+          <button class="btn btn-green" data-goto="settings"><span id="roomSettingsIcon" style="display:inline-flex;vertical-align:middle;margin-right:6px"></span>НАСТРОЙКИ</button>
         </div>
       </div>
     </div>
@@ -1235,7 +1248,7 @@
       <p style="color:var(--ink-soft);font-size:1.1rem;margin-bottom:14px;font-weight:500">Анонимно, без осуждения, в любимом моменте. Хомяк выслушает, поймёт и подскажет.</p>
       <div class="chat-box" id="chatBox"></div>
       <div class="card" style="margin-top:16px">
-        <h3 style="font-family:'Fredoka One','Nunito',cursive;font-size:.55rem;margin-bottom:12px">💜 КАК ТЫ СЕБЯ ЧУВСТВУЕШЬ?</h3>
+        <h3 style="font-family: 'Comfortaa', 'Nunito', sans-serif;font-size:.55rem;margin-bottom:12px">💜 КАК ТЫ СЕБЯ ЧУВСТВУЕШЬ?</h3>
         <div class="mood-scale" id="moodScale">
           <button data-mood="1">😞</button>
           <button data-mood="2">😕</button>
@@ -1244,7 +1257,7 @@
           <button data-mood="5">😄</button>
         </div>
         <div class="support-msg hidden" id="moodMsg"></div>
-        <h3 style="font-family:'Fredoka One','Nunito',cursive;font-size:.55rem;margin:16px 0 10px">📈 ТВОЯ НЕДЕЛЯ</h3>
+        <h3 style="font-family: 'Comfortaa', 'Nunito', sans-serif;font-size:.55rem;margin:16px 0 10px">📈 ТВОЯ НЕДЕЛЯ</h3>
         <div id="moodChart"></div>
       </div>
     </div>
@@ -1300,10 +1313,10 @@
     </div>
   </div>
 
-  <script src="content/config.js?v=13"></script>
-  <script src="content/content.js?v=13"></script>
-  <script src="content/lessons.js?v=13"></script>
-  <script src="content/shop.js?v=13"></script>
-  <script type="module" src="src/ui/app.js?v=13"></script>
+  <script src="content/config.js?v=14"></script>
+  <script src="content/content.js?v=14"></script>
+  <script src="content/lessons.js?v=14"></script>
+  <script src="content/shop.js?v=14"></script>
+  <script type="module" src="src/ui/app.js?v=14"></script>
 </body>
 </html>

@@ -1,10 +1,10 @@
-import { load, save } from '../core/store.js?v=13';
-import { tick, petState } from '../core/pet.js?v=13';
-import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg } from '../core/game.js?v=13';
-import { sfx } from './audio.js?v=13';
-import { renderMoodChart, ChatUI } from './support.js?v=13';
-import { createSprite } from '../render/pixel-sprites.js?v=13';
-import { createAnimatedHamster } from '../render/animated-sprites.js?v=13';
+import { load, save } from '../core/store.js?v=14';
+import { tick, petState } from '../core/pet.js?v=14';
+import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg } from '../core/game.js?v=14';
+import { sfx } from './audio.js?v=14';
+import { renderMoodChart, ChatUI } from './support.js?v=14';
+import { createSprite } from '../render/pixel-sprites.js?v=14';
+import { createAnimatedHamster } from '../render/animated-sprites.js?v=14';
 
 const CONTENT = window.__CONTENT__;
 const LESSONS = window.__LESSONS__;
@@ -77,7 +77,8 @@ function mountDecorSprites() {
 
 function renderPetSprite() {
   const ps = petState(S);
-  const stateMap = { idle: 'stand', sitting: 'sit', happy: 'happy' };
+  // Hori always sits at his desk (desk+laptop are inside HAMSTER_SIT sprite)
+  const stateMap = { idle: 'sit', sitting: 'sit', happy: 'happy', eating: 'sit', jumping: 'sit', sleeping: 'sit', sick: 'sit' };
   const container = els('petSpriteWrap');
   if (container) {
     container.querySelectorAll('canvas').forEach(c => { if (c._stopAnimation) c._stopAnimation(); });
@@ -85,7 +86,17 @@ function renderPetSprite() {
     const animated = createAnimatedHamster(stateMap[ps] || 'sit');
     if (animated) container.appendChild(animated);
   }
-  mountSprite('petDeskWrap', 'desk');
+}
+
+function renderRoomIcons() {
+  mountSprite('roomPlayIcon', 'play_icon', 3);
+  mountSprite('roomStatsIcon', 'chart_icon', 3);
+  mountSprite('roomHabitsIcon', 'check_icon', 3);
+  mountSprite('roomShopIcon', 'coin', 3);
+  mountSprite('roomSupportIcon', 'heart', 3);
+  mountSprite('roomTheoryIcon', 'book_icon', 2);
+  mountSprite('roomSettingsIcon', 'gear_icon', 2);
+  mountSprite('roomWallDecor', 'star', 4);
 }
 
 function renderGameTools() {
@@ -289,7 +300,7 @@ function renderStats() {
   els('statsProgress').style.width = pct + '%';
   els('statsProgressText').textContent = totalKp + '/100 KP';
   els('statsStreak').textContent = '🔥 ' + (S.streak || 0) + ' ДНЕЙ';
-  mountSprite('statsPet', 'bear_trophy');
+  mountSprite('statsPet', 'hamster_happy');
 }
 
 /* ============ HABITS / TODO ============ */
@@ -320,7 +331,7 @@ function renderHabits() {
     div.appendChild(reward);
     list.appendChild(div);
   });
-  mountSprite('todoPet', 'bear_laptop');
+  mountSprite('todoPet', 'hamster_sit');
 }
 
 els('btnAddHabit').addEventListener('click', () => {
@@ -657,10 +668,12 @@ dayCheck(S, toast);
 renderTopbarSprites();
 renderGameTools();
 renderPetSprite();
+renderRoomIcons();
 mountDecorSprites();
 mountSprite('theoryPet', 'hamster_sit');
-mountSprite('todoPet', 'bear_laptop');
-mountSprite('statsPet', 'bear_trophy');
+mountSprite('todoPet', 'hamster_sit');
+mountSprite('statsPet', 'hamster_happy');
+mountSprite('namePlatePet', 'hamster_happy');
 mountSprite('statsTitleIcon', 'trophy_icon', 3);
 mountSprite('supportTitleIcon', 'heart', 3);
 renderTopbar();
