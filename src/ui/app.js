@@ -1,9 +1,10 @@
-import { load, save } from '../core/store.js?v=11';
-import { tick, petState } from '../core/pet.js?v=11';
-import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg } from '../core/game.js?v=11';
-import { sfx } from './audio.js?v=11';
-import { renderMoodChart, ChatUI } from './support.js?v=11';
-import { createSprite } from '../render/pixel-sprites.js?v=11';
+import { load, save } from '../core/store.js?v=12';
+import { tick, petState } from '../core/pet.js?v=12';
+import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg } from '../core/game.js?v=12';
+import { sfx } from './audio.js?v=12';
+import { renderMoodChart, ChatUI } from './support.js?v=12';
+import { createSprite } from '../render/pixel-sprites.js?v=12';
+import { createAnimatedHamster } from '../render/animated-sprites.js?v=12';
 
 const CONTENT = window.__CONTENT__;
 const LESSONS = window.__LESSONS__;
@@ -35,6 +36,7 @@ function persist() { save(S); renderTopbar(); }
 function mountSprite(containerId, spriteName, ...args) {
   const container = els(containerId);
   if (!container) return;
+  container.querySelectorAll('canvas').forEach(c => { if (c._stopAnimation) c._stopAnimation(); });
   container.innerHTML = '';
   const sprite = createSprite(spriteName, ...args);
   if (sprite) container.appendChild(sprite);
@@ -75,8 +77,14 @@ function mountDecorSprites() {
 
 function renderPetSprite() {
   const ps = petState(S);
-  const stateMap = { idle: 'hamster', sitting: 'hamster_sit', happy: 'hamster_happy' };
-  mountSprite('petSpriteWrap', stateMap[ps] || 'hamster');
+  const stateMap = { idle: 'stand', sitting: 'sit', happy: 'happy' };
+  const container = els('petSpriteWrap');
+  if (container) {
+    container.querySelectorAll('canvas').forEach(c => { if (c._stopAnimation) c._stopAnimation(); });
+    container.innerHTML = '';
+    const animated = createAnimatedHamster(stateMap[ps] || 'sit');
+    if (animated) container.appendChild(animated);
+  }
   mountSprite('petDeskWrap', 'desk');
 }
 
