@@ -1,10 +1,10 @@
-import { load, save } from '../core/store.js?v=12';
-import { tick, petState } from '../core/pet.js?v=12';
-import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg } from '../core/game.js?v=12';
-import { sfx } from './audio.js?v=12';
-import { renderMoodChart, ChatUI } from './support.js?v=12';
-import { createSprite } from '../render/pixel-sprites.js?v=12';
-import { createAnimatedHamster } from '../render/animated-sprites.js?v=12';
+import { load, save } from '../core/store.js?v=13';
+import { tick, petState } from '../core/pet.js?v=13';
+import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg } from '../core/game.js?v=13';
+import { sfx } from './audio.js?v=13';
+import { renderMoodChart, ChatUI } from './support.js?v=13';
+import { createSprite } from '../render/pixel-sprites.js?v=13';
+import { createAnimatedHamster } from '../render/animated-sprites.js?v=13';
 
 const CONTENT = window.__CONTENT__;
 const LESSONS = window.__LESSONS__;

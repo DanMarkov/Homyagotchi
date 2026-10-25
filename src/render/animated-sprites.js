@@ -1,4 +1,4 @@
-import { createPixelSprite, H, HAMSTER_SIT, HAMSTER_STAND, HAMSTER_HAPPY } from './pixel-sprites.js?v=12';
+import { createPixelSprite, H, HAMSTER_SIT, HAMSTER_STAND, HAMSTER_HAPPY } from './pixel-sprites.js?v=13';
 
 const SCALE = 3;
 
@@ -30,8 +30,8 @@ function makeBlink(art) {
   return art
     .split('\n')
     .map(line => line
-      .replace(/KEEEEKE/g, 'K^^^^K')
-      .replace(/KEeEEEKE/g, 'K^e^^eK')
+      .replace(/KEeEEEK/g, 'K^e^^eK')
+      .replace(/KEEEEEK/g, 'K^^^^K')
       .replace(/K\^\^\^EEK/g, 'KeeeeeeK')
       .replace(/K\^e\^EEK/g, 'KeeeeeeK')
     )
