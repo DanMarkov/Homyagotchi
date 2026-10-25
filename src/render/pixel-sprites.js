@@ -32,7 +32,7 @@ export function createPixelSprite(art, palette, scale = SCALE, extraClass = '') 
 
 /* ===== HAMSTER PALETTE (Syrian hamster reference: golden-cream fur) ===== */
 
-const H = {
+export const H = {
   '.': null,
   'K': '#3d2817',
   'O': '#e8b878',
@@ -57,7 +57,7 @@ const H = {
 /* Syrian hamster: big eyes with highlights, brown nose, omega smile,
    pink cheeks, small ears with pink inner, red bow with blue cross badge */
 
-const HAMSTER_SIT = `
+export const HAMSTER_SIT = `
 .........RR..RR.........
 ........RrBBBBrR........
 .......RrBBBBBrR.......
@@ -105,7 +105,7 @@ KoooKEEEEEKooooKEEEEKoooK
 .SSSSSSSSSSSSSSSSSSSSSSSSS.
 `;
 
-const HAMSTER_STAND = `
+export const HAMSTER_STAND = `
 .........RR..RR.........
 ........RrBBBBrR........
 .......RrBBBBBrR.......
@@ -149,7 +149,7 @@ KoooKEEEEEKooooKEEEEKoooK
 .SSSSSSSSSSSSSSSSSSSSSSSSS.
 `;
 
-const HAMSTER_HAPPY = `
+export const HAMSTER_HAPPY = `
 .........RR..RR.........
 ........RrBBBBrR........
 .......RrBBBBBrR.......

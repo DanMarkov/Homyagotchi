@@ -5,11 +5,65 @@
   flex-shrink: 0;
 }
 
-.sprite-hamster {
+.sprite-animated {
+  animation: spriteBreathe 1s ease-in-out infinite;
+}
+
+.sprite-hamster:not(.sprite-animated) {
   animation: spriteBounce 2s ease-in-out infinite;
 }
 
 @keyframes spriteBounce {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-6px); }
+}
+
+@keyframes spriteBreathe {
+  0%, 100% { transform: translateY(0) scaleY(1); }
+  50% { transform: translateY(-2px) scaleY(1.02); }
+}
+
+.sprite-heart {
+  animation: heartPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes heartPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+.sprite-coin {
+  animation: coinSpin 2s ease-in-out infinite;
+}
+
+@keyframes coinSpin {
+  0%, 100% { transform: scaleX(1); }
+  50% { transform: scaleX(0.6); }
+}
+
+.sprite-lamp {
+  animation: lampGlow 3s ease-in-out infinite;
+}
+
+@keyframes lampGlow {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.15); }
+}
+
+.sprite-star {
+  animation: starTwinkle 1.5s ease-in-out infinite;
+}
+
+@keyframes starTwinkle {
+  0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  50% { transform: scale(1.2) rotate(10deg); opacity: 0.8; }
+}
+
+.sprite-bear {
+  animation: bearBob 2.5s ease-in-out infinite;
+}
+
+@keyframes bearBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
 }
