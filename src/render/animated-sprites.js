@@ -1,4 +1,4 @@
-import { createPixelSprite, H, HAMSTER_SIT, HAMSTER_STAND, HAMSTER_HAPPY } from './pixel-sprites.js?v=13';
+import { createPixelSprite, H, HAMSTER_SIT, HAMSTER_STAND, HAMSTER_HAPPY } from './pixel-sprites.js?v=14';
 
 const SCALE = 3;
 
@@ -27,13 +27,12 @@ function drawFrame(canvas, art, palette, scale) {
 /* Blink frames: eyes closed */
 
 function makeBlink(art) {
+  // Eyes are 7px wide: K+5E+K (normal), K+3e+2E+K (highlight row)
   return art
     .split('\n')
     .map(line => line
-      .replace(/KEeEEEK/g, 'K^e^^eK')
-      .replace(/KEEEEEK/g, 'K^^^^K')
-      .replace(/K\^\^\^EEK/g, 'KeeeeeeK')
-      .replace(/K\^e\^EEK/g, 'KeeeeeeK')
+      .split('KeeeEEK').join('K^^^^^K')
+      .split('KEEEEEK').join('K^^^^^K')
     )
     .join('\n');
 }

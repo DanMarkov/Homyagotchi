@@ -1,4 +1,4 @@
-import { moodAvg } from '../core/game.js?v=13';
+import { moodAvg } from '../core/game.js?v=14';
 
 export function renderMoodChart(state, el) {
   const days = {};
