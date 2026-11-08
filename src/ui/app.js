@@ -1,10 +1,10 @@
-import { load, save } from '../core/store.js?v=15';
-import { tick, petState } from '../core/pet.js?v=15';
-import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert } from '../core/game.js?v=15';
-import { sfx } from './audio.js?v=15';
-import { renderMoodChart, ChatUI } from './support.js?v=15';
-import { createSprite } from '../render/pixel-sprites.js?v=15';
-import { createAnimatedHamster } from '../render/animated-sprites.js?v=15';
+import { load, save } from '../core/store.js?v=16';
+import { tick, petState } from '../core/pet.js?v=16';
+import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert } from '../core/game.js?v=16';
+import { sfx } from './audio.js?v=16';
+import { renderMoodChart, ChatUI } from './support.js?v=16';
+import { createSprite } from '../render/pixel-sprites.js?v=16';
+import { createAnimatedHamster } from '../render/animated-sprites.js?v=16';
 
 const CONTENT = window.__CONTENT__;
 const LESSONS = window.__LESSONS__;
@@ -43,36 +43,28 @@ function mountSprite(containerId, spriteName, ...args) {
 }
 
 function mountDecorSprites() {
-  const decor = els('roomDecorRight');
-  if (!decor) return;
-  decor.innerHTML = '';
-  const items = [
-    ['bed'], ['sofa'], ['lamp'],
-    ['shelf', () => {
+  // Слева от стола: растение в горшке + настольная лампа (на тумбочке)
+  const left = els('roomDecorLeft');
+  if (left) {
+    left.innerHTML = '';
+    ['plant', 'lamp'].forEach((name) => {
       const wrap = document.createElement('div');
-      wrap.style.display = 'flex';
-      wrap.style.flexDirection = 'column';
-      wrap.style.alignItems = 'center';
-      const trophy = createSprite('trophy');
-      const books = createSprite('books');
-      if (trophy) wrap.appendChild(trophy);
-      if (books) { books.style.marginTop = '4px'; wrap.appendChild(books); }
-      return wrap;
-    }],
-    ['chair']
-  ];
-  items.forEach(([name, factory]) => {
-    const wrap = document.createElement('div');
-    wrap.className = 'decor-item';
-    if (factory) {
-      const el = factory();
-      if (el) wrap.appendChild(el);
-    } else {
+      wrap.className = 'decor-item';
       const sprite = createSprite(name);
       if (sprite) wrap.appendChild(sprite);
-    }
-    decor.appendChild(wrap);
-  });
+      left.appendChild(wrap);
+    });
+  }
+  // Справа в глубине: кровать
+  const right = els('roomDecorRight');
+  if (right) {
+    right.innerHTML = '';
+    const wrap = document.createElement('div');
+    wrap.className = 'decor-item';
+    const bed = createSprite('bed');
+    if (bed) wrap.appendChild(bed);
+    right.appendChild(wrap);
+  }
 }
 
 function renderPetSprite() {
@@ -90,13 +82,23 @@ function renderPetSprite() {
 
 function renderRoomIcons() {
   mountSprite('roomPlayIcon', 'play_icon', 3);
-  mountSprite('roomStatsIcon', 'chart_icon', 3);
-  mountSprite('roomHabitsIcon', 'check_icon', 3);
-  mountSprite('roomShopIcon', 'coin', 3);
-  mountSprite('roomSupportIcon', 'heart', 3);
+  mountSprite('roomStatsIcon', 'trophy_icon', 3);
+  mountSprite('roomHabitsIcon', 'doc_icon', 3);
+  mountSprite('roomShopIcon', 'cup_icon', 3);
+  mountSprite('roomSupportIcon', 'book_icon', 3);
   mountSprite('roomTheoryIcon', 'book_icon', 2);
   mountSprite('roomSettingsIcon', 'gear_icon', 2);
-  mountSprite('roomWallDecor', 'star', 4);
+  mountSprite('roomRug', 'rug', 4);
+}
+
+/* Плашка «новый раздел теории» — пока есть непройденные уроки */
+function updateRoomNote() {
+  const el = els('roomNote');
+  if (!el) return;
+  let total = 0;
+  (LESSONS.courses || []).forEach((c) => (c.lessons || []).forEach(() => { total++; }));
+  const seen = Object.keys(S.lessons || {}).length;
+  el.classList.toggle('hidden', total === 0 || seen >= total);
 }
 
 function renderGameTools() {
@@ -137,7 +139,6 @@ function renderGameTools() {
 }
 
 function renderTopbarSprites() {
-  mountSprite('brandLogo', 'hamster_happy');
   const heartsContainer = els('topHearts');
   if (heartsContainer) {
     heartsContainer.innerHTML = '';
@@ -174,6 +175,8 @@ const NAV_MAP = { home: 'home', habits: 'habits', theory: 'theory', game: 'game'
 
 function gotoScreen(name) {
   if (name === 'audience') return showAudience();
+  document.body.classList.toggle('on-home', name === 'home');
+  updateRoomNote();
   SCREENS.forEach((s) => {
     const el = els('screen-' + s);
     if (el) el.classList.toggle('active', s === name);
@@ -211,6 +214,7 @@ function renderTopbar() {
 
 /* ============ AUDIENCE ============ */
 function showAudience() {
+  document.body.classList.remove('on-home');
   SCREENS.forEach((s) => {
     const el = els('screen-' + s);
     if (el) el.classList.toggle('active', s === 'audience');
@@ -722,6 +726,7 @@ function checkPetNotifications() {
 
 /* ============ INIT ============ */
 dayCheck(S, toast);
+updateRoomNote();
 renderTopbarSprites();
 renderGameTools();
 renderPetSprite();
