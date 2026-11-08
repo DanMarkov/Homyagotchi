@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🐹 Хомягочи</title>
 <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="src/render/sprites.css?v=14">
+<link rel="stylesheet" href="src/render/sprites.css?v=15">
 <style>
   :root {
     --bg: #cfe9f9;
@@ -487,6 +487,11 @@
     font-size: .7rem;
     color: var(--ink-soft);
   }
+  .rank-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .rank-icon { font-size: 1.6rem; }
+  .rank-title { font-family: 'Comfortaa', 'Nunito', sans-serif; font-size: .62rem; font-weight: 700; }
+  .rank-pct { margin-left: auto; font-family: 'Comfortaa', 'Nunito', sans-serif; font-size: .62rem; font-weight: 700; color: var(--blue-dark); }
+  .rank-next { margin-top: 8px; font-size: .5rem; font-weight: 500; color: var(--ink-soft); }
   .stats-pet {
     text-align: center;
     line-height: 1;
@@ -1143,6 +1148,10 @@
       <div class="stats-grid">
         <div>
           <div class="stats-section">
+            <h3>🎖️ РЕЙТИНГ КИБЕРБЕЗОПАСНОСТИ</h3>
+            <div id="ratingBlock"></div>
+          </div>
+          <div class="stats-section">
             <h3>🏅 ДОСТИЖЕНИЯ</h3>
             <div id="achievementList"></div>
           </div>
@@ -1272,6 +1281,7 @@
         <div style="display:flex;flex-direction:column;gap:14px">
           <button class="btn btn-ghost btn-block" id="btnChangeAudience" style="justify-content:flex-start">🎯 Сменить уровень (аудиторию)</button>
           <button class="btn btn-ghost btn-block" id="btnToggleSound" style="justify-content:flex-start">🔊 Звук: вкл</button>
+          <button class="btn btn-ghost btn-block" id="btnToggleNotify" style="justify-content:flex-start">🔔 Уведомления о Хори: выкл</button>
           <button class="btn btn-ghost btn-block" id="btnReset" style="justify-content:flex-start;color:var(--red-dark)">🗑 Сбросить прогресс</button>
         </div>
       </div>
@@ -1313,10 +1323,10 @@
     </div>
   </div>
 
-  <script src="content/config.js?v=14"></script>
-  <script src="content/content.js?v=14"></script>
-  <script src="content/lessons.js?v=14"></script>
-  <script src="content/shop.js?v=14"></script>
-  <script type="module" src="src/ui/app.js?v=14"></script>
+  <script src="content/config.js?v=15"></script>
+  <script src="content/content.js?v=15"></script>
+  <script src="content/lessons.js?v=15"></script>
+  <script src="content/shop.js?v=15"></script>
+  <script type="module" src="src/ui/app.js?v=15"></script>
 </body>
 </html>

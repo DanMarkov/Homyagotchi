@@ -1,4 +1,4 @@
-import { createPixelSprite, H, HAMSTER_SIT, HAMSTER_STAND, HAMSTER_HAPPY } from './pixel-sprites.js?v=14';
+import { createPixelSprite, H, HAMSTER_SIT, HAMSTER_STAND, HAMSTER_HAPPY } from './pixel-sprites.js?v=15';
 
 const SCALE = 3;
 

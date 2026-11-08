@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert';
-import { gainXP, buy, owns, toggleHabit, answerEvent, dailyGoalProgress, moodAvg, logMood, dayCheck } from '../src/core/game.js';
+import { gainXP, buy, owns, toggleHabit, answerEvent, dailyGoalProgress, moodAvg, logMood, dayCheck, accuracy, securityRank, eventsForAudience, petAlert } from '../src/core/game.js';
 import { freshState } from '../src/core/store.js';
 
 test('gainXP levels up and awards coins', () => {
@@ -81,4 +81,57 @@ test('dayCheck increments streak once per day', () => {
   assert.equal(s.streak, 1);
   dayCheck(s);
   assert.equal(s.streak, 1);
+});
+
+test('answerEvent records answers for the security rating', () => {
+  const s = freshState();
+  answerEvent(s, { ok: 1, xp: 5 }, 1);
+  answerEvent(s, { ok: 1, xp: 5 }, 0);
+  assert.deepEqual(s.stats, { correct: 1, total: 2 });
+  assert.equal(accuracy(s), 50);
+});
+
+test('securityRank: empty -> Новичок, thresholds and max rank', () => {
+  const s = freshState();
+  let r = securityRank(s);
+  assert.equal(r.pct, null);
+  assert.equal(r.title, 'Новичок');
+  s.stats = { correct: 6, total: 10 };
+  r = securityRank(s);
+  assert.equal(r.pct, 60);
+  assert.equal(r.title, 'Любитель');
+  assert.equal(r.next, 75);
+  assert.equal(r.nextTitle, 'Знаток');
+  s.stats = { correct: 95, total: 100 };
+  r = securityRank(s);
+  assert.equal(r.pct, 95);
+  assert.equal(r.title, 'Мастер киберзащиты');
+  assert.equal(r.next, null);
+  assert.equal(r.progress, 100);
+});
+
+test('eventsForAudience filters by audience tag with fallback to all', () => {
+  const evs = [
+    { id: 'a', aud: ['school'] },
+    { id: 'b', aud: ['student', 'worker'] },
+    { id: 'c' }
+  ];
+  assert.deepEqual(eventsForAudience(evs, 'school').map((e) => e.id), ['a', 'c']);
+  assert.deepEqual(eventsForAudience(evs, 'worker').map((e) => e.id), ['b', 'c']);
+  assert.deepEqual(eventsForAudience(evs, 'student').map((e) => e.id), ['b', 'c']);
+  assert.equal(eventsForAudience([{ id: 'x', aud: ['school'] }], 'worker').length, 1);
+  assert.equal(eventsForAudience(null, 'school').length, 0);
+});
+
+test('petAlert fires on sick / low health / low security / low mood only', () => {
+  const s = freshState();
+  assert.equal(petAlert(s, 'idle'), null);
+  s.health = 10;
+  assert.ok(petAlert(s, 'idle').title.indexOf('чувствует') !== -1);
+  s.health = 80; s.sec = 10;
+  assert.ok(petAlert(s, 'idle').title.indexOf('опасности') !== -1);
+  s.sec = 60; s.mood = 10;
+  assert.ok(petAlert(s, 'idle').title.indexOf('скучает') !== -1);
+  s.mood = 70;
+  assert.ok(petAlert(s, 'sick').title.indexOf('чувствует') !== -1);
 });
