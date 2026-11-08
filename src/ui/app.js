@@ -1,10 +1,9 @@
-import { load, save } from '../core/store.js?v=16';
-import { tick, petState } from '../core/pet.js?v=16';
-import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert } from '../core/game.js?v=16';
-import { sfx } from './audio.js?v=16';
-import { renderMoodChart, ChatUI } from './support.js?v=16';
-import { createSprite } from '../render/pixel-sprites.js?v=16';
-import { createAnimatedHamster } from '../render/animated-sprites.js?v=16';
+import { load, save } from '../core/store.js?v=17';
+import { tick, petState } from '../core/pet.js?v=17';
+import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert } from '../core/game.js?v=17';
+import { sfx } from './audio.js?v=17';
+import { renderMoodChart, ChatUI } from './support.js?v=17';
+import { createSprite } from '../render/pixel-sprites.js?v=17';
 
 const CONTENT = window.__CONTENT__;
 const LESSONS = window.__LESSONS__;
@@ -68,16 +67,18 @@ function mountDecorSprites() {
 }
 
 function renderPetSprite() {
-  const ps = petState(S);
-  // Hori always sits at his desk (desk+laptop are inside HAMSTER_SIT sprite)
-  const stateMap = { idle: 'sit', sitting: 'sit', happy: 'happy', eating: 'sit', jumping: 'sit', sleeping: 'sit', sick: 'sit' };
-  const container = els('petSpriteWrap');
-  if (container) {
-    container.querySelectorAll('canvas').forEach(c => { if (c._stopAnimation) c._stopAnimation(); });
-    container.innerHTML = '';
-    const animated = createAnimatedHamster(stateMap[ps] || 'sit');
-    if (animated) container.appendChild(animated);
-  }
+  // Готовый PNG-спрайт Хори (assets/sprites/hamster.png) — позы не меняем, анимация чисто CSS
+  mountSprite('petSpriteWrap', 'pet');
+}
+
+/* Короткое подпрыгивание персонажа при клике по любой кнопке навигации */
+function petJump() {
+  const wrap = els('petSpriteWrap');
+  const img = wrap ? wrap.querySelector('img.pet-img') : null;
+  if (!img) return;
+  img.classList.remove('pet-jump');
+  void img.offsetWidth;
+  img.classList.add('pet-jump');
 }
 
 function renderRoomIcons() {
@@ -89,6 +90,7 @@ function renderRoomIcons() {
   mountSprite('roomTheoryIcon', 'book_icon', 2);
   mountSprite('roomSettingsIcon', 'gear_icon', 2);
   mountSprite('roomRug', 'rug', 4);
+  mountSprite('roomDesk', 'desk');
 }
 
 /* Плашка «новый раздел теории» — пока есть непройденные уроки */
@@ -199,6 +201,7 @@ function gotoScreen(name) {
 $$('[data-goto]').forEach((btn) => {
   btn.addEventListener('click', () => {
     sfx.click();
+    petJump();
     gotoScreen(btn.dataset.goto);
   });
 });
@@ -317,7 +320,7 @@ function renderStats() {
       '<div class="progress-bar"><div class="progress-fill" style="width:' + (r.pct === null ? 0 : r.progress) + '%"></div></div>' +
       '<div class="rank-next">' + nextTxt + '</div>';
   }
-  mountSprite('statsPet', 'hamster_happy');
+  mountSprite('statsPet', 'pet_64');
 }
 
 /* ============ HABITS / TODO ============ */
@@ -348,7 +351,7 @@ function renderHabits() {
     div.appendChild(reward);
     list.appendChild(div);
   });
-  mountSprite('todoPet', 'hamster_sit');
+  mountSprite('todoPet', 'pet_64');
 }
 
 els('btnAddHabit').addEventListener('click', () => {
@@ -397,7 +400,7 @@ function renderTheory() {
       '<button class="btn btn-blue" style="margin-top:8px" data-start-lesson="' + t.id + '">▶ Пройти урок</button>';
     els('theoryContent').querySelector('[data-start-lesson]').addEventListener('click', () => startLessonByTopic(t.id));
   }
-  mountSprite('theoryPet', 'hamster_sit');
+  mountSprite('theoryPet', 'pet_64');
 }
 
 function startLessonByTopic(topicId) {
@@ -526,7 +529,7 @@ function startGame() {
     answers.appendChild(b);
   });
   renderTopbar();
-  mountSprite('gamePet', 'hamster_sit');
+  mountSprite('gamePet', 'pet_64');
   clearInterval(gameTimer);
   gameTimer = setInterval(() => {
     gameTimeLeft--;
@@ -640,7 +643,7 @@ function initChat() {
     if (avatarWrap) {
       avatarWrap.className = 'ch-avatar-wrap';
       avatarWrap.innerHTML = '';
-      const sprite = createSprite('hamster_happy');
+      const sprite = createSprite('pet_32');
       if (sprite) avatarWrap.appendChild(sprite);
     }
   }
@@ -732,12 +735,12 @@ renderGameTools();
 renderPetSprite();
 renderRoomIcons();
 mountDecorSprites();
-mountSprite('theoryPet', 'hamster_sit');
-mountSprite('todoPet', 'hamster_sit');
-mountSprite('statsPet', 'hamster_happy');
-mountSprite('namePlatePet', 'hamster_happy');
-mountSprite('statsTitleIcon', 'trophy_icon', 3);
-mountSprite('supportTitleIcon', 'heart', 3);
+mountSprite('theoryPet', 'pet_64');
+mountSprite('todoPet', 'pet_64');
+mountSprite('statsPet', 'pet_64');
+mountSprite('namePlatePet', 'pet_32');
+mountSprite('statsTitleIcon', 'trophy_icon', 2);
+mountSprite('supportTitleIcon', 'heart', 2);
 renderTopbar();
 renderPetBubble();
 

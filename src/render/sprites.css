@@ -5,24 +5,6 @@
   flex-shrink: 0;
 }
 
-.sprite-animated {
-  animation: spriteBreathe 1s ease-in-out infinite;
-}
-
-.sprite-hamster:not(.sprite-animated) {
-  animation: spriteBounce 2s ease-in-out infinite;
-}
-
-@keyframes spriteBounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
-}
-
-@keyframes spriteBreathe {
-  0%, 100% { transform: translateY(0) scaleY(1); }
-  50% { transform: translateY(-2px) scaleY(1.02); }
-}
-
 .sprite-heart {
   animation: heartPulse 1.2s ease-in-out infinite;
 }
