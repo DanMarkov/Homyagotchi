@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🐹 Хомягочи</title>
 <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="src/render/sprites.css?v=15">
+<link rel="stylesheet" href="src/render/sprites.css?v=16">
 <style>
   :root {
     --bg: #cfe9f9;
@@ -68,11 +68,17 @@
     max-width: 960px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
     gap: 12px;
-    padding: 16px 20px;
+    padding: 8px 20px 0;
     flex-wrap: wrap;
   }
+  .hud-corner { gap: 6px; }
+  .hud-corner .stat-chip { padding: 4px 8px; font-size: .8rem; border-width: 2px; gap: 5px; box-shadow: 2px 2px 0 rgba(26,58,92,.15); }
+  .hud-corner .stat-chip canvas { width: 18px !important; height: 18px !important; image-rendering: pixelated; }
+  .hud-corner .hearts-row { gap: 1px; }
+  .hud-corner .hearts-row canvas { width: 15px !important; height: 15px !important; image-rendering: pixelated; }
+  .hud-corner .btn-icon { width: 34px; height: 34px; font-size: .95rem; border-width: 2px; box-shadow: 2px 2px 0 rgba(26,58,92,.15); }
   .brand {
     display: flex;
     align-items: center;
@@ -250,7 +256,7 @@
   /* ===== HOME / ROOM ===== */
   #screen-home .room {
     position: relative;
-    background: var(--wall);
+    background: #ADD8E6;
     border: var(--pix) solid var(--line);
     min-height: 560px;
     overflow: hidden;
@@ -259,10 +265,19 @@
   .room-floor {
     position: absolute;
     bottom: 0; left: 0; right: 0;
-    height: 30%;
-    background: var(--floor);
-    border-top: var(--pix) solid var(--floor-dark);
+    height: 32%;
+    background: #D2B48C;
+    border-top: var(--pix) solid #b3946f;
   }
+  .room-rug {
+    position: absolute;
+    left: 50%; top: 76%;
+    transform: translateX(-50%);
+    z-index: 3;
+    line-height: 1;
+  }
+  .room-rug canvas { width: 264px !important; height: 77px !important; image-rendering: pixelated; }
+  body.on-home .bottom-nav { display: none; }
   .room-floor::before {
     content: '';
     position: absolute;
@@ -273,104 +288,116 @@
   }
   .room-actions-top {
     position: absolute;
-    top: 20px; left: 20px; right: 20px;
+    top: 16px; left: 50%;
+    transform: translateX(-50%);
     display: flex;
-    gap: 14px;
+    gap: 16px;
     z-index: 10;
-    justify-content: center;
   }
   .room-action-btn {
-    flex: 1;
-    max-width: 190px;
+    width: 200px;
     font-family: 'Comfortaa', 'Nunito', sans-serif;
-    font-size: .9rem;
-    border: 3px solid var(--line);
-    padding: 16px 12px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    border: 3px solid;
+    padding: 14px 10px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    transition: transform .05s, box-shadow .05s;
-    color: #fff;
-    box-shadow: 4px 4px 0 rgba(26,58,92,.2);
-    line-height: 1.4;
-  }
-  .room-action-btn:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 rgba(26,58,92,.2); }
-  .room-action-btn .ra-icon { font-size: 1.2rem; }
-  .room-action-btn.play { background: var(--purple); border-color: var(--purple-dark); box-shadow: 4px 4px 0 var(--purple-dark); }
-  .room-action-btn.play:active { box-shadow: 1px 1px 0 var(--purple-dark); }
-  .room-action-btn.shop { background: var(--card); color: var(--ink); }
-  .room-action-btn.stats { background: var(--pink); border-color: var(--pink-dark); box-shadow: 4px 4px 0 var(--pink-dark); }
-  .room-action-btn.stats:active { box-shadow: 1px 1px 0 var(--pink-dark); }
-  .room-action-btn .ra-icon { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; }
-  .room-action-btn .ra-icon canvas { width: 30px !important; height: 30px !important; image-rendering: pixelated; }
-  .name-plate {
-    display: flex; align-items: center; gap: 8px;
-    background: var(--card);
-    border: 3px solid var(--line);
-    box-shadow: 4px 4px 0 rgba(26,58,92,.2);
-    padding: 10px 16px;
-    font-family: 'Comfortaa', 'Nunito', sans-serif;
-    font-weight: 700;
-    font-size: 1rem;
-    color: var(--ink);
+    line-height: 1.3;
+    transition: transform .08s, filter .08s;
     white-space: nowrap;
   }
-  .name-plate .np-pet { display: inline-flex; }
-  .name-plate .np-pet canvas { width: 40px !important; height: 40px !important; image-rendering: pixelated; }
-  .name-plate .np-heart { color: var(--pink-dark); }
+  .room-action-btn:hover { transform: scale(1.06); filter: brightness(1.07); }
+  .room-action-btn:active { transform: scale(.96); }
+  .room-action-btn .ra-text { color: #fff; text-shadow: 2px 2px 0 rgba(0,0,0,.35); letter-spacing: .5px; }
+  .room-action-btn .ra-icon { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; }
+  .room-action-btn .ra-icon canvas { width: 30px !important; height: 30px !important; image-rendering: pixelated; }
+  .room-action-btn .np-pet { display: inline-flex; }
+  .room-action-btn .np-pet canvas { width: 34px !important; height: 34px !important; image-rendering: pixelated; }
+  .room-action-btn .np-heart { color: #ff5b7f; font-size: 1.15rem; }
+  .room-action-btn.play { background: #9B7FFF; border-color: #6A5ACD; box-shadow: 4px 4px 0 #6A5ACD; }
+  .room-action-btn.hori { background: #D6ECFF; border-color: #4682B4; box-shadow: 4px 4px 0 #4682B4; }
+  .room-action-btn.hori .ra-text { color: #14507e; text-shadow: 1px 1px 0 rgba(255,255,255,.7); }
+  .room-action-btn.stats { background: #FF69B4; border-color: #FF1493; box-shadow: 4px 4px 0 #FF1493; }
 
   .room-side-left {
     position: absolute;
-    left: 20px;
-    top: 100px;
+    left: 16px;
+    top: 96px;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 12px;
     z-index: 10;
+    align-items: flex-start;
   }
   .room-side-btn {
-    width: 80px;
+    width: 56px; height: 56px;
     background: var(--card);
     border: 3px solid var(--line);
-    padding: 12px 8px;
+    padding: 5px;
     cursor: pointer;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 8px;
-    box-shadow: 3px 3px 0 rgba(26,58,92,.15);
-    transition: transform .05s;
-    font-family: 'Comfortaa', 'Nunito', sans-serif;
+    justify-content: center;
+    box-shadow: 3px 3px 0 rgba(26,58,92,.18);
+    transition: transform .08s, filter .08s;
   }
-  .room-side-btn:active { transform: translate(2px, 2px); box-shadow: none; }
-  .room-side-btn .rs-icon {
-    width: 40px; height: 40px;
+  .room-side-btn:hover { transform: scale(1.08); filter: brightness(1.05); }
+  .room-side-btn:active { transform: scale(.94); box-shadow: none; }
+  .room-side-btn .rs-icon { display: flex; align-items: center; justify-content: center; }
+  .room-side-btn .rs-icon canvas { width: 40px !important; height: 40px !important; image-rendering: pixelated; }
+  .room-side-btn.habits { background: #eaf7ff; }
+  .room-side-btn.shop { background: #fff3d6; }
+  .room-side-btn.support { background: #ede4ff; }
+  .room-note {
+    width: 160px;
+    background: var(--card);
     border: 2px solid var(--line);
-    display: flex; align-items: center; justify-content: center;
-    overflow: hidden;
+    box-shadow: 3px 3px 0 rgba(26,58,92,.18);
+    padding: 8px 10px;
+    font-family: 'Comfortaa', 'Nunito', sans-serif;
+    font-size: .62rem;
+    font-weight: 600;
+    color: var(--ink);
+    text-align: left;
+    line-height: 1.45;
+    cursor: pointer;
+    transition: transform .08s;
   }
-  .room-side-btn .rs-icon canvas { width: 32px !important; height: 32px !important; image-rendering: pixelated; }
-  .room-side-btn .rs-label { font-size: .7rem; color: var(--ink-soft); }
-  .room-side-btn.habits .rs-icon { background: var(--green-soft); }
-  .room-side-btn.shop .rs-icon { background: #fff3d6; }
-  .room-side-btn.support .rs-icon { background: #ede4ff; }
+  .room-note:hover { transform: scale(1.04); }
+  .room-note::before {
+    content: '';
+    display: inline-block;
+    width: 8px; height: 8px;
+    background: var(--blue);
+    border: 1px solid var(--line);
+    margin-right: 6px;
+  }
 
   .room-decor-right {
     position: absolute;
-    right: 24px;
-    top: 100px;
+    right: 28px;
+    bottom: 22%;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 8px;
     z-index: 5;
   }
-  .room-decor-right .decor-item {
+  .room-decor-left {
+    position: absolute;
+    left: 96px;
+    bottom: 26%;
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    z-index: 5;
+  }
+  .room-decor-left .decor-item, .room-decor-right .decor-item {
     line-height: 1;
-   
-    transform-origin: center;
     margin: 4px 0;
   }
 
@@ -412,15 +439,23 @@
     margin-bottom: 8px;
   }
 
-  .room-bottom-btns {
+  .room-btn-theory, .room-btn-settings {
     position: absolute;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 14px;
+    bottom: 20px;
     z-index: 10;
+    font-weight: 700;
+    font-size: .95rem;
+    color: #fff;
+    text-shadow: 2px 2px 0 rgba(0,0,0,.35);
+    letter-spacing: .5px;
+    transition: transform .08s, filter .08s;
   }
+  .room-btn-theory:hover, .room-btn-settings:hover { transform: scale(1.06); filter: brightness(1.07); }
+  .room-btn-theory:active, .room-btn-settings:active { transform: scale(.96); }
+  .room-btn-theory { left: 20px; background: #5EC8F8; border-color: #0D8EC9; box-shadow: 4px 4px 0 #0D8EC9; }
+  .room-btn-settings { right: 20px; background: #7ED957; border-color: #3D9601; box-shadow: 4px 4px 0 #3D9601; }
+  .room-btn-theory .rb-icon, .room-btn-settings .rb-icon { display: inline-flex; }
+  .room-btn-theory .rb-icon canvas, .room-btn-settings .rb-icon canvas { width: 22px !important; height: 22px !important; image-rendering: pixelated; }
   .room-wall-decor {
     position: absolute;
     left: 50%;
@@ -1015,23 +1050,30 @@
     .theory-pet { display: none; }
     .game-scene { grid-template-columns: 1fr; }
     .game-pet { display: none; }
-    .room-side-left { flex-direction: row; top: auto; bottom: 100px; left: 12px; }
-    .room-decor-right { display: none; }
-    .room-actions-top { flex-wrap: wrap; }
-    .room-action-btn { max-width: none; flex: 1 1 45%; }
+    .room-side-left { flex-direction: row; top: auto; bottom: 92px; left: 10px; align-items: flex-end; gap: 8px; }
+    .room-side-btn { width: 46px; height: 46px; padding: 4px; }
+    .room-side-btn .rs-icon canvas { width: 32px !important; height: 32px !important; }
+    .room-note { width: 118px; font-size: .52rem; padding: 6px 8px; }
+    .room-decor-right, .room-decor-left { display: none; }
+    .room-rug canvas { width: 180px !important; height: 53px !important; }
+    .room-actions-top { flex-wrap: wrap; top: 8px; gap: 8px; width: 96%; }
+    .room-action-btn { width: 30%; min-width: 96px; font-size: .78rem; padding: 10px 6px; gap: 6px; }
+    .room-action-btn .ra-icon canvas, .room-action-btn .np-pet canvas { width: 24px !important; height: 24px !important; }
     .topbar { justify-content: center; }
     .topbar-stats { justify-content: center; }
-    .room-pet .pet-sprite-wrap { transform: scale(0.85); }
+    .room-pet { top: 60%; }
+    .room-pet .pet-sprite-wrap { transform: scale(0.8); }
     .room-pet .pet-sprite-wrap canvas { width: 132px !important; height: 155px !important; }
-    .name-plate { font-size: .85rem; padding: 8px 12px; }
-    .name-plate .np-pet canvas { width: 32px !important; height: 32px !important; }
+    .room-btn-theory, .room-btn-settings { bottom: 12px; font-size: .78rem; padding: 10px 12px; }
+    .room-btn-theory { left: 10px; }
+    .room-btn-settings { right: 10px; }
   }
 
   /* ===== PIXEL SPRITE SIZES ===== */
   /* Hori at desk: 62x73 art px, aspect ~0.85. Keep proportions. */
   .sprite-hamster { width: auto !important; height: auto !important; }
-  .room-pet .pet-sprite-wrap canvas { width: 176px !important; height: 208px !important; }
-  .room-decor-right .decor-item canvas { width: 96px !important; height: auto !important; }
+  .room-pet .pet-sprite-wrap canvas { width: 190px !important; height: 224px !important; image-rendering: pixelated; }
+  .room-decor-left .decor-item canvas, .room-decor-right .decor-item canvas { width: 112px !important; height: auto !important; image-rendering: pixelated; }
   .stats-pet canvas { width: 110px !important; height: 130px !important; }
   .todo-pet canvas { width: 110px !important; height: 130px !important; }
   .theory-pet canvas { width: 120px !important; height: 142px !important; }
@@ -1043,24 +1085,20 @@
   .ch-avatar-wrap canvas { width: 34px !important; height: 40px !important; }
   .t-icon canvas { width: 32px !important; height: auto !important; }
   #statsTitleIcon canvas, #supportTitleIcon canvas { width: 36px !important; height: auto !important; }
-  .room-bottom-btns .btn span[id] canvas { width: 22px !important; height: 22px !important; }
+  .room-btn-theory .rb-icon canvas, .room-btn-settings .rb-icon canvas { width: 22px !important; height: 22px !important; image-rendering: pixelated; }
 
 </style>
 </head>
 <body>
 
-  <!-- ===== TOP BAR ===== -->
-  <div class="topbar">
-    <div class="brand">
-      <span class="logo" id="brandLogo"></span>
-      <span>ХОМЯГОЧИ</span>
-    </div>
-    <div class="topbar-stats">
-      <span class="stat-chip hearts"><span class="hearts-row" id="topHearts"></span></span>
-      <span class="stat-chip coins"><span id="topCoinsIcon"></span> <b id="topCoins">0</b></span>
-      <span class="stat-chip kp"><span id="topKpIcon"></span> <b id="topKp">0</b> KP</span>
-      <span class="stat-chip lvl"><span id="topLvlIcon"></span> <b id="topLvl">1</b></span>
-      <button class="btn-icon" id="btnSound" title="звук">⚙️</button>
+  <!-- ===== COMPACT HUD (правый верхний угол) ===== -->
+  <div class="topbar hud-only">
+    <div class="topbar-stats hud-corner">
+      <span class="stat-chip hearts" title="здоровье Хори"><span class="hearts-row" id="topHearts"></span></span>
+      <span class="stat-chip coins" title="монеты"><span id="topCoinsIcon"></span> <b id="topCoins">0</b></span>
+      <span class="stat-chip kp" title="KP"><span id="topKpIcon"></span> <b id="topKp">0</b></span>
+      <span class="stat-chip lvl" title="уровень"><span id="topLvlIcon"></span> <b id="topLvl">1</b></span>
+      <button class="btn-icon" id="btnSound" title="звук">🔊</button>
     </div>
   </div>
 
@@ -1094,48 +1132,42 @@
     <div class="screen" id="screen-home">
       <div class="room">
         <div class="room-floor"></div>
+        <div class="room-rug" id="roomRug"></div>
 
         <div class="room-actions-top">
           <button class="room-action-btn play" data-goto="game">
-            <span class="ra-icon" id="roomPlayIcon"></span> ИГРАТЬ
+            <span class="ra-icon" id="roomPlayIcon"></span><span class="ra-text">ИГРАТЬ</span>
           </button>
-          <div class="name-plate">
-            <span class="np-pet" id="namePlatePet"></span>
-            Хори <span class="np-heart">❤</span>
-          </div>
+          <button class="room-action-btn hori" data-goto="home" title="Хори">
+            <span class="np-pet" id="namePlatePet"></span><span class="ra-text">ХОРИ</span><span class="np-heart">❤</span>
+          </button>
           <button class="room-action-btn stats" data-goto="stats">
-            <span class="ra-icon" id="roomStatsIcon"></span> СТАТИСТИКА
+            <span class="ra-icon" id="roomStatsIcon"></span><span class="ra-text">СТАТИСТИКА</span>
           </button>
         </div>
 
         <div class="room-side-left">
-          <button class="room-side-btn habits" data-goto="habits">
+          <button class="room-side-btn habits" data-goto="habits" title="Задачи">
             <span class="rs-icon" id="roomHabitsIcon"></span>
-            <span class="rs-label">ЗАДАЧИ</span>
           </button>
-          <button class="room-side-btn shop" data-goto="shop">
+          <button class="room-side-btn shop" data-goto="shop" title="Магазин">
             <span class="rs-icon" id="roomShopIcon"></span>
-            <span class="rs-label">МАГАЗИН</span>
           </button>
-          <button class="room-side-btn support" data-goto="support">
+          <button class="room-side-btn support" data-goto="support" title="Помощь">
             <span class="rs-icon" id="roomSupportIcon"></span>
-            <span class="rs-label">ПОМОЩЬ</span>
           </button>
+          <button class="room-note" id="roomNote" data-goto="theory">У вас открылся новый раздел теории</button>
         </div>
 
+        <div class="room-decor-left" id="roomDecorLeft"></div>
         <div class="room-decor-right" id="roomDecorRight"></div>
 
-        <div class="room-wall-decor" id="roomWallDecor"></div>
-
         <div class="room-pet">
-          <div class="pet-bubble" id="petBubble">Мне плохо...</div>
           <div class="pet-sprite-wrap" id="petSpriteWrap"></div>
         </div>
 
-        <div class="room-bottom-btns">
-          <button class="btn btn-blue" data-goto="theory"><span id="roomTheoryIcon" style="display:inline-flex;vertical-align:middle;margin-right:6px"></span>ТЕОРИЯ</button>
-          <button class="btn btn-green" data-goto="settings"><span id="roomSettingsIcon" style="display:inline-flex;vertical-align:middle;margin-right:6px"></span>НАСТРОЙКИ</button>
-        </div>
+        <button class="btn room-btn-theory" data-goto="theory"><span class="rb-icon" id="roomTheoryIcon"></span>ТЕОРИЯ</button>
+        <button class="btn room-btn-settings" data-goto="settings"><span class="rb-icon" id="roomSettingsIcon"></span>НАСТРОЙКИ</button>
       </div>
     </div>
 
@@ -1323,10 +1355,10 @@
     </div>
   </div>
 
-  <script src="content/config.js?v=15"></script>
-  <script src="content/content.js?v=15"></script>
-  <script src="content/lessons.js?v=15"></script>
-  <script src="content/shop.js?v=15"></script>
-  <script type="module" src="src/ui/app.js?v=15"></script>
+  <script src="content/config.js?v=16"></script>
+  <script src="content/content.js?v=16"></script>
+  <script src="content/lessons.js?v=16"></script>
+  <script src="content/shop.js?v=16"></script>
+  <script type="module" src="src/ui/app.js?v=16"></script>
 </body>
 </html>

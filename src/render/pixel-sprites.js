@@ -420,6 +420,42 @@ const BOOKS = `
 .KKKKKKKKKKKKKKKKKK.
 `;
 
+/* Plant in a brown pot (left of the desk) */
+const PLANT = `
+......NN........
+.....NNNN.......
+....NNnNNN......
+......Nn........
+...NNNNNNNN.....
+....nNNNNn......
+....NNNNNN......
+..NNnNNNNnNN....
+.....NNNN.......
+....NNnNNN......
+..NNNNNNNNNN....
+.....NNNN.......
+...KKKKKKKK.....
+..KLLLLLLLLK....
+..KLLllllLLK....
+..KwwwwwwwwK....
+..KwwwwwwwwK....
+...KKKKKKKK.....
+`;
+
+/* Pink rug on the floor (under the desk) */
+const RUG = `
+KKKKKKKKKKKKKKKKKKKKKKKK
+KPPPPPPPPPPPPPPPPPPPPPPK
+KpPPPPPPPPPPPPPPPPPPPPpK
+KpPqqqqqqqqqqqqqqqqqqPpK
+KpPPPPPPPPPPPPPPPPPPPPpK
+KPPPPPPPPPPPPPPPPPPPPPPK
+KKKKKKKKKKKKKKKKKKKKKKKK
+`;
+
+export function createPlantSprite() { return createPixelSprite(PLANT, FURN, 4, 'sprite-plant'); }
+export function createRugSprite() { return createPixelSprite(RUG, FURN, 4, 'sprite-rug'); }
+
 export function createDeskSprite() { return createPixelSprite(DESK, FURN, 4, 'sprite-desk'); }
 export function createBedSprite() { return createPixelSprite(BED, FURN, 4, 'sprite-bed'); }
 export function createSofaSprite() { return createPixelSprite(SOFA, FURN, 4, 'sprite-sofa'); }
@@ -663,7 +699,37 @@ export function createGearIconSprite(scale = 3) { return createPixelSprite(GEAR_
 export function createBookIconSprite(scale = 3) { return createPixelSprite(BOOK_ICON, TOOLS, scale, 'sprite-book'); }
 export function createChartIconSprite(scale = 3) { return createPixelSprite(CHART_ICON, TOOLS, scale, 'sprite-chart'); }
 export function createLogoutIconSprite(scale = 3) { return createPixelSprite(LOGOUT_ICON, TOOLS, scale, 'sprite-logout'); }
+/* Document icon (left rail: задачи) */
+const DOC_ICON = `
+.KKKKKKKKKKKKKK.
+.KWWWWWWWWWWWWK.
+.KWkkkkkkkkkkWK.
+.KWkkkkkkkkkkWK.
+.KWkkkkkkkkkkWK.
+.KWkkkkkkkkkkWK.
+.KWkkkkkkkkkkWK.
+.KWkkkkkkkkkkWK.
+.KWWWWWWWWWWWWK.
+.KKKKKKKKKKKKKK.
+`;
+
+/* Cup icon (left rail: магазин/еда) */
+const CUP_ICON = `
+.....K....K.....
+....Kk....kK....
+.KKKKKKKKKKKKKK.
+.KWWWWWWWWWWWWK.
+.KWzzzzzzzzzzWK.
+.KWzzzzzzzzzzWK.
+.KWzzzzzzzzzzWK.
+.KWWWWWWWWWWWWK.
+..KKKKKKKKKKKK..
+..KKKKKKKKKKKK..
+`;
+
 export function createHelpIconSprite(scale = 3) { return createPixelSprite(HELP_ICON, TOOLS, scale, 'sprite-help'); }
+export function createDocIconSprite(scale = 3) { return createPixelSprite(DOC_ICON, TOOLS, scale, 'sprite-doc'); }
+export function createCupIconSprite(scale = 3) { return createPixelSprite(CUP_ICON, TOOLS, scale, 'sprite-cup'); }
 
 export function createShieldSprite() { return createPixelSprite(SHIELD, TOOLS, 3, 'sprite-shield'); }
 export function createSnowflakeSprite() { return createPixelSprite(SNOWFLAKE, TOOLS, 3, 'sprite-snow'); }
@@ -701,7 +767,11 @@ export const SPRITE_FACTORIES = {
   book_icon: createBookIconSprite,
   chart_icon: createChartIconSprite,
   logout_icon: createLogoutIconSprite,
-  help_icon: createHelpIconSprite
+  help_icon: createHelpIconSprite,
+  plant: createPlantSprite,
+  rug: createRugSprite,
+  doc_icon: createDocIconSprite,
+  cup_icon: createCupIconSprite
 };
 
 export function createSprite(name, ...args) {
