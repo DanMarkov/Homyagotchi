@@ -26,3 +26,18 @@ test('corrupt save falls back to defaults', () => {
   assert.equal(s.version, SAVE_VERSION);
   assert.equal(s.coins, 30);
 });
+
+test('fresh state has article-alignment defaults (audience, rating stats, notifications)', () => {
+  const s = freshState();
+  assert.equal(s.audience, 'student');
+  assert.deepEqual(s.stats, { correct: 0, total: 0 });
+  assert.equal(s.notifications, false);
+  assert.equal(s.onboarded, false);
+});
+
+test('old v2 save migrates with new default fields filled', () => {
+  const s = migrate({ version: 2, health: 50 });
+  assert.equal(s.audience, 'student');
+  assert.deepEqual(s.stats, { correct: 0, total: 0 });
+  assert.equal(s.notifications, false);
+});

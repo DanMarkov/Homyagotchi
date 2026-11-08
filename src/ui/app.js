@@ -1,10 +1,10 @@
-import { load, save } from '../core/store.js?v=14';
-import { tick, petState } from '../core/pet.js?v=14';
-import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg } from '../core/game.js?v=14';
-import { sfx } from './audio.js?v=14';
-import { renderMoodChart, ChatUI } from './support.js?v=14';
-import { createSprite } from '../render/pixel-sprites.js?v=14';
-import { createAnimatedHamster } from '../render/animated-sprites.js?v=14';
+import { load, save } from '../core/store.js?v=15';
+import { tick, petState } from '../core/pet.js?v=15';
+import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert } from '../core/game.js?v=15';
+import { sfx } from './audio.js?v=15';
+import { renderMoodChart, ChatUI } from './support.js?v=15';
+import { createSprite } from '../render/pixel-sprites.js?v=15';
+import { createAnimatedHamster } from '../render/animated-sprites.js?v=15';
 
 const CONTENT = window.__CONTENT__;
 const LESSONS = window.__LESSONS__;
@@ -300,6 +300,19 @@ function renderStats() {
   els('statsProgress').style.width = pct + '%';
   els('statsProgressText').textContent = totalKp + '/100 KP';
   els('statsStreak').textContent = '🔥 ' + (S.streak || 0) + ' ДНЕЙ';
+  const r = securityRank(S);
+  const rb = els('ratingBlock');
+  if (rb) {
+    const nextTxt = r.pct === null
+      ? 'Ответь на задания в «Игре», чтобы получить рейтинг (метрика MVP: рост верных ответов 60→90%)'
+      : (r.next === null ? 'Максимальное звание! 👑' : 'До звания «' + r.nextTitle + '» (' + r.next + '% верных): осталось ' + (r.next - r.pct) + ' п.п.');
+    rb.innerHTML =
+      '<div class="rank-head"><span class="rank-icon">' + r.icon + '</span>' +
+      '<span class="rank-title">' + r.title + '</span>' +
+      '<span class="rank-pct">' + (r.pct === null ? '—' : r.pct + '%') + '</span></div>' +
+      '<div class="progress-bar"><div class="progress-fill" style="width:' + (r.pct === null ? 0 : r.progress) + '%"></div></div>' +
+      '<div class="rank-next">' + nextTxt + '</div>';
+  }
   mountSprite('statsPet', 'hamster_happy');
 }
 
@@ -491,7 +504,8 @@ let currentEvent = null;
 
 function startGame() {
   if (currentEvent) return;
-  currentEvent = CONTENT.events[Math.floor(Math.random() * CONTENT.events.length)];
+  const pool = eventsForAudience(CONTENT.events, S.audience);
+  currentEvent = pool[Math.floor(Math.random() * pool.length)];
   gameTimeLeft = 25;
   els('gameTimer').textContent = gameTimeLeft;
   els('gameQuestion').textContent = currentEvent.q;
@@ -663,6 +677,49 @@ els('btnReset').addEventListener('click', () => {
   location.reload();
 });
 
+/* Push-уведомления о состоянии питомца (по статье: pet gets push о состоянии) */
+function renderNotifyBtn() {
+  const supported = 'Notification' in window;
+  const on = !!S.notifications && supported && Notification.permission === 'granted';
+  els('btnToggleNotify').textContent = '🔔 Уведомления о Хори: ' + (on ? 'вкл' : 'выкл') + (supported ? '' : ' (не поддерживается браузером)');
+}
+
+els('btnToggleNotify').addEventListener('click', () => {
+  if (!('Notification' in window)) { toast('Этот браузер не поддерживает уведомления'); return; }
+  if (S.notifications && Notification.permission === 'granted') {
+    S.notifications = false;
+    persist();
+    renderNotifyBtn();
+    toast('Уведомления выключены');
+    return;
+  }
+  Notification.requestPermission().then((p) => {
+    S.notifications = (p === 'granted');
+    persist();
+    renderNotifyBtn();
+    if (p === 'granted') {
+      new Notification('Хори ждёт тебя! 🐹', { body: 'Заходи — питомец соскучился по урокам кибербезопасности.' });
+      toast('Уведомления включены 🔔');
+    } else {
+      toast('Разрешение на уведомления не дано');
+    }
+  });
+});
+renderNotifyBtn();
+
+let lastNotifyAt = 0;
+function checkPetNotifications() {
+  if (!S.notifications || !('Notification' in window) || Notification.permission !== 'granted') return;
+  if (!document.hidden) return;
+  const now = Date.now();
+  if (now - lastNotifyAt < 5 * 60 * 1000) return;
+  const a = petAlert(S, petState(S));
+  if (a) {
+    lastNotifyAt = now;
+    new Notification(a.title, { body: a.body });
+  }
+}
+
 /* ============ INIT ============ */
 dayCheck(S, toast);
 renderTopbarSprites();
@@ -687,6 +744,8 @@ if (S.onboarded) {
 
 setInterval(() => { tick(S, 1); persist(); }, 4000);
 setInterval(renderPetBubble, 8000);
+setInterval(checkPetNotifications, 60000);
+document.addEventListener('visibilitychange', () => { if (document.hidden) checkPetNotifications(); });
 
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') els('modalBg').classList.add('hidden');

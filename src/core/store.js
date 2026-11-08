@@ -12,7 +12,11 @@ const DEFAULT_STATE = () => ({
   moodLog: [],
   lessons: {},
   owned: ['hat_none', 'wall_rose'],
-  equipped: { hat: 'hat_none', wall: 'wall_rose' }
+  equipped: { hat: 'hat_none', wall: 'wall_rose' },
+  audience: 'student',
+  onboarded: false,
+  notifications: false,
+  stats: { correct: 0, total: 0 }
 });
 
 const MIGRATIONS = {

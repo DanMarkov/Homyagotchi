@@ -70,8 +70,70 @@ export function logMood(state, m) {
   if (state.moodLog.length > 60) state.moodLog.shift();
 }
 
+/* ============ RATING (рейтинг кибербезопасности, см. статью: компоненты «очки, уровни, аватары, рейтинги») ============ */
+
+export function recordAnswer(state, correct) {
+  if (!state.stats) state.stats = { correct: 0, total: 0 };
+  state.stats.total++;
+  if (correct) state.stats.correct++;
+  return state.stats;
+}
+
+export const RANKS = [
+  { min: 0, title: 'Новичок', icon: '🌱' },
+  { min: 60, title: 'Любитель', icon: '🔍' },
+  { min: 75, title: 'Знаток', icon: '🛡️' },
+  { min: 90, title: 'Эксперт', icon: '🏅' },
+  { min: 95, title: 'Мастер киберзащиты', icon: '👑' }
+];
+
+export function accuracy(state) {
+  const st = state.stats || { correct: 0, total: 0 };
+  if (!st.total) return null;
+  return Math.round((st.correct / st.total) * 100);
+}
+
+export function securityRank(state) {
+  const pct = accuracy(state);
+  if (pct === null) {
+    return { pct: null, title: RANKS[0].title, icon: RANKS[0].icon, next: RANKS[1].min, nextTitle: RANKS[1].title, progress: 0 };
+  }
+  let cur = RANKS[0];
+  let next = null;
+  for (let i = 0; i < RANKS.length; i++) {
+    if (pct >= RANKS[i].min) cur = RANKS[i];
+    else { next = RANKS[i]; break; }
+  }
+  const progress = next ? Math.min(100, Math.round(((pct - cur.min) / (next.min - cur.min)) * 100)) : 100;
+  return { pct, title: cur.title, icon: cur.icon, next: next ? next.min : null, nextTitle: next ? next.title : null, progress };
+}
+
+/* ============ AUDIENCE PERSONALIZATION (статья: сценарии персонализируются под школьников, студентов и старшее поколение) ============ */
+
+export function eventsForAudience(events, audience) {
+  const all = events || [];
+  const pool = all.filter((e) => !e.aud || !e.aud.length || e.aud.indexOf(audience) !== -1);
+  return pool.length ? pool : all;
+}
+
+/* ============ PUSH-АЛЕРТЫ О СОСТОЯНИИ ПИТОМЦА (статья: push-уведомления о состоянии питомца) ============ */
+
+export function petAlert(state, ps) {
+  if (ps === 'sick' || (state.health || 0) < 30) {
+    return { title: 'Хори плохо себя чувствует! 🤒', body: 'Здоровье на исходе — поиграй с ним в разделе «Играть» и пройди урок!' };
+  }
+  if ((state.sec || 0) < 30) {
+    return { title: 'Хори в опасности! ⚠️', body: 'Низкий уровень безопасности: пройди задание против мошенников в «Игре».' };
+  }
+  if ((state.mood || 0) < 30) {
+    return { title: 'Хори скучает... 💜', body: 'Отметь привычки и загляни в «Помощь» — он будет рад!' };
+  }
+  return null;
+}
+
 export function answerEvent(state, ev, idx) {
   const correct = idx === ev.ok;
+  recordAnswer(state, correct);
   if (correct) {
     state.sec = Math.min(100, state.sec + 10);
     state.mood = Math.min(100, state.mood + 5);
