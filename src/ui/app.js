@@ -1,9 +1,9 @@
-import { load, save } from '../core/store.js?v=21';
-import { tick, petState } from '../core/pet.js?v=21';
-import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert } from '../core/game.js?v=21';
-import { sfx } from './audio.js?v=21';
-import { renderMoodChart, ChatUI } from './support.js?v=21';
-import { createSprite } from '../render/pixel-sprites.js?v=21';
+import { load, save } from '../core/store.js?v=22';
+import { tick, petState } from '../core/pet.js?v=22';
+import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert } from '../core/game.js?v=22';
+import { sfx } from './audio.js?v=22';
+import { renderMoodChart, ChatUI } from './support.js?v=22';
+import { createSprite } from '../render/pixel-sprites.js?v=22';
 
 const CONTENT = window.__CONTENT__;
 const LESSONS = window.__LESSONS__;
@@ -519,11 +519,19 @@ function startGame() {
   els('gameFeedback').innerHTML = '';
   const colors = ['orange', 'blue', 'green'];
   const keys = ['A', 'B', 'C'];
-  currentEvent.a.slice(0, 3).forEach((opt, i) => {
+  // Случайный порядок вариантов (Fisher-Yates): правильный ответ каждый раз в случайной позиции.
+  // dataset.orig хранит исходный индекс варианта, поэтому answerEvent(S, ev, origIdx) не меняется.
+  const order = currentEvent.a.slice(0, 3).map((_, i) => i);
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const t = order[i]; order[i] = order[j]; order[j] = t;
+  }
+  order.forEach((origIdx, i) => {
     const b = document.createElement('button');
     b.className = 'game-answer ' + colors[i % 3];
-    b.innerHTML = '<span class="ga-key">' + keys[i] + '</span><span>' + opt + '</span>';
-    b.onclick = () => answerGame(i);
+    b.dataset.orig = origIdx;
+    b.innerHTML = '<span class="ga-key">' + keys[i] + '</span><span>' + currentEvent.a[origIdx] + '</span>';
+    b.onclick = () => answerGame(origIdx);
     answers.appendChild(b);
   });
   renderTopbar();
@@ -583,10 +591,11 @@ function answerGame(idx, timeout = false) {
   const ok = answerEvent(S, currentEvent, idx); // idx = -1 (таймаут) засчитывается как неверный ответ
   if (!ok) gameLives = Math.max(0, gameLives - 1);
   renderGameHearts(!ok);
-  $$('.game-answer').forEach((b, j) => {
+  $$('.game-answer').forEach((b) => {
     b.disabled = true;
-    if (j === currentEvent.ok) b.classList.add('correct'); // подсветка только после ответа
-    else if (j === idx) b.classList.add('wrong');
+    const orig = Number(b.dataset.orig);
+    if (orig === currentEvent.ok) b.classList.add('correct'); // подсветка только после ответа
+    else if (orig === idx) b.classList.add('wrong');
   });
   const pet = els('gamePet');
   const top = pet ? pet.querySelector('.sprite-hori-top') : null;
