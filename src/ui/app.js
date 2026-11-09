@@ -1,9 +1,9 @@
-import { load, save } from '../core/store.js?v=19';
-import { tick, petState } from '../core/pet.js?v=19';
-import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert } from '../core/game.js?v=19';
-import { sfx } from './audio.js?v=19';
-import { renderMoodChart, ChatUI } from './support.js?v=19';
-import { createSprite } from '../render/pixel-sprites.js?v=19';
+import { load, save } from '../core/store.js?v=20';
+import { tick, petState } from '../core/pet.js?v=20';
+import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert } from '../core/game.js?v=20';
+import { sfx } from './audio.js?v=20';
+import { renderMoodChart, ChatUI } from './support.js?v=20';
+import { createSprite } from '../render/pixel-sprites.js?v=20';
 
 const CONTENT = window.__CONTENT__;
 const LESSONS = window.__LESSONS__;
@@ -76,7 +76,8 @@ function renderPetSprite() {
 /* Короткое подпрыгивание персонажа при клике по любой кнопке навигации */
 function petJump() {
   const wrap = els('petSpriteWrap');
-  const child = wrap ? wrap.firstElementChild : null;
+  // Jump/breathe only the hamster layer (.sprite-hori-top); the desk base layer stays perfectly still.
+  const child = wrap ? (wrap.querySelector('.sprite-hori-top') || wrap.firstElementChild) : null;
   if (!child) return;
   child.classList.remove('pet-jump');
   void child.offsetWidth;
