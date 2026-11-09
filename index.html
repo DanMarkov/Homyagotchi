@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🐹 Хомягочи</title>
 <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="src/render/sprites.css?v=22">
+<link rel="stylesheet" href="src/render/sprites.css?v=23">
 <style>
   :root {
     --bg: #cfe9f9;
@@ -277,7 +277,6 @@
     line-height: 1;
   }
   .room-rug canvas { width: 384px !important; height: 112px !important; image-rendering: pixelated; }
-  body.on-home .bottom-nav { display: none; }
   .room-floor::before {
     content: '';
     position: absolute;
@@ -583,7 +582,7 @@
   .todo-pet { text-align: center; transform-origin: center; display: inline-block; line-height: 1; }
 
   /* ===== THEORY ===== */
-  .theory-layout { display: grid; grid-template-columns: 280px 1fr 160px; gap: 24px; align-items: start; }
+  .theory-layout { display: grid; grid-template-columns: 280px 1fr 200px; gap: 24px; align-items: start; }
   .theory-sidebar {
     background: var(--card);
     border: 3px solid var(--line);
@@ -624,7 +623,7 @@
   }
   .theory-content h3 { font-family: 'Comfortaa', 'Nunito', sans-serif; font-size: .65rem; margin-bottom: 16px; }
   .theory-content p { line-height: 1.7; color: var(--ink-soft); font-size: 1.1rem; font-weight: 500; margin-bottom: 14px; }
-  .theory-pet { text-align: center; transform: scale(1.1); transform-origin: center bottom; align-self: end; display: inline-block; line-height: 1; }
+  .theory-pet { align-self: end; }
 
   .lesson-runner {
     background: var(--card);
@@ -921,34 +920,47 @@
   .mood-bar { width: 100%; transition: height .3s steps(8); min-height: 4px; }
   .mood-day { text-align: center; font-size: .9rem; color: var(--muted); margin-top: 6px; font-weight: 600; }
 
-  /* ===== BOTTOM NAV ===== */
+  /* ===== BOTTOM NAV — единая плавающая панель на всех экранах ===== */
   .bottom-nav {
     position: fixed;
-    bottom: 0; left: 0; right: 0;
-    background: var(--card);
-    border-top: var(--pix) solid var(--line);
-    display: flex;
-    justify-content: space-around;
-    padding: 12px 16px;
+    bottom: 18px; left: 50%; transform: translateX(-50%);
+    display: flex; justify-content: center; align-items: center; gap: 10px;
+    background: #FCFBF3;
+    border: 3px solid #0c0c0c;
+    border-radius: 18px;
+    box-shadow: 4px 4px 0 #0c0c0c;
+    padding: 8px 12px;
+    height: 68px; box-sizing: border-box;
+    max-width: calc(100% - 24px);
     z-index: 50;
-    box-shadow: 0 -4px 0 rgba(26,58,92,.1);
   }
   .bottom-nav .nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+    width: 88px; height: 100%;
     cursor: pointer;
-    padding: 10px 14px;
-    transition: all .1s;
+    padding: 4px 6px;
     background: none;
     border: 2px solid transparent;
+    border-radius: 12px;
     font-family: 'Comfortaa', 'Nunito', sans-serif;
+    transition: transform .1s, background .1s;
   }
-  .bottom-nav .nav-item .ni-icon { font-size: 1.5rem; }
-  .bottom-nav .nav-item .ni-label { font-size: .4rem; color: var(--muted); }
-  .bottom-nav .nav-item.active { background: var(--blue-soft); border-color: var(--blue-dark); }
-  .bottom-nav .nav-item.active .ni-label { color: var(--blue-dark); }
+  .bottom-nav .nav-item:hover { transform: translateY(-2px); }
+  .bottom-nav .nav-item .ni-icon { display: flex; align-items: center; justify-content: center; height: 30px; }
+  .bottom-nav .nav-item .ni-icon canvas { image-rendering: pixelated; }
+  .bottom-nav .nav-item .ni-label { font-size: .42rem; font-weight: 700; color: var(--muted); letter-spacing: .3px; }
+  /* неактивные вкладки приглушены */
+  .bottom-nav .nav-item:not(.active) .ni-icon canvas { filter: grayscale(.7) opacity(.55); }
+  .bottom-nav .nav-item:not(.active):hover .ni-icon canvas { filter: none; }
+  /* активная вкладка подсвечена своим цветом из палитры главного экрана */
+  .bottom-nav .nav-item.active { border-color: #0c0c0c; }
+  .bottom-nav .nav-item.active .ni-icon canvas { filter: none; }
+  .bottom-nav .nav-item.active .ni-label { color: #0c0c0c; }
+  .bottom-nav .nav-item[data-goto="home"].active { background: #D6ECFD; }
+  .bottom-nav .nav-item[data-goto="habits"].active { background: #DDF7E3; }
+  .bottom-nav .nav-item[data-goto="theory"].active { background: #E9E2FD; }
+  .bottom-nav .nav-item[data-goto="game"].active { background: #FDE3EA; }
+  .bottom-nav .nav-item[data-goto="support"].active { background: #FFEDD6; }
 
   /* ===== MODAL ===== */
   .modal-bg {
@@ -1020,14 +1032,18 @@
   @keyframes toastOut { to { opacity: 0; transform: translateX(-50%) translateY(-16px); } }
 
   @media (max-width: 720px) {
+    .bottom-nav { bottom: 12px; gap: 4px; padding: 6px 8px; height: 64px; border-radius: 16px; }
+    .bottom-nav .nav-item { width: 58px; gap: 2px; padding: 2px 2px; }
+    .bottom-nav .nav-item .ni-icon { height: 26px; }
+    .bottom-nav .nav-item .ni-label { font-size: .34rem; }
     body { font-size: 16px; }
     .audience-grid { grid-template-columns: 1fr; }
     .stats-grid { grid-template-columns: 1fr; }
-    .stats-pet { display: none; }
+    .stats-pet { display: block; margin: 14px auto 0; }
     .todo-layout { grid-template-columns: 1fr; }
-    .todo-pet { display: none; }
+    .todo-pet { display: block; margin: 14px auto 0; }
     .theory-layout { grid-template-columns: 1fr; }
-    .theory-pet { display: none; }
+    .theory-pet { display: block; margin: 14px auto 0; }
     .game-scene { min-height: 0; } .game-left { max-width: none; }
     .game-pet { position: static; text-align: right; margin-top: 12px; }
     .room-side-left { flex-direction: row; top: auto; bottom: 92px; left: 10px; align-items: flex-end; gap: 8px; }
@@ -1044,20 +1060,27 @@
     .topbar { justify-content: center; }
     .topbar-stats { justify-content: center; }
     #screen-home .room-pet .pet-sprite-wrap canvas.sprite-hori { width: 256px !important; height: 228px !important; }
-    .room-btn-theory, .room-btn-settings { bottom: 12px; font-size: .78rem; padding: 10px 12px; min-width: 0; }
+    .room-btn-theory, .room-btn-settings { bottom: 96px; font-size: .78rem; padding: 10px 12px; min-width: 0; }
     .room-btn-theory { left: 10px; }
     .room-btn-settings { right: 10px; }
   }
 
   /* ===== PIXEL SPRITE SIZES ===== */
-  /* Персонаж — готовый PNG assets/sprites/hamster.png (128x128), отображаем кратно (x1/x2), пиксели не размываются */
-  .pet-img {
+  /* Единый Хори на ВСЕХ экранах: один канвас-спрайт HORI_BODY (те же пиксели, что у Хори на главном экране), одна idle-анимация дыхания */
+  .sprite-hori-body {
     image-rendering: pixelated;
     image-rendering: crisp-edges;
     animation: petBreathe 1.8s steps(2) infinite;
     transform-origin: center bottom;
   }
-  .pet-img.pet-jump { animation: petBreathe 1.8s steps(2) infinite, petJump .45s steps(3) 1; }
+  .stats-pet, .todo-pet, .theory-pet { position: relative; overflow: visible; text-align: center; line-height: 1; }
+  .stats-pet canvas.sprite-hori-body, .todo-pet canvas.sprite-hori-body, .theory-pet canvas.sprite-hori-body { width: 180px !important; height: 141px !important; }
+  /* мягкая тень-эллипс под Хомяком, чтобы он не «висел» */
+  .stats-pet::after, .todo-pet::after, .theory-pet::after {
+    content: ''; position: absolute; left: 50%; bottom: -8px; transform: translateX(-50%);
+    width: 72%; height: 14px; border-radius: 50%;
+    background: radial-gradient(ellipse at center, rgba(12,12,12,.28), rgba(12,12,12,0) 70%);
+  }
   @keyframes petBreathe {
     0%, 100% { transform: scale(1, 1); }
     50% { transform: scale(1.02, 1.015); }
@@ -1074,9 +1097,8 @@
   .room-pet .pet-sprite-wrap canvas.sprite-hori-top { animation: petBreathe 1.8s steps(2) infinite; transform-origin: center bottom; }
   .room-pet .pet-sprite-wrap canvas.sprite-hori-top.pet-jump { animation: petBreathe 1.8s steps(2) infinite, petJump .45s steps(3) 1; }
   /* Побочные экраны: готовый PNG hamster (пиксельный grid 128/64/32), кратные масштабы */
-  .stats-pet img.pet-img, .todo-pet img.pet-img, .theory-pet img.pet-img, .game-pet img.pet-img { width: 128px !important; height: 128px !important; }
-  .room-action-btn .np-pet img.pet-img { width: 32px !important; height: 32px !important; }
-  .ch-avatar-wrap img.pet-img { width: 32px !important; height: 32px !important; image-rendering: pixelated; }
+  .room-action-btn .np-pet canvas { image-rendering: pixelated; }
+  .ch-avatar-wrap canvas { image-rendering: pixelated; }
   /* Мебель — канвас scale 4, CSS кратно размеру канваса */
   .room-decor-left .decor-item canvas.sprite-plant, .room-decor-right .decor-item canvas.sprite-plant { width: 64px !important; height: 76px !important; image-rendering: pixelated; }
   .room-decor-left .decor-item canvas.sprite-lamp, .room-decor-right .decor-item canvas.sprite-lamp { width: 128px !important; height: 112px !important; image-rendering: pixelated; }
@@ -1327,25 +1349,26 @@
   </div>
 
   <!-- ===== BOTTOM NAV ===== -->
+  <!-- Единая плавающая панель навигации: ОДИН компонент на всех экранах, иконки — пиксельные спрайты (монтируются в renderNavIcons) -->
   <nav class="bottom-nav">
     <button class="nav-item active" data-goto="home">
-      <span class="ni-icon">🏠</span>
+      <span class="ni-icon" id="navHomeIcon"></span>
       <span class="ni-label">ДОМ</span>
     </button>
     <button class="nav-item" data-goto="habits">
-      <span class="ni-icon">✅</span>
+      <span class="ni-icon" id="navHabitsIcon"></span>
       <span class="ni-label">ЗАДАЧИ</span>
     </button>
     <button class="nav-item" data-goto="theory">
-      <span class="ni-icon">📚</span>
+      <span class="ni-icon" id="navTheoryIcon"></span>
       <span class="ni-label">ТЕОРИЯ</span>
     </button>
     <button class="nav-item" data-goto="game">
-      <span class="ni-icon">🎮</span>
+      <span class="ni-icon" id="navGameIcon"></span>
       <span class="ni-label">ИГРА</span>
     </button>
     <button class="nav-item" data-goto="support">
-      <span class="ni-icon">💜</span>
+      <span class="ni-icon" id="navSupportIcon"></span>
       <span class="ni-label">ПОМОЩЬ</span>
     </button>
   </nav>
@@ -1360,10 +1383,10 @@
     </div>
   </div>
 
-  <script src="content/config.js?v=22"></script>
-  <script src="content/content.js?v=22"></script>
-  <script src="content/lessons.js?v=22"></script>
-  <script src="content/shop.js?v=22"></script>
-  <script type="module" src="src/ui/app.js?v=22"></script>
+  <script src="content/config.js?v=23"></script>
+  <script src="content/content.js?v=23"></script>
+  <script src="content/lessons.js?v=23"></script>
+  <script src="content/shop.js?v=23"></script>
+  <script type="module" src="src/ui/app.js?v=23"></script>
 </body>
 </html>
