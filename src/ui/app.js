@@ -1,9 +1,9 @@
-import { load, save } from '../core/store.js?v=18';
-import { tick, petState } from '../core/pet.js?v=18';
-import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert } from '../core/game.js?v=18';
-import { sfx } from './audio.js?v=18';
-import { renderMoodChart, ChatUI } from './support.js?v=18';
-import { createSprite } from '../render/pixel-sprites.js?v=18';
+import { load, save } from '../core/store.js?v=19';
+import { tick, petState } from '../core/pet.js?v=19';
+import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert } from '../core/game.js?v=19';
+import { sfx } from './audio.js?v=19';
+import { renderMoodChart, ChatUI } from './support.js?v=19';
+import { createSprite } from '../render/pixel-sprites.js?v=19';
 
 const CONTENT = window.__CONTENT__;
 const LESSONS = window.__LESSONS__;
@@ -739,7 +739,7 @@ mountDecorSprites();
 mountSprite('theoryPet', 'pet_64');
 mountSprite('todoPet', 'pet_64');
 mountSprite('statsPet', 'pet_64');
-mountSprite('namePlatePet', 'pet_32');
+mountSprite('namePlatePet', 'hori_head');
 mountSprite('statsTitleIcon', 'trophy_icon', 2);
 mountSprite('supportTitleIcon', 'heart', 2);
 renderTopbar();

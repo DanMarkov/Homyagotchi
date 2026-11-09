@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🐹 Хомягочи</title>
 <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="src/render/sprites.css?v=18">
+<link rel="stylesheet" href="src/render/sprites.css?v=19">
 <style>
   :root {
     --bg: #cfe9f9;
@@ -317,7 +317,7 @@
   .room-action-btn .ra-icon { display: inline-flex; align-items: center; justify-content: center; width: auto; min-width: 34px; height: 34px; }
   .room-action-btn .ra-icon canvas { image-rendering: pixelated; }
   .room-action-btn .np-pet { display: inline-flex; }
-  .room-action-btn .np-pet img { width: 32px !important; height: 32px !important; image-rendering: pixelated; }
+  .room-action-btn .np-pet canvas { image-rendering: pixelated; }
   .room-action-btn .np-heart { color: #ff5b7f; font-size: 1.15rem; }
   .room-action-btn.play { background: #8B6AF5; border-color: #6A3CE8; box-shadow: 4px 4px 0 #6A3CE8; }
   .room-action-btn.hori { background: #FCFBF3; border-color: #21367C; box-shadow: 4px 4px 0 #21367C; }
@@ -1063,10 +1063,10 @@
     .room-actions-top { flex-wrap: wrap; top: 8px; gap: 8px; padding: 0 10px; }
     .room-action-btn { width: auto; flex: 1 1 30%; min-width: 0; font-size: .72rem; padding: 10px 4px; gap: 4px; }
     .room-action-btn .ra-icon canvas { image-rendering: pixelated; }
-    .room-action-btn .np-pet img { width: 32px !important; height: 32px !important; }
+    .room-action-btn .np-pet canvas { image-rendering: pixelated; }
     .topbar { justify-content: center; }
     .topbar-stats { justify-content: center; }
-    #screen-home .room-pet .pet-sprite-wrap canvas.sprite-hori { width: 256px !important; height: 224px !important; }
+    #screen-home .room-pet .pet-sprite-wrap canvas.sprite-hori { width: 256px !important; height: 228px !important; }
     .room-btn-theory, .room-btn-settings { bottom: 12px; font-size: .78rem; padding: 10px 12px; min-width: 0; }
     .room-btn-theory { left: 10px; }
     .room-btn-settings { right: 10px; }
@@ -1091,7 +1091,7 @@
     100% { translate: 0 0; }
   }
   /* Главный экран: Хори за столом — канвас 256x224 (арт 64x56, scale 4), показываем в натуральном размере (x1) */
-  .room-pet .pet-sprite-wrap canvas.sprite-hori { width: 256px !important; height: 224px !important; image-rendering: pixelated; }
+  .room-pet .pet-sprite-wrap canvas.sprite-hori { width: 256px !important; height: 228px !important; image-rendering: pixelated; }
   .room-pet .pet-sprite-wrap > * { animation: petBreathe 1.8s steps(2) infinite; transform-origin: center bottom; }
   .room-pet .pet-sprite-wrap > .pet-jump { animation: petBreathe 1.8s steps(2) infinite, petJump .45s steps(3) 1; }
   /* Побочные экраны: готовый PNG hamster (пиксельный grid 128/64/32), кратные масштабы */
@@ -1099,9 +1099,9 @@
   .room-action-btn .np-pet img.pet-img { width: 32px !important; height: 32px !important; }
   .ch-avatar-wrap img.pet-img { width: 32px !important; height: 32px !important; image-rendering: pixelated; }
   /* Мебель — канвас scale 4, CSS кратно размеру канваса */
-  .room-decor-left .decor-item canvas.sprite-plant, .room-decor-right .decor-item canvas.sprite-plant { width: 64px !important; height: 72px !important; image-rendering: pixelated; }
-  .room-decor-left .decor-item canvas.sprite-lamp, .room-decor-right .decor-item canvas.sprite-lamp { width: 144px !important; height: 96px !important; image-rendering: pixelated; }
-  .room-decor-left .decor-item canvas.sprite-bed, .room-decor-right .decor-item canvas.sprite-bed { width: 200px !important; height: 112px !important; image-rendering: pixelated; }
+  .room-decor-left .decor-item canvas.sprite-plant, .room-decor-right .decor-item canvas.sprite-plant { width: 64px !important; height: 76px !important; image-rendering: pixelated; }
+  .room-decor-left .decor-item canvas.sprite-lamp, .room-decor-right .decor-item canvas.sprite-lamp { width: 128px !important; height: 112px !important; image-rendering: pixelated; }
+  .room-decor-left .decor-item canvas.sprite-bed, .room-decor-right .decor-item canvas.sprite-bed { width: 192px !important; height: 120px !important; image-rendering: pixelated; }
   .room-decor-left .decor-item canvas.sprite-sofa, .room-decor-right .decor-item canvas.sprite-sofa { width: 192px !important; height: 56px !important; image-rendering: pixelated; }
   .room-decor-left .decor-item canvas.sprite-chair, .room-decor-right .decor-item canvas.sprite-chair { width: 128px !important; height: 64px !important; image-rendering: pixelated; }
   .room-decor-left .decor-item canvas.sprite-trophy, .room-decor-right .decor-item canvas.sprite-trophy { width: 144px !important; height: 80px !important; image-rendering: pixelated; }
@@ -1378,10 +1378,10 @@
     </div>
   </div>
 
-  <script src="content/config.js?v=18"></script>
-  <script src="content/content.js?v=18"></script>
-  <script src="content/lessons.js?v=18"></script>
-  <script src="content/shop.js?v=18"></script>
-  <script type="module" src="src/ui/app.js?v=18"></script>
+  <script src="content/config.js?v=19"></script>
+  <script src="content/content.js?v=19"></script>
+  <script src="content/lessons.js?v=19"></script>
+  <script src="content/shop.js?v=19"></script>
+  <script type="module" src="src/ui/app.js?v=19"></script>
 </body>
 </html>
