@@ -825,6 +825,20 @@ const CHECK_ICON = `
 ......KGGK.......
 .......KK........
 `;
+const HELP_ICON = `
+.KKKKKKKKK.
+KKWWWWWWWKK
+KWWKKKKKWWK
+KWWK..KKWWK
+KKKK.KKWWKK
+....KKWWKK.
+...KKWWKK..
+...KWWKK...
+...KKKK....
+...KWWK....
+...KKKK....
+`;
+
 
 const GEAR_ICON = `
 ....KKK.....
@@ -882,19 +896,7 @@ KKKKKKKKKKKKKK..
 ............KGGK
 `;
 
-const HELP_ICON = `
-....PPPPPPPP....
-..PppppppppppP..
-..PpPPPPPPPPPp..
-..PpPpppppppP...
-..PpPppppppP....
-...PppppppP.....
-.....PppppP......
-.......PP........
-.................
-.........PP......
-.........PP......
-`;
+
 
 export function createPlayIconSprite(scale = 3) { return createPixelSprite(PLAY_ICON, TOOLS, scale, 'sprite-play'); }
 export function createGearIconSprite(scale = 3) { return createPixelSprite(GEAR_ICON, TOOLS, scale, 'sprite-gear'); }
@@ -972,11 +974,11 @@ export const SPRITE_FACTORIES = {
   star: createStarSprite,
   play_icon: createPlayIconSprite,
   check_icon: createCheckIconSprite,
+  help_icon: createHelpIconSprite,
   gear_icon: createGearIconSprite,
   book_icon: createBookIconSprite,
   chart_icon: createChartIconSprite,
   logout_icon: createLogoutIconSprite,
-  help_icon: createHelpIconSprite,
   plant: createPlantSprite,
   rug: createRugSprite,
   doc_icon: createDocIconSprite,

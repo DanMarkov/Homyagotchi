@@ -1,9 +1,9 @@
-import { load, save } from '../core/store.js?v=24';
-import { tick, petState } from '../core/pet.js?v=24';
-import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert } from '../core/game.js?v=24';
-import { sfx } from './audio.js?v=24';
-import { renderMoodChart, ChatUI } from './support.js?v=24';
-import { createSprite } from '../render/pixel-sprites.js?v=24';
+import { load, save } from '../core/store.js?v=25';
+import { tick, petState } from '../core/pet.js?v=25';
+import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert } from '../core/game.js?v=25';
+import { sfx } from './audio.js?v=25';
+import { renderMoodChart, ChatUI } from './support.js?v=25';
+import { createSprite } from '../render/pixel-sprites.js?v=25';
 
 const CONTENT = window.__CONTENT__;
 const LESSONS = window.__LESSONS__;
@@ -803,11 +803,11 @@ function renderNavIcons() {
   mountSprite('navHabitsIcon', 'check_icon', 2);
   mountSprite('navTheoryIcon', 'book_icon', 2);
   mountSprite('navGameIcon', 'play_icon', 2);
-  mountSprite('navSupportIcon', 'heart', 2);
+  mountSprite('navSupportIcon', 'help_icon', 2);
 }
 renderNavIcons();
 mountSprite('statsTitleIcon', 'trophy_icon', 2);
-mountSprite('supportTitleIcon', 'heart', 2);
+mountSprite('supportTitleIcon', 'help_icon', 2);
 renderTopbar();
 renderPetBubble();
 
