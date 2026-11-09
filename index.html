@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🐹 Хомягочи</title>
 <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="src/render/sprites.css?v=19">
+<link rel="stylesheet" href="src/render/sprites.css?v=20">
 <style>
   :root {
     --bg: #cfe9f9;
@@ -1091,9 +1091,11 @@
     100% { translate: 0 0; }
   }
   /* Главный экран: Хори за столом — канвас 256x224 (арт 64x56, scale 4), показываем в натуральном размере (x1) */
-  .room-pet .pet-sprite-wrap canvas.sprite-hori { width: 256px !important; height: 228px !important; image-rendering: pixelated; }
-  .room-pet .pet-sprite-wrap > * { animation: petBreathe 1.8s steps(2) infinite; transform-origin: center bottom; }
-  .room-pet .pet-sprite-wrap > .pet-jump { animation: petBreathe 1.8s steps(2) infinite, petJump .45s steps(3) 1; }
+  /* Hori at desk = two stacked layers: .sprite-hori-base (desk+laptop, static) + .sprite-hori-top (hamster only, breathes/jumps). Desk never moves. */
+  .room-pet .pet-sprite-wrap .sprite-hori-scene { position: relative; width: 256px !important; height: 228px !important; }
+  .room-pet .pet-sprite-wrap canvas.sprite-hori { position: absolute; top: 0; left: 0; width: 256px !important; height: 228px !important; image-rendering: pixelated; }
+  .room-pet .pet-sprite-wrap canvas.sprite-hori-top { animation: petBreathe 1.8s steps(2) infinite; transform-origin: center bottom; }
+  .room-pet .pet-sprite-wrap canvas.sprite-hori-top.pet-jump { animation: petBreathe 1.8s steps(2) infinite, petJump .45s steps(3) 1; }
   /* Побочные экраны: готовый PNG hamster (пиксельный grid 128/64/32), кратные масштабы */
   .stats-pet img.pet-img, .todo-pet img.pet-img, .theory-pet img.pet-img, .game-pet img.pet-img { width: 128px !important; height: 128px !important; }
   .room-action-btn .np-pet img.pet-img { width: 32px !important; height: 32px !important; }
@@ -1378,10 +1380,10 @@
     </div>
   </div>
 
-  <script src="content/config.js?v=19"></script>
-  <script src="content/content.js?v=19"></script>
-  <script src="content/lessons.js?v=19"></script>
-  <script src="content/shop.js?v=19"></script>
-  <script type="module" src="src/ui/app.js?v=19"></script>
+  <script src="content/config.js?v=20"></script>
+  <script src="content/content.js?v=20"></script>
+  <script src="content/lessons.js?v=20"></script>
+  <script src="content/shop.js?v=20"></script>
+  <script type="module" src="src/ui/app.js?v=20"></script>
 </body>
 </html>
