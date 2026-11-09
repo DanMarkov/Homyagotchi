@@ -1,9 +1,9 @@
-import { load, save } from '../core/store.js?v=17';
-import { tick, petState } from '../core/pet.js?v=17';
-import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert } from '../core/game.js?v=17';
-import { sfx } from './audio.js?v=17';
-import { renderMoodChart, ChatUI } from './support.js?v=17';
-import { createSprite } from '../render/pixel-sprites.js?v=17';
+import { load, save } from '../core/store.js?v=18';
+import { tick, petState } from '../core/pet.js?v=18';
+import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert } from '../core/game.js?v=18';
+import { sfx } from './audio.js?v=18';
+import { renderMoodChart, ChatUI } from './support.js?v=18';
+import { createSprite } from '../render/pixel-sprites.js?v=18';
 
 const CONTENT = window.__CONTENT__;
 const LESSONS = window.__LESSONS__;
@@ -42,11 +42,11 @@ function mountSprite(containerId, spriteName, ...args) {
 }
 
 function mountDecorSprites() {
-  // Слева от стола: растение в горшке + настольная лампа (на тумбочке)
+  // Слева: растение в горшке
   const left = els('roomDecorLeft');
   if (left) {
     left.innerHTML = '';
-    ['plant', 'lamp'].forEach((name) => {
+    ['plant'].forEach((name) => {
       const wrap = document.createElement('div');
       wrap.className = 'decor-item';
       const sprite = createSprite(name);
@@ -54,31 +54,33 @@ function mountDecorSprites() {
       left.appendChild(wrap);
     });
   }
-  // Справа в глубине: кровать
+  // Справа в глубине: тумбочка с жёлтой лампой + кровать
   const right = els('roomDecorRight');
   if (right) {
     right.innerHTML = '';
-    const wrap = document.createElement('div');
-    wrap.className = 'decor-item';
-    const bed = createSprite('bed');
-    if (bed) wrap.appendChild(bed);
-    right.appendChild(wrap);
+    ['lamp', 'bed'].forEach((name) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'decor-item';
+      const sprite = createSprite(name);
+      if (sprite) wrap.appendChild(sprite);
+      right.appendChild(wrap);
+    });
   }
 }
 
 function renderPetSprite() {
-  // Готовый PNG-спрайт Хори (assets/sprites/hamster.png) — позы не меняем, анимация чисто CSS
-  mountSprite('petSpriteWrap', 'pet');
+  // Главный экран: пиксель-арт «Хори за столом с ноутбуком» (синяя бабочка), как на эталоне
+  mountSprite('petSpriteWrap', 'hori_desk');
 }
 
 /* Короткое подпрыгивание персонажа при клике по любой кнопке навигации */
 function petJump() {
   const wrap = els('petSpriteWrap');
-  const img = wrap ? wrap.querySelector('img.pet-img') : null;
-  if (!img) return;
-  img.classList.remove('pet-jump');
-  void img.offsetWidth;
-  img.classList.add('pet-jump');
+  const child = wrap ? wrap.firstElementChild : null;
+  if (!child) return;
+  child.classList.remove('pet-jump');
+  void child.offsetWidth;
+  child.classList.add('pet-jump');
 }
 
 function renderRoomIcons() {
@@ -90,7 +92,6 @@ function renderRoomIcons() {
   mountSprite('roomTheoryIcon', 'book_icon', 2);
   mountSprite('roomSettingsIcon', 'gear_icon', 2);
   mountSprite('roomRug', 'rug', 4);
-  mountSprite('roomDesk', 'desk');
 }
 
 /* Плашка «новый раздел теории» — пока есть непройденные уроки */
