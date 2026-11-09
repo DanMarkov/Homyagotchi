@@ -268,13 +268,13 @@ kkkkFFOEKEEKEEOFkkkk
 .......KKKOKKK......
 `;
 
-export function createHoriDeskSprite() {
+export function createHoriDeskSprite(scale = 4) {
   // Scene wrapper: base canvas (desk + laptop, NO animation) + overlay canvas (hamster only, breathes/jumps).
   // Pixels of HORI_AT_DESK are split between the two layers without changes, so the scene looks identical at rest.
   const scene = document.createElement('div');
   scene.className = 'sprite-hori-scene';
-  scene.appendChild(createPixelSprite(HORI_DESK_BASE, HORI, 4, 'sprite-hori sprite-hori-base'));
-  scene.appendChild(createPixelSprite(HORI_TOP, HORI, 4, 'sprite-hori sprite-hori-top'));
+  scene.appendChild(createPixelSprite(HORI_DESK_BASE, HORI, scale, 'sprite-hori sprite-hori-base'));
+  scene.appendChild(createPixelSprite(HORI_TOP, HORI, scale, 'sprite-hori sprite-hori-top'));
   return scene;
 }
 export function createHoriHeadSprite(scale = 2) { return createPixelSprite(HORI_HEAD, HORI, scale, 'sprite-hori-head'); }
@@ -694,6 +694,36 @@ KYyyyyyyyyyyYK
 .KZZZZZZZZZZK.
 ..KKKKKKKKKK..
 `;
+const WARN_ICON = `
+......KYK......
+......KYK......
+.....KYYYK.....
+.....KYYYK.....
+....KYYYYYK....
+....KYYKYYK....
+...KYYYKYYYK...
+...KYYYKYYYK...
+..KYYYYKYYYYK..
+..KYYYYYYYYYK..
+.KYYYYYKYYYYYK.
+.KZZZZZZZZZZZK.
+KZZZZZZZZZZZZZK
+`;
+
+const CLOCK_ICON = `
+....KKKKK....
+...KWWWWWK...
+..KWWWKWWWK..
+.KWWWWKWWWWK.
+.KWWWWKWWWWK.
+.KWWWWKKKKWK.
+.KWWWWWWWWWK.
+.KWWWWWWWWWK.
+..KWWWWWWWK..
+...KWWWWWK...
+....KKKKK....
+`;
+
 
 /* ===== UI ICONS (pixel-art, not emoji) ===== */
 
@@ -841,6 +871,8 @@ export function createHeartSprite(scale = 3) { return createPixelSprite(HEART, T
 export function createCoinSprite(scale = 3) { return createPixelSprite(COIN, TOOLS, scale, 'sprite-coin'); }
 export function createStarSprite(scale = 3) { return createPixelSprite(STAR, TOOLS, scale, 'sprite-star'); }
 export function createTrophyIconSprite(scale = 3) { return createPixelSprite(TROPHY_ICON, TOOLS, scale, 'sprite-trophy-icon'); }
+export function createWarnIconSprite(scale = 3) { return createPixelSprite(WARN_ICON, TOOLS, scale, 'sprite-warn'); }
+export function createClockIconSprite(scale = 3) { return createPixelSprite(CLOCK_ICON, TOOLS, scale, 'sprite-clock'); }
 
 export const SPRITE_FACTORIES = {
   pet: () => createPetImage('assets/sprites/hamster.png', 'pet-img'),
@@ -864,6 +896,8 @@ export const SPRITE_FACTORIES = {
   heart: createHeartSprite,
   coin: createCoinSprite,
   trophy_icon: createTrophyIconSprite,
+  warn_icon: createWarnIconSprite,
+  clock_icon: createClockIconSprite,
   star: createStarSprite,
   play_icon: createPlayIconSprite,
   check_icon: createCheckIconSprite,
