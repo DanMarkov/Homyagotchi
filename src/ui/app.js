@@ -1,9 +1,9 @@
-import { load, save } from '../core/store.js?v=22';
-import { tick, petState } from '../core/pet.js?v=22';
-import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert } from '../core/game.js?v=22';
-import { sfx } from './audio.js?v=22';
-import { renderMoodChart, ChatUI } from './support.js?v=22';
-import { createSprite } from '../render/pixel-sprites.js?v=22';
+import { load, save } from '../core/store.js?v=23';
+import { tick, petState } from '../core/pet.js?v=23';
+import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert } from '../core/game.js?v=23';
+import { sfx } from './audio.js?v=23';
+import { renderMoodChart, ChatUI } from './support.js?v=23';
+import { createSprite } from '../render/pixel-sprites.js?v=23';
 
 const CONTENT = window.__CONTENT__;
 const LESSONS = window.__LESSONS__;
@@ -312,7 +312,7 @@ function renderStats() {
       '<div class="progress-bar"><div class="progress-fill" style="width:' + (r.pct === null ? 0 : r.progress) + '%"></div></div>' +
       '<div class="rank-next">' + nextTxt + '</div>';
   }
-  mountSprite('statsPet', 'pet_64');
+  mountSprite('statsPet', 'hori_body', 3);
 }
 
 /* ============ HABITS / TODO ============ */
@@ -343,7 +343,7 @@ function renderHabits() {
     div.appendChild(reward);
     list.appendChild(div);
   });
-  mountSprite('todoPet', 'pet_64');
+  mountSprite('todoPet', 'hori_body', 3);
 }
 
 els('btnAddHabit').addEventListener('click', () => {
@@ -392,7 +392,7 @@ function renderTheory() {
       '<button class="btn btn-blue" style="margin-top:8px" data-start-lesson="' + t.id + '">▶ Пройти урок</button>';
     els('theoryContent').querySelector('[data-start-lesson]').addEventListener('click', () => startLessonByTopic(t.id));
   }
-  mountSprite('theoryPet', 'pet_64');
+  mountSprite('theoryPet', 'hori_body', 3);
 }
 
 function startLessonByTopic(topicId) {
@@ -693,7 +693,7 @@ function initChat() {
     if (avatarWrap) {
       avatarWrap.className = 'ch-avatar-wrap';
       avatarWrap.innerHTML = '';
-      const sprite = createSprite('pet_32');
+      const sprite = createSprite('hori_head', 2);
       if (sprite) avatarWrap.appendChild(sprite);
     }
   }
@@ -785,10 +785,20 @@ renderGameTools();
 renderPetSprite();
 renderRoomIcons();
 mountDecorSprites();
-mountSprite('theoryPet', 'pet_64');
-mountSprite('todoPet', 'pet_64');
-mountSprite('statsPet', 'pet_64');
+mountSprite('theoryPet', 'hori_body', 3);
+mountSprite('todoPet', 'hori_body', 3);
+mountSprite('statsPet', 'hori_body', 3);
 mountSprite('namePlatePet', 'hori_head');
+
+/* ===== NAV ICONS (единый компонент bottom-nav, пиксельные иконки вместо эмодзи) ===== */
+function renderNavIcons() {
+  mountSprite('navHomeIcon', 'home_icon', 2);
+  mountSprite('navHabitsIcon', 'check_icon', 2);
+  mountSprite('navTheoryIcon', 'book_icon', 2);
+  mountSprite('navGameIcon', 'play_icon', 2);
+  mountSprite('navSupportIcon', 'heart', 2);
+}
+renderNavIcons();
 mountSprite('statsTitleIcon', 'trophy_icon', 2);
 mountSprite('supportTitleIcon', 'heart', 2);
 renderTopbar();
