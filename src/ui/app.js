@@ -1,9 +1,9 @@
-import { load, save } from '../core/store.js?v=20';
-import { tick, petState } from '../core/pet.js?v=20';
-import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert } from '../core/game.js?v=20';
-import { sfx } from './audio.js?v=20';
-import { renderMoodChart, ChatUI } from './support.js?v=20';
-import { createSprite } from '../render/pixel-sprites.js?v=20';
+import { load, save } from '../core/store.js?v=21';
+import { tick, petState } from '../core/pet.js?v=21';
+import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert } from '../core/game.js?v=21';
+import { sfx } from './audio.js?v=21';
+import { renderMoodChart, ChatUI } from './support.js?v=21';
+import { createSprite } from '../render/pixel-sprites.js?v=21';
 
 const CONTENT = window.__CONTENT__;
 const LESSONS = window.__LESSONS__;
@@ -156,21 +156,9 @@ function renderTopbarSprites() {
   mountSprite('topKpIcon', 'trophy_icon', 2);
   mountSprite('topLvlIcon', 'star', 2);
   mountSprite('gameKpIcon', 'trophy_icon', 2);
-  const gameHearts = els('gameHearts');
-  if (gameHearts) {
-    gameHearts.innerHTML = '';
-    const hearts = Math.max(0, Math.min(5, Math.ceil(S.health / 20)));
-    for (let i = 0; i < hearts; i++) {
-      const h = createSprite('heart', 3);
-      if (h) gameHearts.appendChild(h);
-    }
-    for (let i = hearts; i < 5; i++) {
-      const span = document.createElement('span');
-      span.textContent = '🖤';
-      span.style.fontSize = '1.2rem';
-      gameHearts.appendChild(span);
-    }
-  }
+  mountSprite('gameClockIcon', 'clock_icon', 2);
+  mountSprite('gameCoinsIcon', 'coin', 2);
+  renderGameHearts();
 }
 
 /* ============ NAVIGATION ============ */
@@ -180,6 +168,7 @@ const NAV_MAP = { home: 'home', habits: 'habits', theory: 'theory', game: 'game'
 function gotoScreen(name) {
   if (name === 'audience') return showAudience();
   document.body.classList.toggle('on-home', name === 'home');
+  document.body.classList.toggle('on-game', name === 'game');
   updateRoomNote();
   SCREENS.forEach((s) => {
     const el = els('screen-' + s);
@@ -214,6 +203,7 @@ function renderTopbar() {
   els('topKp').textContent = S.lvl * 10 + S.xp;
   els('topLvl').textContent = S.lvl;
   els('gameKp').textContent = S.lvl * 10 + S.xp;
+  const gc = els('gameCoins'); if (gc) gc.textContent = S.coins;
   renderTopbarSprites();
 }
 
@@ -510,28 +500,35 @@ const lessonUI = new LessonRunnerUI(LESSONS, S, { onSave: persist, onToast: toas
 let gameTimer = null;
 let gameTimeLeft = 25;
 let currentEvent = null;
+let gameLives = 3;
 
 function startGame() {
   if (currentEvent) return;
   const pool = eventsForAudience(CONTENT.events, S.audience);
   currentEvent = pool[Math.floor(Math.random() * pool.length)];
   gameTimeLeft = 25;
+  gameLives = 3;
   els('gameTimer').textContent = gameTimeLeft;
   els('gameQuestion').textContent = currentEvent.q;
+  // предупреждающий треугольник — только для вопросов про мошенников
+  const scam = /security|scam|fraud|\u043c\u043e\u0448\u0435\u043d/i.test((currentEvent.cat || '') + ' ' + (currentEvent.id || ''));
+  const wi = els('gameWarnIcon');
+  if (wi) { wi.innerHTML = ''; if (scam) mountSprite('gameWarnIcon', 'warn_icon', 3); }
   const answers = els('gameAnswers');
   answers.innerHTML = '';
   els('gameFeedback').innerHTML = '';
-  const colors = ['orange', 'blue', 'orange', 'blue'];
-  const keys = ['A', 'B', 'C', 'D'];
-  currentEvent.a.forEach((opt, i) => {
+  const colors = ['orange', 'blue', 'green'];
+  const keys = ['A', 'B', 'C'];
+  currentEvent.a.slice(0, 3).forEach((opt, i) => {
     const b = document.createElement('button');
-    b.className = 'game-answer ' + colors[i % 2];
+    b.className = 'game-answer ' + colors[i % 3];
     b.innerHTML = '<span class="ga-key">' + keys[i] + '</span><span>' + opt + '</span>';
     b.onclick = () => answerGame(i);
     answers.appendChild(b);
   });
   renderTopbar();
-  mountSprite('gamePet', 'pet_64');
+  renderGameHearts();
+  mountSprite('gamePet', 'hori_desk', 3); // тот же Хори за ноутбуком, что на главном экране (desk статичен, HOMяк дышит)
   clearInterval(gameTimer);
   gameTimer = setInterval(() => {
     gameTimeLeft--;
@@ -539,27 +536,76 @@ function startGame() {
     if (gameTimeLeft <= 0) {
       clearInterval(gameTimer);
       gameTimer = null;
-      endGame(false);
+      answerGame(-1, true); // время вышло = неверный ответ, минус сердечко
     }
   }, 1000);
 }
 
-function answerGame(idx) {
+function renderGameHearts(animateLost = false) {
+  const gh = els('gameHearts');
+  if (!gh) return;
+  gh.innerHTML = '';
+  for (let i = 0; i < 3; i++) {
+    const h = createSprite('heart', 3);
+    if (!h) continue;
+    if (i >= gameLives) h.classList.add('lost');
+    if (animateLost && i === gameLives) h.classList.add('heart-lost');
+    gh.appendChild(h);
+  }
+}
+
+/* летящий чип награды от кнопки ответа к иконке в HUD */
+function flyReward(text, targetId) {
+  const wrap = document.querySelector('#screen-game .game-wrap');
+  const target = els(targetId);
+  if (!wrap || !target) return;
+  const fromBtn = document.querySelector('.game-answer.correct') || document.querySelector('.game-answer');
+  const wr = wrap.getBoundingClientRect();
+  const tr = target.getBoundingClientRect();
+  const fr = fromBtn ? fromBtn.getBoundingClientRect() : tr;
+  const chip = document.createElement('span');
+  chip.className = 'fly-chip';
+  chip.textContent = text;
+  chip.style.left = (fr.left - wr.left + fr.width / 2 - 24) + 'px';
+  chip.style.top = (fr.top - wr.top) + 'px';
+  wrap.appendChild(chip);
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    chip.style.transform = 'translate(' + (tr.left + tr.width / 2 - (fr.left + fr.width / 2)) + 'px,' + (tr.top - fr.top) + 'px) scale(.5)';
+    chip.style.opacity = '.15';
+  }));
+  setTimeout(() => chip.remove(), 800);
+}
+
+function answerGame(idx, timeout = false) {
   if (!currentEvent) return;
   clearInterval(gameTimer);
   gameTimer = null;
-  const ok = answerEvent(S, currentEvent, idx);
+  const ok = answerEvent(S, currentEvent, idx); // idx = -1 (таймаут) засчитывается как неверный ответ
+  if (!ok) gameLives = Math.max(0, gameLives - 1);
+  renderGameHearts(!ok);
   $$('.game-answer').forEach((b, j) => {
     b.disabled = true;
-    if (j === currentEvent.ok) b.classList.add('correct');
+    if (j === currentEvent.ok) b.classList.add('correct'); // подсветка только после ответа
     else if (j === idx) b.classList.add('wrong');
   });
+  const pet = els('gamePet');
+  const top = pet ? pet.querySelector('.sprite-hori-top') : null;
+  if (ok) {
+    if (top) { top.classList.remove('pet-jump'); void top.offsetWidth; top.classList.add('pet-jump'); }
+    flyReward('+10', 'gameCoinsIcon');
+    flyReward('+' + (currentEvent.xp || 5) + ' KP', 'gameKpIcon');
+    sfx.correct();
+    toast('+10 XP +10 монет');
+  } else {
+    if (pet) { pet.classList.add('sad'); setTimeout(() => pet.classList.remove('sad'), 1000); }
+    sfx.wrong();
+  }
   const fb = els('gameFeedback');
-  fb.innerHTML = '<div class="lesson-feedback ' + (ok ? 'ok' : 'bad') + '">' +
-    (ok ? '✅ Верно! +10 🛡️ +10 монет ' : '❌ Мимо! ') + currentEvent.tip + '</div>' +
+  const head = ok
+    ? 'Верно! +10 монет, +' + (currentEvent.xp || 5) + ' KP. '
+    : (timeout ? 'Время вышло — ответ засчитан как неверный. Минус сердечко. ' : 'Мимо! Минус сердечко. ');
+  fb.innerHTML = '<div class="lesson-feedback ' + (ok ? 'ok' : 'bad') + '">' + head + currentEvent.tip + '</div>' +
     '<button class="btn btn-green btn-block" id="btnNextEvent" style="margin-top:12px">СЛЕДУЮЩЕЕ ЗАДАНИЕ →</button>';
-  if (ok) { sfx.correct(); toast('+10 XP +10 монет'); }
-  else sfx.wrong();
   els('btnNextEvent').onclick = () => {
     currentEvent = null;
     persist();
@@ -568,13 +614,6 @@ function answerGame(idx) {
   persist();
 }
 
-function endGame() {
-  currentEvent = null;
-  els('gameFeedback').innerHTML =
-    '<div class="lesson-feedback bad">⏰ Время вышло! Попробуй ещё раз.</div>' +
-    '<button class="btn btn-blue btn-block" id="btnRetryEvent" style="margin-top:12px">ЕЩЁ РАЗ →</button>';
-  els('btnRetryEvent').onclick = startGame;
-}
 
 /* ============ SHOP ============ */
 function renderShop() {
