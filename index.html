@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🐹 Хомягочи</title>
 <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="src/render/sprites.css?v=23">
+<link rel="stylesheet" href="src/render/sprites.css?v=24">
 <style>
   :root {
     --bg: #cfe9f9;
@@ -523,7 +523,8 @@
     color: var(--ink-soft);
   }
   .rank-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-  .rank-icon { font-size: 1.6rem; }
+  .rank-icon { font-size: 1.6rem; display: inline-flex; align-items: center; }
+  .rank-icon canvas { image-rendering: pixelated; }
   .rank-title { font-family: 'Comfortaa', 'Nunito', sans-serif; font-size: .62rem; font-weight: 700; }
   .rank-pct { margin-left: auto; font-family: 'Comfortaa', 'Nunito', sans-serif; font-size: .62rem; font-weight: 700; color: var(--blue-dark); }
   .rank-next { margin-top: 8px; font-size: .5rem; font-weight: 500; color: var(--ink-soft); }
@@ -1383,10 +1384,10 @@
     </div>
   </div>
 
-  <script src="content/config.js?v=23"></script>
-  <script src="content/content.js?v=23"></script>
-  <script src="content/lessons.js?v=23"></script>
-  <script src="content/shop.js?v=23"></script>
-  <script type="module" src="src/ui/app.js?v=23"></script>
+  <script src="content/config.js?v=24"></script>
+  <script src="content/content.js?v=24"></script>
+  <script src="content/lessons.js?v=24"></script>
+  <script src="content/shop.js?v=24"></script>
+  <script type="module" src="src/ui/app.js?v=24"></script>
 </body>
 </html>
