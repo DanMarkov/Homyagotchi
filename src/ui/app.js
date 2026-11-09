@@ -1,9 +1,9 @@
-import { load, save } from '../core/store.js?v=23';
-import { tick, petState } from '../core/pet.js?v=23';
-import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert } from '../core/game.js?v=23';
-import { sfx } from './audio.js?v=23';
-import { renderMoodChart, ChatUI } from './support.js?v=23';
-import { createSprite } from '../render/pixel-sprites.js?v=23';
+import { load, save } from '../core/store.js?v=24';
+import { tick, petState } from '../core/pet.js?v=24';
+import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert } from '../core/game.js?v=24';
+import { sfx } from './audio.js?v=24';
+import { renderMoodChart, ChatUI } from './support.js?v=24';
+import { createSprite } from '../render/pixel-sprites.js?v=24';
 
 const CONTENT = window.__CONTENT__;
 const LESSONS = window.__LESSONS__;
@@ -311,6 +311,13 @@ function renderStats() {
       '<span class="rank-pct">' + (r.pct === null ? '—' : r.pct + '%') + '</span></div>' +
       '<div class="progress-bar"><div class="progress-fill" style="width:' + (r.pct === null ? 0 : r.progress) + '%"></div></div>' +
       '<div class="rank-next">' + nextTxt + '</div>';
+    // иконка ранга 🏆 — единый пиксельный кубок (тот же trophy_icon, что в HUD и на кнопке Статистика)
+    const rankIcon = rb.querySelector('.rank-icon');
+    if (rankIcon && r.icon === '🏆') {
+      rankIcon.textContent = '';
+      const t = createSprite('trophy_icon', 2);
+      if (t) rankIcon.appendChild(t);
+    }
   }
   mountSprite('statsPet', 'hori_body', 3);
 }
