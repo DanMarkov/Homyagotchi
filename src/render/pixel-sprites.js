@@ -620,6 +620,7 @@ const TOOLS = {
   'Q': '#c4b0fd',
   'R': '#ff5b7f',
   'r': '#e04a6a',
+  'V': '#e8352a',
   'G': '#58cc02',
   'g': '#3d9601',
   'N': '#2ecc71',
@@ -825,18 +826,21 @@ const CHECK_ICON = `
 ......KGGK.......
 .......KK........
 `;
-const HELP_ICON = `
-.KKKKKKKKK.
-KKWWWWWWWKK
-KWWKKKKKWWK
-KWWK..KKWWK
-KKKK.KKWWKK
-....KKWWKK.
-...KKWWKK..
-...KWWKK...
-...KKKK....
-...KWWK....
-...KKKK....
+/* Lifebuoy icon (ПОМОЩЬ): толстое кольцо, 4 чередующихся сектора красный-белый-красный-белый (верх/право/низ/лево), чёрный пиксельный контур по внешнему И внутреннему краю, отверстие в центре */
+const LIFEBUOY_ICON = `
+....KKKKK....
+...KVVVVVK...
+..KVVVVVVVK..
+.KWVVVVVVVWK.
+KWWWVK.KVWWWK
+KWWWK...KWWWK
+KWWW.....WWWK
+KWWWK...KWWWK
+KWWWVK.KVWWWK
+.KWVVVVVVVWK.
+..KVVVVVVVK..
+...KVVVVVK...
+....KKKKK....
 `;
 
 
@@ -930,7 +934,7 @@ const CUP_ICON = `
 ..KKKKKKKKK...
 `;
 
-export function createHelpIconSprite(scale = 3) { return createPixelSprite(HELP_ICON, TOOLS, scale, 'sprite-help'); }
+export function createLifebuoyIconSprite(scale = 3) { return createPixelSprite(LIFEBUOY_ICON, TOOLS, scale, 'sprite-lifebuoy'); }
 export function createDocIconSprite(scale = 3) { return createPixelSprite(DOC_ICON, TOOLS, scale, 'sprite-doc'); }
 export function createCupIconSprite(scale = 3) { return createPixelSprite(CUP_ICON, TOOLS, scale, 'sprite-cup'); }
 
@@ -974,7 +978,7 @@ export const SPRITE_FACTORIES = {
   star: createStarSprite,
   play_icon: createPlayIconSprite,
   check_icon: createCheckIconSprite,
-  help_icon: createHelpIconSprite,
+  lifebuoy_icon: createLifebuoyIconSprite,
   gear_icon: createGearIconSprite,
   book_icon: createBookIconSprite,
   chart_icon: createChartIconSprite,
