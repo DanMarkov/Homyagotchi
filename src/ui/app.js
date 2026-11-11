@@ -1,9 +1,9 @@
-import { load, save, wipe } from '../core/store.js?v=30';
-import { tick, petState } from '../core/pet.js?v=30';
-import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert, useItem, isWifiEvent, itemCount, wifiBuffActive, coldBuffLeft, activeBuffs, satietyTick, applyFood, equipItem, unequipItem } from '../core/game.js?v=30';
-import { sfx } from './audio.js?v=30';
-import { renderMoodChart, ChatUI } from './support.js?v=30';
-import { createSprite } from '../render/pixel-sprites.js?v=30';
+import { load, save, wipe } from '../core/store.js?v=31';
+import { tick, petState } from '../core/pet.js?v=31';
+import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert, useItem, isWifiEvent, itemCount, wifiBuffActive, coldBuffLeft, activeBuffs, satietyTick, applyFood } from '../core/game.js?v=31';
+import { sfx } from './audio.js?v=31';
+import { renderMoodChart, ChatUI } from './support.js?v=31';
+import { createSprite } from '../render/pixel-sprites.js?v=31';
 
 const CONTENT = window.__CONTENT__;
 const LESSONS = window.__LESSONS__;
@@ -811,8 +811,6 @@ function renderShop() {
   // Превью Хори в шапке магазина — тот же единый источник спрайтов (hori_head + hat)
   mountSprite('shopPetWrap', 'hori_head', 3, hatNow());
 
-  const noneId = (type) => (type === 'hat' ? 'hat_none' : 'wall_sky');
-
   const cell = (item, type, equipped) => {
     const div = document.createElement('div');
     div.className = 'shop-item';
@@ -864,14 +862,11 @@ function renderShop() {
         price.textContent = item.price + ' МОНЕТ';
         if (S.coins < item.price) btn.disabled = true;
       }
-    } else if (equipped && item.id === noneId(type)) {
+    } else if (equipped) {
+      // Надетый предмет — ВЕЗДЕ зелёная «ВЫБРАНО ✓» (и шапки, и обои); снять можно кнопкой «НАДЕТЬ» на карточке по умолчанию («Без шапки» / «Небесные»)
       btn.textContent = 'ВЫБРАНО ✓';
       btn.className += ' btn-green';
       btn.disabled = true;
-      price.textContent = '—';
-    } else if (equipped) {
-      btn.textContent = 'СНЯТЬ';
-      btn.className += ' btn-blue';
       price.textContent = '—';
     } else if (owns(S, item.id)) {
       btn.textContent = 'НАДЕТЬ';
@@ -898,16 +893,7 @@ function renderShop() {
         renderShop();
         return;
       }
-      if (equipped) {
-        if (item.id === noneId(type)) return;
-        unequipItem(S, type);
-        toast('Снято: ' + item.name);
-        renderAllPets();
-        applyWallpaper();
-        persist();
-        renderShop();
-        return;
-      }
+      if (equipped) return; // зелёная «ВЫБРАНО ✓» не кликабельна; снятие — через «НАДЕТЬ» на карточке по умолчанию
       const r = buy(S, item, type); // buy сам надевает купленное/купленное (action buy/equip)
       if (!r.ok) { toast('Не хватает монет!'); return; }
       sfx.correct();
