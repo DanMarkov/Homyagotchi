@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert';
-import { gainXP, buy, owns, toggleHabit, answerEvent, dailyGoalProgress, moodAvg, logMood, dayCheck, accuracy, securityRank, eventsForAudience, petAlert, useItem, isWifiEvent, itemCount, wifiBuffActive, coldBuffLeft, activeBuffs } from '../src/core/game.js';
+import { gainXP, buy, owns, toggleHabit, answerEvent, dailyGoalProgress, moodAvg, logMood, dayCheck, accuracy, securityRank, eventsForAudience, petAlert, useItem, isWifiEvent, itemCount, wifiBuffActive, coldBuffLeft, activeBuffs, satietyTick, applyFood, equipItem, unequipItem } from '../src/core/game.js';
 import { freshState } from '../src/core/store.js';
 
 test('gainXP levels up and awards coins', () => {
@@ -188,4 +188,50 @@ test('activeBuffs отдаёт wifi-часы, cold-счётчик и key-счё�
   assert.ok(byKey.wifi && byKey.wifi.sprite === 'wifi_icon' && /ч/.test(byKey.wifi.label));
   assert.equal(byKey.cold.label, '×3');
   assert.equal(byKey.key.label, '×1');
+});
+
+/* ============ SATCITY / FOOD / EQUIP ============ */
+test('satietyTick: −5 за час, голодный хомяк грустит', () => {
+  const s = freshState();
+  const now = 1000000000000;
+  s.satiety = 50; s.satietyAt = now; s.mood = 50;
+  satietyTick(s, now + 3599999);
+  assert.equal(s.satiety, 50);
+  satietyTick(s, now + 3600000);
+  assert.equal(s.satiety, 45);
+  assert.equal(s.mood, 50);
+  s.satiety = 20; s.satietyAt = now;
+  satietyTick(s, now + 2 * 3600000);
+  assert.equal(s.satiety, 10);
+  assert.equal(s.mood, 46); // −2 за каждый час голода
+});
+
+test('applyFood: семечки +15 сытости, торт +20/+10, чай +8/+8; кап 100; ставит _eating', () => {
+  const s = freshState();
+  s.satiety = 50; s.mood = 50;
+  const r1 = applyFood(s, { satiety: 15, mood: 0 });
+  assert.equal(s.satiety, 65);
+  assert.equal(r1.ds, 15);
+  const r2 = applyFood(s, { satiety: 20, mood: 10 });
+  assert.equal(s.satiety, 85);
+  assert.equal(s.mood, 60);
+  const r3 = applyFood(s, { satiety: 99, mood: 99 });
+  assert.equal(s.satiety, 100);
+  assert.equal(r3.ds, 15);
+  assert.equal(s.mood, 100);
+  assert.ok(s._eating > 0);
+});
+
+test('equipItem/unequipItem: только купленное, одна шапка/одни обои', () => {
+  const s = freshState();
+  assert.equal(equipItem(s, 'hat', 'hat_cap').ok, false); // не куплено
+  s.owned.push('hat_cap', 'hat_bow', 'wall_mint');
+  assert.equal(equipItem(s, 'hat', 'hat_cap').ok, true);
+  assert.equal(s.equipped.hat, 'hat_cap');
+  equipItem(s, 'hat', 'hat_bow');
+  assert.equal(s.equipped.hat, 'hat_bow'); // одна шапка — предыдущая снимается
+  assert.equal(unequipItem(s, 'hat').equipped, false);
+  assert.equal(s.equipped.hat, 'hat_none');
+  assert.equal(equipItem(s, 'wall', 'wall_mint').ok, true);
+  assert.equal(s.equipped.wall, 'wall_mint');
 });

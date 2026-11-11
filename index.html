@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🐹 Хомягочи</title>
 <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="src/render/sprites.css?v=28">
+<link rel="stylesheet" href="src/render/sprites.css?v=29">
 <style>
   :root {
     --bg: #cfe9f9;
@@ -117,6 +117,8 @@
   .stat-chip.coins { color: var(--yellow-dark); }
   .stat-chip.kp { color: var(--blue-dark); }
   .stat-chip.lvl { color: var(--purple-dark); }
+  .stat-chip.satiety { color: var(--orange-dark); }
+  .stat-chip.satiety canvas { image-rendering: pixelated; }
   .btn-icon {
     width: 44px; height: 44px;
     border: 3px solid var(--line);
@@ -261,6 +263,26 @@
     min-height: 560px;
     overflow: hidden;
     box-shadow: var(--shadow-lg);
+  }
+  /* ===== ОБОИ КОМНАТЫ (стены; пол и мебель не меняются) ===== */
+  body.wall_sky #screen-home .room { background: #BCE4F0; }
+  body.wall_rose #screen-home .room {
+    background-color: #FBD9E6;
+    background-image: radial-gradient(#f5aec9 2px, transparent 2.6px);
+    background-size: 34px 34px;
+  }
+  body.wall_mint #screen-home .room {
+    background-color: #D9F3E4;
+    background-image: radial-gradient(#b2e4c6 2px, transparent 2.6px);
+    background-size: 34px 34px;
+  }
+  body.wall_star #screen-home .room {
+    background-color: #2E3A66;
+    background-image:
+      radial-gradient(#ffffff 1.6px, transparent 2.1px),
+      radial-gradient(#ffd166 2.2px, transparent 2.7px);
+    background-size: 58px 58px, 92px 92px;
+    background-position: 0 0, 30px 38px;
   }
   .room-floor {
     position: absolute;
@@ -829,6 +851,22 @@
     margin: 24px 0 14px;
     color: var(--ink-soft);
   }
+  /* превью обоев в карточках магазина */
+  .wall-swatch {
+    display: block; width: 48px; height: 48px; margin: 0 auto 10px;
+    border: 3px solid var(--line);
+    box-shadow: 2px 2px 0 rgba(26,58,92,.2);
+  }
+  .wall-swatch.wall_sky { background: #BCE4F0; }
+  .wall-swatch.wall_rose { background-color: #FBD9E6; background-image: radial-gradient(#f5aec9 2px, transparent 2.6px); background-size: 12px 12px; }
+  .wall-swatch.wall_mint { background-color: #D9F3E4; background-image: radial-gradient(#b2e4c6 2px, transparent 2.6px); background-size: 12px 12px; }
+  .wall-swatch.wall_star { background-color: #2E3A66; background-image: radial-gradient(#ffffff 1.6px, transparent 2.1px), radial-gradient(#ffd166 2.2px, transparent 2.7px); background-size: 16px 16px, 24px 24px; background-position: 0 0, 8px 10px; }
+  /* превью Хори со шляпкой в шапке магазина + полетные чипы/еда */
+  .shop-pet { margin-left: auto; line-height: 1; display: inline-flex; align-items: center; }
+  .shop-pet canvas { image-rendering: pixelated; display: block; }
+  .fly-chip.fly-global { position: fixed; z-index: 999; }
+  .eat-food { position: fixed; z-index: 998; pointer-events: none; transition: transform .24s steps(4), opacity .24s steps(4); }
+  .eat-food canvas { image-rendering: pixelated; display: block; }
 
   /* ===== SUPPORT / CHAT ===== */
   .chat-box {
@@ -1139,6 +1177,7 @@
   <div class="topbar hud-only">
     <div class="topbar-stats hud-corner">
       <span class="stat-chip hearts" title="здоровье Хори"><span class="hearts-row" id="topHearts"></span></span>
+      <span class="stat-chip satiety" title="сытость Хомяка"><span id="topSatietyIcon"></span> <b id="topSatiety">80</b></span>
       <span class="stat-chip coins" title="монеты"><span id="topCoinsIcon"></span> <b id="topCoins">0</b></span>
       <span class="stat-chip kp" title="KP"><span id="topKpIcon"></span> <b id="topKp">0</b></span>
       <span class="stat-chip lvl" title="уровень"><span id="topLvlIcon"></span> <b id="topLvl">1</b></span>
@@ -1319,6 +1358,7 @@
       <div class="screen-title">
         <span class="t-icon" style="background:#fff3e0">🛒</span>
         МАГАЗИН ХОМЯКА
+        <span class="shop-pet" id="shopPetWrap"></span>
       </div>
       <p style="color:var(--ink-soft);font-size:1.1rem;margin-bottom:10px;font-weight:500">Зарабатывай монетки в уроках, одевай хомяка и обустраивай домик!</p>
       <div class="shop-section-title">— АЙТЕМЫ (для игры) —</div>
@@ -1407,10 +1447,10 @@
     </div>
   </div>
 
-  <script src="content/config.js?v=28"></script>
-  <script src="content/content.js?v=28"></script>
-  <script src="content/lessons.js?v=28"></script>
-  <script src="content/shop.js?v=28"></script>
-  <script type="module" src="src/ui/app.js?v=28"></script>
+  <script src="content/config.js?v=29"></script>
+  <script src="content/content.js?v=29"></script>
+  <script src="content/lessons.js?v=29"></script>
+  <script src="content/shop.js?v=29"></script>
+  <script type="module" src="src/ui/app.js?v=29"></script>
 </body>
 </html>
