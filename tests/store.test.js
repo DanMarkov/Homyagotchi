@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert';
-import { migrate, freshState, SAVE_VERSION } from '../src/core/store.js';
+import { migrate, freshState, SAVE_VERSION, load, save, wipe, SAVE_KEY, BACKUP_KEY } from '../src/core/store.js';
 
 test('fresh state has version and defaults', () => {
   const s = freshState();
@@ -59,4 +59,31 @@ test('migrates v2 save to v3: satiety init + wall_rose→wall_sky default', () =
   assert.equal(s2.equipped.wall, 'wall_mint');
   assert.equal(s2.equipped.hat, 'hat_cap');
   assert.ok(!s2.owned.includes('wall_sky'));
+});
+
+test('save writes main + backup; load falls back to backup when main is corrupt', () => {
+  const mem = {};
+  global.localStorage = {
+    getItem: (k) => (k in mem ? mem[k] : null),
+    setItem: (k, v) => { mem[k] = String(v); },
+    removeItem: (k) => { delete mem[k]; }
+  };
+  try {
+    const s = freshState();
+    s.coins = 77;
+    save(s);
+    assert.ok(mem[SAVE_KEY], 'main key written');
+    assert.ok(mem[BACKUP_KEY], 'backup key written');
+    // портим основной ключ — load должен взять бэкап и сохранить прогресс
+    mem[SAVE_KEY] = '{broken json!!!';
+    const loaded = load();
+    assert.equal(loaded.coins, 77);
+    assert.equal(loaded.version, SAVE_VERSION);
+    // wipe чистит оба ключа
+    wipe();
+    assert.equal(mem[SAVE_KEY], undefined);
+    assert.equal(mem[BACKUP_KEY], undefined);
+  } finally {
+    delete global.localStorage;
+  }
 });

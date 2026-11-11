@@ -1,9 +1,9 @@
-import { load, save } from '../core/store.js?v=29';
-import { tick, petState } from '../core/pet.js?v=29';
-import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert, useItem, isWifiEvent, itemCount, wifiBuffActive, coldBuffLeft, activeBuffs, satietyTick, applyFood, equipItem, unequipItem } from '../core/game.js?v=29';
-import { sfx } from './audio.js?v=29';
-import { renderMoodChart, ChatUI } from './support.js?v=29';
-import { createSprite } from '../render/pixel-sprites.js?v=29';
+import { load, save, wipe } from '../core/store.js?v=30';
+import { tick, petState } from '../core/pet.js?v=30';
+import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert, useItem, isWifiEvent, itemCount, wifiBuffActive, coldBuffLeft, activeBuffs, satietyTick, applyFood, equipItem, unequipItem } from '../core/game.js?v=30';
+import { sfx } from './audio.js?v=30';
+import { renderMoodChart, ChatUI } from './support.js?v=30';
+import { createSprite } from '../render/pixel-sprites.js?v=30';
 
 const CONTENT = window.__CONTENT__;
 const LESSONS = window.__LESSONS__;
@@ -1031,7 +1031,7 @@ els('btnSound').addEventListener('click', () => {
 
 els('btnReset').addEventListener('click', () => {
   if (!confirm('Точно сбросить весь прогресс?')) return;
-  localStorage.removeItem('khomyagochi_pixel');
+  wipe(); // снимает и основной ключ, и бэкап
   location.reload();
 });
 
