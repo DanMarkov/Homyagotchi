@@ -1,9 +1,9 @@
-import { load, save } from '../core/store.js?v=26';
-import { tick, petState } from '../core/pet.js?v=26';
-import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert } from '../core/game.js?v=26';
-import { sfx } from './audio.js?v=26';
-import { renderMoodChart, ChatUI } from './support.js?v=26';
-import { createSprite } from '../render/pixel-sprites.js?v=26';
+import { load, save } from '../core/store.js?v=27';
+import { tick, petState } from '../core/pet.js?v=27';
+import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert } from '../core/game.js?v=27';
+import { sfx } from './audio.js?v=27';
+import { renderMoodChart, ChatUI } from './support.js?v=27';
+import { createSprite } from '../render/pixel-sprites.js?v=27';
 
 const CONTENT = window.__CONTENT__;
 const LESSONS = window.__LESSONS__;
@@ -87,7 +87,7 @@ function petJump() {
 function renderRoomIcons() {
   mountSprite('roomPlayIcon', 'play_icon', 3);
   mountSprite('roomStatsIcon', 'trophy_icon', 3);
-  mountSprite('roomHabitsIcon', 'doc_icon', 3);
+  mountSprite('roomHabitsIcon', 'check_badge_icon', 3);
   mountSprite('roomShopIcon', 'cup_icon', 3);
   mountSprite('roomSupportIcon', 'lifebuoy_icon', 3);
   mountSprite('roomTheoryIcon', 'book_icon', 2);
@@ -800,7 +800,7 @@ mountSprite('namePlatePet', 'hori_head');
 /* ===== NAV ICONS (единый компонент bottom-nav, пиксельные иконки вместо эмодзи) ===== */
 function renderNavIcons() {
   mountSprite('navHomeIcon', 'home_icon', 2);
-  mountSprite('navHabitsIcon', 'check_icon', 2);
+  mountSprite('navHabitsIcon', 'check_badge_icon', 2);
   mountSprite('navTheoryIcon', 'book_icon', 2);
   mountSprite('navGameIcon', 'play_icon', 2);
   mountSprite('navSupportIcon', 'lifebuoy_icon', 2);
@@ -808,6 +808,7 @@ function renderNavIcons() {
 renderNavIcons();
 mountSprite('statsTitleIcon', 'trophy_icon', 2);
 mountSprite('supportTitleIcon', 'lifebuoy_icon', 2);
+mountSprite('habitsTitleIcon', 'check_badge_icon', 2);
 renderTopbar();
 renderPetBubble();
 
