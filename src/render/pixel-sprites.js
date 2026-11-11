@@ -310,16 +310,185 @@ kkkkFFOEKEEKEEOFkkkk
 .......KKKOKKK......
 `;
 
-export function createHoriDeskSprite(scale = 4) {
-  // Scene wrapper: base canvas (desk + laptop, NO animation) + overlay canvas (hamster only, breathes/jumps).
+export function createHoriDeskSprite(scale = 4, hat = null) {
+  // Scene wrapper: base canvas (desk + laptop, NO animation) + overlay canvas (hamster + hat, breathes/jumps).
   // Pixels of HORI_AT_DESK are split between the two layers without changes, so the scene looks identical at rest.
+  // Шапка вклеивается в верхний (анимированный) слой — движется вместе с HOMyakом.
   const scene = document.createElement('div');
   scene.className = 'sprite-hori-scene';
   scene.appendChild(createPixelSprite(HORI_DESK_BASE, HORI, scale, 'sprite-hori sprite-hori-base'));
-  scene.appendChild(createPixelSprite(HORI_TOP, HORI, scale, 'sprite-hori sprite-hori-top'));
+  const [hox, hoy] = HAT_OFFSETS.top;
+  const topArt = hat ? composeHat(HORI_TOP, hat, hox, hoy) : HORI_TOP;
+  scene.appendChild(createPixelSprite(topArt, hatPalette(hat), scale, 'sprite-hori sprite-hori-top'));
   return scene;
 }
-export function createHoriHeadSprite(scale = 2) { return createPixelSprite(HORI_HEAD, HORI, scale, 'sprite-hori-head'); }
+export function createHoriHeadSprite(scale = 2, hat = null) {
+  const [hox, hoy] = HAT_OFFSETS.head;
+  const a = hat ? composeHat(HORI_HEAD, hat, hox, hoy) : HORI_HEAD;
+  return createPixelSprite(a, hatPalette(hat), scale, 'sprite-hori-head');
+}
+
+/* Hat: кепка (красная, козырёк) — сетка 20×8 поверх головы */
+const HAT_CAP = `
+........KKKK......
+......KKVVVVKK....
+....KKVVVVVVVVKK..
+...KVVWVVVVVVVVVK.
+..KVVVVVVVVVVVVVK.
+..KKKKKKKKKKKKKKK.
+.KKrKKKKKKKKKKKKKK
+..................
+`;
+
+/* Hat: бантик (розовый) — сетка 20×8 */
+const HAT_BOW = `
+..................
+...KKK....KKK.....
+..KRRRK..KRRRK....
+.KRWWRKKKKRWWRK...
+..KRRRK..KRRRK....
+...KKK....KKK.....
+..................
+..................
+`;
+
+/* Hat: корона (золотая, 3 зубца + камни) — сетка 20×8 */
+const HAT_CROWN = `
+..................
+.....K..K..K......
+.....KYYKYYKYYK...
+...KKYYYYYYYYYYKK.
+..KYYYYYYYYYYYYYK.
+..KYRRYVYRYVYYK...
+..KKKKKKKKKKKKKKK.
+..................
+`;
+
+/* Hat: наушники (серая дужка + синие амбушюры) — сетка 20×8 */
+const HAT_HEADPHONES = `
+....KKKKKKKKKK....
+...KAAAAAAAAAAK...
+..KAAAAAAAAAAAAK..
+.KAAK........KAAK.
+KBBBK........KBBBK
+KBBBK........KBBBK
+.KKK..........KKK.
+..................
+`;
+
+/* Food icon: семечки в миске */
+const FOOD_SEEDS_ICON = `
+...............
+..z...z...z....
+.zZz.zZz.zZz...
+..ZzZzZzZzZ....
+..KKKKKKKKK....
+..KzzzzzzzzK...
+.KZzZzZzZzZK...
+.KzzzzzzzzzzK..
+.KZzZzZzZzZK...
+..KKKKKKKKK....
+...............
+...............
+...............
+...............
+...............
+`;
+
+/* Food icon: кусок торта с кремом и вишней */
+const FOOD_CAKE_ICON = `
+...............
+...............
+.......K.......
+......KRK......
+......RRR......
+..KKKKKKKKKKK..
+..KWWWWWWWWWK..
+..KWKWKWKWKWK..
+..KyyyyyyyyyK..
+..KyyyyyyyyyK..
+..KyyyyyyyyyK..
+..KKKKKKKKKKK..
+.KKKKKKKKKKKKK.
+...............
+...............
+`;
+
+/* Food icon: чашка чая с паром */
+const FOOD_TEA_ICON = `
+...............
+.....k.k.k.....
+.....k.k.k.....
+.....k.k.k.....
+...............
+...KKKKKKKK....
+..KCCCCCCCK....
+..KCCCCCCKKK...
+..KCCCCCCK.....
+..KCCCCCCK.....
+..KKKKKKKKK....
+.KAAAAAAAAAK...
+..KKKKKKKKK....
+...............
+...............
+`;
+
+/* HUD icon: сытость (косточка-мясо) */
+const SAT_ICON = `
+.............
+....KKKKK....
+..KKRRRRRKK..
+.KRWWRRRRRK..
+.KRRRRRRRRK..
+..KRRRRRRK...
+...KKRRRK....
+......KKK....
+.......KWWK..
+.......KWKK..
+........WW...
+.............
+.............
+`;
+
+
+/* Доп. цвета для шапок/еды поверх палитры HORI */
+const HAT_EXTRA = { 'R': '#ff5b7f', 'r': '#e04a6a', 'Y': '#ffd166', 'y': '#ffe4a0', 'Z': '#e8a830', 'z': '#c4880a', 'A': '#b0b8bc', 'a': '#8a9296', 'W': '#ffffff', 'V': '#e8352a', 'C': '#d4f0fa', 'L': '#4cc3f7', 'l': '#a8e4f0' };
+
+export const HAT_ARTS = {
+  hat_cap: HAT_CAP,
+  hat_bow: HAT_BOW,
+  hat_crown: HAT_CROWN,
+  hat_ph: HAT_HEADPHONES
+};
+/* Смещение сетки шапки (20×8) внутри базового спрайта: [x, y] */
+export const HAT_OFFSETS = {
+  top: [21, 0],   // HORI_TOP (home/game, слой с анимацией)
+  body: [19, 0],  // HORI_BODY (боковые экраны)
+  head: [0, 0]    // HORI_HEAD (плашка имени, чат, превью в магазине)
+};
+
+/* Вклеить шапку в art поверх головы; hatId=null → без шапки */
+export function composeHat(art, hatId, ox, oy) {
+  const hat = hatId && HAT_ARTS[hatId];
+  if (!hat) return art;
+  const toRows = (a) => (typeof a === 'string' ? a.split('\n').filter((r) => r.length) : a);
+  const rows = toRows(art).map((r) => r.split(''));
+  toRows(hat).forEach((hr, y) => {
+    for (let x = 0; x < hr.length; x++) {
+      const ch = hr[x];
+      if (ch !== '.') {
+        const ty = oy + y, tx = ox + x;
+        if (ty >= 0 && ty < rows.length && tx >= 0 && tx < rows[ty].length) rows[ty][tx] = ch;
+      }
+    }
+  });
+  return rows.map((r) => r.join(''));
+}
+
+export function hatPalette(hatId) {
+  return hatId ? Object.assign({}, HORI, HAT_EXTRA) : HORI;
+}
+
 
 
 /* ===== BEAR (kawaii minimal) ===== */
@@ -959,7 +1128,17 @@ export function createStarSprite(scale = 3) { return createPixelSprite(STAR, TOO
 export function createTrophyIconSprite(scale = 3) { return createPixelSprite(TROPHY_ICON, TOOLS, scale, 'sprite-trophy-icon'); }
 export function createWarnIconSprite(scale = 3) { return createPixelSprite(WARN_ICON, TOOLS, scale, 'sprite-warn'); }
 export function createClockIconSprite(scale = 3) { return createPixelSprite(CLOCK_ICON, TOOLS, scale, 'sprite-clock'); }
-export function createHoriBodySprite(scale = 2) { return createPixelSprite(HORI_BODY, HORI, scale, 'sprite-hori-body'); }
+
+export function createFoodSeedsIconSprite(scale = 3) { return createPixelSprite(FOOD_SEEDS_ICON, Object.assign({}, HORI, HAT_EXTRA), scale, 'sprite-food-seeds'); }
+export function createFoodCakeIconSprite(scale = 3) { return createPixelSprite(FOOD_CAKE_ICON, Object.assign({}, HORI, HAT_EXTRA), scale, 'sprite-food-cake'); }
+export function createFoodTeaIconSprite(scale = 3) { return createPixelSprite(FOOD_TEA_ICON, Object.assign({}, HORI, HAT_EXTRA), scale, 'sprite-food-tea'); }
+export function createSatIconSprite(scale = 3) { return createPixelSprite(SAT_ICON, Object.assign({}, HORI, HAT_EXTRA), scale, 'sprite-sat'); }
+
+export function createHoriBodySprite(scale = 2, hat = null) {
+  const [hox, hoy] = HAT_OFFSETS.body;
+  const a = hat ? composeHat(HORI_BODY, hat, hox, hoy) : HORI_BODY;
+  return createPixelSprite(a, hatPalette(hat), scale, 'sprite-hori-body');
+}
 export function createHomeIconSprite(scale = 3) { return createPixelSprite(HOME_ICON, TOOLS, scale, 'sprite-home'); }
 export function createCheckBadgeIconSprite(scale = 3) { return createPixelSprite(CHECK_BADGE_ICON, TOOLS, scale, 'sprite-check-badge'); }
 
@@ -985,6 +1164,10 @@ export const SPRITE_FACTORIES = {
   warn_icon: createWarnIconSprite,
   clock_icon: createClockIconSprite,
   hori_body: createHoriBodySprite,
+  food_seeds_icon: createFoodSeedsIconSprite,
+  food_cake_icon: createFoodCakeIconSprite,
+  food_tea_icon: createFoodTeaIconSprite,
+  sat_icon: createSatIconSprite,
   home_icon: createHomeIconSprite,
   star: createStarSprite,
   play_icon: createPlayIconSprite,

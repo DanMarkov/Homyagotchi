@@ -1,9 +1,10 @@
 const SAVE_KEY = 'khomyagochi_pixel';
-const SAVE_VERSION = 2;
+const SAVE_VERSION = 3;
 
 const DEFAULT_STATE = () => ({
   version: SAVE_VERSION,
   health: 80, sec: 60, mood: 70,
+  satiety: 80, satietyAt: 0,
   coins: 30, lvl: 1, xp: 0, streak: 0,
   lastDay: '',
   frozenStreak: 0,
@@ -11,8 +12,8 @@ const DEFAULT_STATE = () => ({
   habits: [], habitState: {},
   moodLog: [],
   lessons: {},
-  owned: ['hat_none', 'wall_rose'],
-  equipped: { hat: 'hat_none', wall: 'wall_rose' },
+  owned: ['hat_none', 'wall_sky'],
+  equipped: { hat: 'hat_none', wall: 'wall_sky' },
   items: { wifi: 0, cold: 0, key: 0, hint: 0 },
   buffs: { wifiUntil: 0, coldLeft: 0 },
   audience: 'student',
@@ -27,6 +28,17 @@ const MIGRATIONS = {
     if (!s.frozenStreak) s.frozenStreak = 0;
     if (s.dailyXp === undefined) { s.dailyXp = 0; s.dailyXpDay = ''; }
     if (!s.lessons) s.lessons = {};
+    return s;
+  },
+  2: (s) => {
+    s.version = 3;
+    if (s.satiety === undefined || s.satiety === null) s.satiety = 80;
+    if (!s.satietyAt) s.satietyAt = Date.now();
+    // дефолтные обои теперь «Небесные» (wall_sky) — сохраняем прежний голубой вид комнаты
+    if (s.equipped && s.equipped.wall === 'wall_rose' && !(s.owned || []).includes('wall_sky')) {
+      s.owned.push('wall_sky');
+      s.equipped.wall = 'wall_sky';
+    }
     return s;
   }
 };

@@ -185,6 +185,48 @@ export function activeBuffs(state, now = Date.now()) {
   return out;
 }
 
+/* ============ SATCITY / ЕДА / EQUIP (магазин реально применяется) ============ */
+
+/* Сытость падает −5 за час; голодный (<30) хомяк грустит (−2 mood за час) */
+export function satietyTick(state, now = Date.now()) {
+  if (state.satiety === undefined || state.satiety === null) { state.satiety = 80; state.satietyAt = now; return state; }
+  const HOUR = 3600000;
+  const elapsed = now - (state.satietyAt || now);
+  if (elapsed >= HOUR) {
+    const steps = Math.floor(elapsed / HOUR);
+    state.satiety = Math.max(0, state.satiety - 5 * steps);
+    state.satietyAt = (state.satietyAt || now) + steps * HOUR;
+    if (state.satiety < 30) state.mood = Math.max(0, state.mood - 2 * steps);
+  }
+  return state;
+}
+
+/* Еда из магазина: +сытость/+счастье по карточке; возвращает реальную прибавку */
+export function applyFood(state, food) {
+  if (state.satiety === undefined || state.satiety === null) state.satiety = 80;
+  const ds = Math.max(0, Math.min(100 - state.satiety, food.satiety || 0));
+  state.satiety = Math.min(100, state.satiety + (food.satiety || 0));
+  const dm = food.mood || 0;
+  state.mood = Math.min(100, state.mood + dm);
+  state._eating = 8;
+  return { ds, dm };
+}
+
+export function equipItem(state, type, id) {
+  if (!state.equipped) state.equipped = {};
+  const noneId = type === 'hat' ? 'hat_none' : 'wall_sky';
+  if (id === noneId) { state.equipped[type] = noneId; return { ok: true, equipped: false }; }
+  if (!owns(state, id)) return { ok: false, reason: 'not-owned' };
+  state.equipped[type] = id;
+  return { ok: true, equipped: true };
+}
+
+export function unequipItem(state, type) {
+  if (!state.equipped) state.equipped = {};
+  state.equipped[type] = type === 'hat' ? 'hat_none' : 'wall_sky';
+  return { ok: true, equipped: false };
+}
+
 export function answerEvent(state, ev, idx) {
   const correct = idx === ev.ok;
   recordAnswer(state, correct);

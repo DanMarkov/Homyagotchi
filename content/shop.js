@@ -70,13 +70,13 @@ window.__SHOP__ = {
       "id": "wall_rose",
       "icon": "🌸",
       "name": "Розовые",
-      "price": 0
+      "price": 20
     },
     {
       "id": "wall_sky",
       "icon": "💧",
       "name": "Небесные",
-      "price": 20
+      "price": 0
     },
     {
       "id": "wall_mint",
@@ -95,20 +95,32 @@ window.__SHOP__ = {
     {
       "id": "food_seeds",
       "icon": "🌾",
-      "name": "Семечки +❤15",
-      "price": 5
+      "sprite": "food_seeds_icon",
+      "name": "Семечки",
+      "price": 5,
+      "satiety": 15,
+      "mood": 0,
+      "effect": "+15 сытости"
     },
     {
       "id": "food_cake",
       "icon": "🍰",
-      "name": "Тортик +🧠20",
-      "price": 15
+      "sprite": "food_cake_icon",
+      "name": "Тортик",
+      "price": 15,
+      "satiety": 20,
+      "mood": 10,
+      "effect": "+20 сытости, +10 счастья"
     },
     {
       "id": "food_tea",
       "icon": "🍵",
-      "name": "Чай +❤8 +🧠8",
-      "price": 10
+      "sprite": "food_tea_icon",
+      "name": "Чай",
+      "price": 10,
+      "satiety": 8,
+      "mood": 8,
+      "effect": "+8 сытости, +8 счастья"
     }
   ]
 };

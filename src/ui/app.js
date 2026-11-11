@@ -1,9 +1,9 @@
-import { load, save } from '../core/store.js?v=28';
-import { tick, petState } from '../core/pet.js?v=28';
-import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert, useItem, isWifiEvent, itemCount, wifiBuffActive, coldBuffLeft, activeBuffs } from '../core/game.js?v=28';
-import { sfx } from './audio.js?v=28';
-import { renderMoodChart, ChatUI } from './support.js?v=28';
-import { createSprite } from '../render/pixel-sprites.js?v=28';
+import { load, save } from '../core/store.js?v=29';
+import { tick, petState } from '../core/pet.js?v=29';
+import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert, useItem, isWifiEvent, itemCount, wifiBuffActive, coldBuffLeft, activeBuffs, satietyTick, applyFood, equipItem, unequipItem } from '../core/game.js?v=29';
+import { sfx } from './audio.js?v=29';
+import { renderMoodChart, ChatUI } from './support.js?v=29';
+import { createSprite } from '../render/pixel-sprites.js?v=29';
 
 const CONTENT = window.__CONTENT__;
 const LESSONS = window.__LESSONS__;
@@ -68,9 +68,84 @@ function mountDecorSprites() {
   }
 }
 
+/* Текущая шляпа Хори (null = без шапки) — единый источник для всех экранов */
+function hatNow() {
+  const h = S.equipped && S.equipped.hat;
+  return (h && h !== 'hat_none') ? h : null;
+}
+
+/* Единая отрисовка Хори СО шляпой на ВСЕХ экранах: фабрики спрайтов принимают hat и вклеивают его в верхний слой */
+function renderAllPets() {
+  mountSprite('petSpriteWrap', 'hori_desk', 4, hatNow());
+  mountSprite('gamePet', 'hori_desk', 3, hatNow());
+  mountSprite('todoPet', 'hori_body', 3, hatNow());
+  mountSprite('statsPet', 'hori_body', 3, hatNow());
+  mountSprite('theoryPet', 'hori_body', 3, hatNow());
+  mountSprite('namePlatePet', 'hori_head', 2, hatNow());
+}
+
+/* Обои — класс на body; стены комнаты перекрашивает CSS (один источник), мебель и пол не трогаем */
+function applyWallpaper() {
+  const w = (S.equipped && S.equipped.wall) || 'wall_sky';
+  ['wall_sky', 'wall_rose', 'wall_mint', 'wall_star'].forEach((id) => document.body.classList.toggle(id, id === w));
+}
+
+/* Контейнер Хори, видимый на текущем экране (для анимаций «летит к HOMyakу» из магазина) */
+function visiblePetEl() {
+  const id = ['petSpriteWrap', 'gamePet', 'todoPet', 'statsPet', 'theoryPet', 'shopPetWrap']
+    .find((i) => { const el = els(i); return el && el.offsetParent !== null && el.querySelector('canvas'); });
+  return els(id || 'shopPetWrap');
+}
+
+/* Полётный чип «предмет летит к HOMyakу» (глобальный, fixed поверх всех экранов) */
+function flyTo(targetEl, text, fromEl) {
+  if (!targetEl) return;
+  const tr = targetEl.getBoundingClientRect();
+  const fr = fromEl ? fromEl.getBoundingClientRect() : tr;
+  const chip = document.createElement('span');
+  chip.className = 'fly-chip fly-global';
+  chip.textContent = text;
+  chip.style.left = (fr.left + fr.width / 2 - 20) + 'px';
+  chip.style.top = (fr.top + fr.height / 2 - 10) + 'px';
+  document.body.appendChild(chip);
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    chip.style.transform = 'translate(' + (tr.left + tr.width / 2 - (fr.left + fr.width / 2)) + 'px,' + (tr.top + tr.height / 2 - (fr.top + fr.height / 2)) + 'px) scale(.6)';
+    chip.style.opacity = '.2';
+  }));
+  setTimeout(() => chip.remove(), 750);
+}
+
+/* Анимация еды: еда появляется у Хори → прыжок → «кусается» к пасти по шагам → «+N» летит к сытости в HUD */
+function playEat(item, res) {
+  const petEl = visiblePetEl();
+  if (!petEl) return;
+  const pr = petEl.getBoundingClientRect();
+  const food = createSprite(item.sprite, 3);
+  if (!food) return;
+  const wrap = document.createElement('span');
+  wrap.className = 'eat-food';
+  wrap.appendChild(food);
+  const fx = pr.left + pr.width * 0.66, fy = pr.top + pr.height * 0.12;
+  wrap.style.left = fx + 'px';
+  wrap.style.top = fy + 'px';
+  document.body.appendChild(wrap);
+  const top = petEl.querySelector('.sprite-hori-top') || petEl.querySelector('canvas');
+  if (top) { top.classList.remove('pet-jump'); void top.offsetWidth; top.classList.add('pet-jump'); }
+  const mx = pr.left + pr.width * 0.40, my = pr.top + pr.height * 0.30;
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    wrap.style.transform = 'translate(' + (mx - fx) + 'px,' + (my - fy) + 'px) scale(.85)';
+  }));
+  setTimeout(() => { wrap.style.transform = 'translate(' + (mx - fx) + 'px,' + (my - fy) + 'px) scale(.55)'; }, 260);
+  setTimeout(() => { wrap.style.transform = 'translate(' + (mx - fx) + 'px,' + (my - fy) + 'px) scale(.25)'; wrap.style.opacity = '.35'; }, 520);
+  setTimeout(() => {
+    wrap.remove();
+    flyTo(els('topSatietyIcon'), '+' + res.ds, petEl);
+  }, 800);
+}
+
 function renderPetSprite() {
   // Главный экран: пиксель-арт «Хори за столом с ноутбуком» (синяя бабочка), как на эталоне
-  mountSprite('petSpriteWrap', 'hori_desk');
+  mountSprite('petSpriteWrap', 'hori_desk', 4, hatNow());
 }
 
 /* Короткое подпрыгивание персонажа при клике по любой кнопке навигации */
@@ -185,6 +260,7 @@ function renderTopbarSprites() {
       if (h) heartsContainer.appendChild(h);
     }
   }
+  mountSprite('topSatietyIcon', 'sat_icon', 2);
   mountSprite('topCoinsIcon', 'coin', 2);
   mountSprite('topKpIcon', 'trophy_icon', 2);
   mountSprite('topLvlIcon', 'star', 2);
@@ -199,6 +275,7 @@ const SCREENS = ['audience', 'home', 'stats', 'habits', 'theory', 'game', 'shop'
 const NAV_MAP = { home: 'home', habits: 'habits', theory: 'theory', game: 'game', shop: 'shop', support: 'support', stats: 'stats', settings: 'settings' };
 
 function gotoScreen(name) {
+  applyWallpaper();
   if (name === 'audience') return showAudience();
   document.body.classList.toggle('on-home', name === 'home');
   document.body.classList.toggle('on-game', name === 'game');
@@ -253,6 +330,8 @@ function renderBuffs() {
 }
 
 function renderTopbar() {
+  satietyTick(S);
+  els('topSatiety').textContent = Math.round(S.satiety);
   els('topCoins').textContent = S.coins;
   els('topKp').textContent = S.lvl * 10 + S.xp;
   els('topLvl').textContent = S.lvl;
@@ -388,7 +467,7 @@ function renderStats() {
       if (t) rankIcon.appendChild(t);
     }
   }
-  mountSprite('statsPet', 'hori_body', 3);
+  mountSprite('statsPet', 'hori_body', 3, hatNow());
 }
 
 /* ============ HABITS / TODO ============ */
@@ -419,7 +498,7 @@ function renderHabits() {
     div.appendChild(reward);
     list.appendChild(div);
   });
-  mountSprite('todoPet', 'hori_body', 3);
+  mountSprite('todoPet', 'hori_body', 3, hatNow());
 }
 
 els('btnAddHabit').addEventListener('click', () => {
@@ -468,7 +547,7 @@ function renderTheory() {
       '<button class="btn btn-blue" style="margin-top:8px" data-start-lesson="' + t.id + '">▶ Пройти урок</button>';
     els('theoryContent').querySelector('[data-start-lesson]').addEventListener('click', () => startLessonByTopic(t.id));
   }
-  mountSprite('theoryPet', 'hori_body', 3);
+  mountSprite('theoryPet', 'hori_body', 3, hatNow());
 }
 
 function startLessonByTopic(topicId) {
@@ -620,7 +699,7 @@ function startGame() {
   });
   renderTopbar();
   renderGameHearts();
-  mountSprite('gamePet', 'hori_desk', 3); // тот же Хори за ноутбуком, что на главном экране (desk статичен, HOMяк дышит)
+  mountSprite('gamePet', 'hori_desk', 3, hatNow()); // тот же Хори за ноутбуком, что на главном экране (desk статичен, HOMяк дышит)
   clearInterval(gameTimer);
   gameTimer = setInterval(() => {
     gameTimeLeft--;
@@ -729,20 +808,72 @@ function answerGame(idx, timeout = false) {
 
 /* ============ SHOP ============ */
 function renderShop() {
+  // Превью Хори в шапке магазина — тот же единый источник спрайтов (hori_head + hat)
+  mountSprite('shopPetWrap', 'hori_head', 3, hatNow());
+
+  const noneId = (type) => (type === 'hat' ? 'hat_none' : 'wall_sky');
+
   const cell = (item, type, equipped) => {
     const div = document.createElement('div');
     div.className = 'shop-item';
-    div.innerHTML = '<span class="s-icon">' + item.icon + '</span><span class="s-name">' + item.name + '</span>';
+    // Иконка карточки: шапка → головка Хори в этой шляпе; обои → свотч стены; еда → пиксель-спрайт; прочее → эмодзи
+    let icon;
+    if (type === 'hat') {
+      icon = document.createElement('span');
+      icon.className = 's-icon s-sprite';
+      const sp = createSprite('hori_head', 3, item.id === 'hat_none' ? null : item.id);
+      if (sp) icon.appendChild(sp);
+    } else if (type === 'wall') {
+      icon = document.createElement('span');
+      icon.className = 'wall-swatch ' + item.id;
+    } else if (item.sprite) {
+      icon = document.createElement('span');
+      icon.className = 's-icon s-sprite';
+      const sp = createSprite(item.sprite, 3);
+      if (sp) icon.appendChild(sp);
+    } else {
+      icon = document.createElement('span');
+      icon.className = 's-icon';
+      icon.textContent = item.icon;
+    }
+    div.appendChild(icon);
+    const name = document.createElement('span');
+    name.className = 's-name';
+    name.textContent = item.name;
+    div.appendChild(name);
+    if (item.effect) {
+      const effect = document.createElement('span');
+      effect.className = 's-effect';
+      effect.textContent = item.effect;
+      div.appendChild(effect);
+    }
     const price = document.createElement('span');
     price.className = 's-price';
     const btn = document.createElement('button');
     btn.className = 'btn';
-    if (equipped) {
-      btn.textContent = 'НАДЕТО ✓';
+    const full = (S.satiety || 0) >= 100;
+    if (type === 'food') {
+      if (full) {
+        btn.textContent = 'ХОМЯК СЫТ!';
+        btn.className += ' btn-green';
+        btn.disabled = true;
+        price.textContent = '—';
+      } else {
+        btn.textContent = 'КУПИТЬ';
+        btn.className += ' btn-orange';
+        price.textContent = item.price + ' МОНЕТ';
+        if (S.coins < item.price) btn.disabled = true;
+      }
+    } else if (equipped && item.id === noneId(type)) {
+      btn.textContent = 'ВЫБРАНО ✓';
       btn.className += ' btn-green';
       btn.disabled = true;
       price.textContent = '—';
-    } else if (owns(S, item.id) && type !== 'food') {
+    } else if (equipped) {
+      btn.textContent = 'СНЯТЬ';
+      btn.className += ' btn-blue';
+      price.textContent = '—';
+    } else if (owns(S, item.id)) {
       btn.textContent = 'НАДЕТЬ';
       btn.className += ' btn-blue';
       price.textContent = 'КУПЛЕНО';
@@ -752,20 +883,38 @@ function renderShop() {
       price.textContent = item.price + ' МОНЕТ';
       if (S.coins < item.price) btn.disabled = true;
     }
-    price.className = 's-price';
     div.appendChild(price);
     div.appendChild(btn);
     btn.onclick = () => {
-      const r = buy(S, item, type);
-      if (!r.ok) { toast('Не хватает монет!'); return; }
-      if (r.action === 'consume') {
-        if (item.id === 'food_seeds') S.health = Math.min(100, S.health + 15);
-        if (item.id === 'food_cake') S.mood = Math.min(100, S.mood + 20);
-        if (item.id === 'food_tea') { S.health = Math.min(100, S.health + 8); S.mood = Math.min(100, S.mood + 8); }
-        toast('Ням! ' + item.name);
-      } else {
-        toast('Обновлено: ' + item.name + '!');
+      if (type === 'food') {
+        if ((S.satiety || 0) >= 100) { toast('Хомяк сыт!'); return; }
+        const r = buy(S, item, 'food');
+        if (!r.ok) { toast('Не хватает монет!'); return; }
+        const res = applyFood(S, item); // реальный эффект: +сытость/+счастье + флаг поедания
+        sfx.correct();
+        toast('Хомяк доволен! +' + res.ds + ' сытости' + (res.dm ? ', +' + res.dm + ' счастья' : ''));
+        playEat(item, res); // анимация: еда у Хори → +N к сытости в HUD
+        persist();
+        renderShop();
+        return;
       }
+      if (equipped) {
+        if (item.id === noneId(type)) return;
+        unequipItem(S, type);
+        toast('Снято: ' + item.name);
+        renderAllPets();
+        applyWallpaper();
+        persist();
+        renderShop();
+        return;
+      }
+      const r = buy(S, item, type); // buy сам надевает купленное/купленное (action buy/equip)
+      if (!r.ok) { toast('Не хватает монет!'); return; }
+      sfx.correct();
+      toast((r.action === 'buy' ? 'Куплено и надето: ' : 'Надето: ') + item.name + '!');
+      flyTo(visiblePetEl(), item.icon || '✓', btn); // предмет «летит» к HOMyakу
+      renderAllPets();   // шляпа видна на всех экранах
+      applyWallpaper();  // обои применены к комнате
       persist();
       renderShop();
     };
@@ -845,7 +994,7 @@ function initChat() {
     if (avatarWrap) {
       avatarWrap.className = 'ch-avatar-wrap';
       avatarWrap.innerHTML = '';
-      const sprite = createSprite('hori_head', 2);
+      const sprite = createSprite('hori_head', 2, hatNow());
       if (sprite) avatarWrap.appendChild(sprite);
     }
   }
@@ -932,6 +1081,7 @@ function checkPetNotifications() {
 /* ============ INIT ============ */
 dayCheck(S, toast);
 updateRoomNote();
+applyWallpaper();
 renderTopbarSprites();
 renderGameTools();
 renderPetSprite();
@@ -940,7 +1090,7 @@ mountDecorSprites();
 mountSprite('theoryPet', 'hori_body', 3);
 mountSprite('todoPet', 'hori_body', 3);
 mountSprite('statsPet', 'hori_body', 3);
-mountSprite('namePlatePet', 'hori_head');
+mountSprite('namePlatePet', 'hori_head', 2, hatNow());
 
 /* ===== NAV ICONS (единый компонент bottom-nav, пиксельные иконки вместо эмодзи) ===== */
 function renderNavIcons() {
@@ -964,6 +1114,7 @@ if (S.onboarded) {
 }
 
 setInterval(() => { tick(S, 1); persist(); }, 4000);
+setInterval(() => { satietyTick(S); persist(); }, 60000); // сытость падает −5/час, HOMяк грустит при <30
 setInterval(renderBuffs, 30000); // обновление остатка баффов у HUD
 setInterval(renderPetBubble, 8000);
 setInterval(checkPetNotifications, 60000);
