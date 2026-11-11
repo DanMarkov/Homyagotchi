@@ -13,6 +13,8 @@ const DEFAULT_STATE = () => ({
   lessons: {},
   owned: ['hat_none', 'wall_rose'],
   equipped: { hat: 'hat_none', wall: 'wall_rose' },
+  items: { wifi: 0, cold: 0, key: 0, hint: 0 },
+  buffs: { wifiUntil: 0, coldLeft: 0 },
   audience: 'student',
   onboarded: false,
   notifications: false,

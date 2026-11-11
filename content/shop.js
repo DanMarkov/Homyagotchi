@@ -1,4 +1,38 @@
 window.__SHOP__ = {
+  "items": [
+    {
+      "id": "item_wifi",
+      "key": "wifi",
+      "sprite": "wifi_icon",
+      "name": "Защита Wi-Fi",
+      "price": 40,
+      "effect": "24 ч: в сценариях про Wi-Fi провал не снимает ♥ (пометка «подозрительная сеть»)"
+    },
+    {
+      "id": "item_cold",
+      "key": "cold",
+      "sprite": "cold_icon",
+      "name": "Холодный разум",
+      "price": 30,
+      "effect": "+10 секунд к таймеру на 3 следующих сценария"
+    },
+    {
+      "id": "item_key",
+      "key": "key",
+      "sprite": "key_icon",
+      "name": "Защитный ключ",
+      "price": 50,
+      "effect": "1 раз за сессию восстановит 1 ♥, если осталось 0"
+    },
+    {
+      "id": "item_hint",
+      "key": "hint",
+      "sprite": "bulb_icon",
+      "name": "Подсказка",
+      "price": 20,
+      "effect": "убирает 1 неверный вариант ответа (не более 1 раза за вопрос)"
+    }
+  ],
   "hats": [
     {
       "id": "hat_none",

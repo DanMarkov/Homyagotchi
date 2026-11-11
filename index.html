@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🐹 Хомягочи</title>
 <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="src/render/sprites.css?v=27">
+<link rel="stylesheet" href="src/render/sprites.css?v=28">
 <style>
   :root {
     --bg: #cfe9f9;
@@ -790,6 +790,25 @@
   .game-tool .gt-icon.key { background: var(--yellow); }
   .game-tool .gt-icon.hint { background: var(--purple); }
   .game-tool .gt-label { font-size: .7rem; color: var(--ink); text-align: center; line-height: 1.4; }
+  .game-tool { position: relative; }
+  .game-tool:disabled { opacity: .45; cursor: default; }
+  .game-tool .gt-count { position: absolute; top: -7px; right: -7px; min-width: 20px; height: 20px; padding: 0 5px; background: var(--green); color: #fff; border: 2px solid #0c0c0c; border-radius: 10px; font-size: .55rem; font-weight: 700; display: flex; align-items: center; justify-content: center; font-family: 'Comfortaa', 'Nunito', sans-serif; }
+  .game-answer.hint-removed { display: none; }
+  .gb-net { margin-left: auto; background: var(--red-soft); color: var(--red-dark); border: 2px solid var(--red-dark); border-radius: 8px; padding: 2px 8px; font-size: .62rem; font-weight: 700; font-family: 'Comfortaa', 'Nunito', sans-serif; white-space: nowrap; }
+  .buff-chip { display: inline-flex; align-items: center; gap: 4px; }
+  .buff-chip canvas { image-rendering: pixelated; }
+  .buffs-empty { display: none !important; }
+  .game-buffs { display: inline-flex; gap: 6px; }
+  .game-buffs .buff-chip { background: rgba(255,255,255,.92); border: 2px solid #0c0c0c; border-radius: 8px; padding: 1px 7px 1px 3px; }
+  .game-buffs .buff-chip b { font-size: .7rem; color: var(--ink); }
+  .cold-phrase { margin-top: 8px; font-weight: 700; color: #0d8ec9; font-size: .95rem; }
+  .shop-item .s-sprite { display: flex; align-items: center; justify-content: center; min-height: 48px; margin-bottom: 10px; }
+  .shop-item .s-sprite canvas { image-rendering: pixelated; }
+  .shop-item .s-effect { display: block; font-size: .62rem; color: var(--ink-soft); line-height: 1.35; margin-bottom: 6px; min-height: 34px; }
+  .shop-item .s-balance { display: block; font-size: .62rem; color: var(--muted); margin-bottom: 8px; }
+  .item-chip.item-sprite { position: relative; }
+  .item-chip.item-sprite canvas { image-rendering: pixelated; }
+  .item-chip .chip-count { position: absolute; right: -6px; top: -6px; background: var(--green); color: #fff; border: 2px solid var(--line); border-radius: 8px; font-size: .55rem; font-weight: 700; padding: 0 4px; font-style: normal; font-family: 'Comfortaa', 'Nunito', sans-serif; }
 
   /* ===== SHOP ===== */
   .shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 14px; }
@@ -1123,6 +1142,7 @@
       <span class="stat-chip coins" title="монеты"><span id="topCoinsIcon"></span> <b id="topCoins">0</b></span>
       <span class="stat-chip kp" title="KP"><span id="topKpIcon"></span> <b id="topKp">0</b></span>
       <span class="stat-chip lvl" title="уровень"><span id="topLvlIcon"></span> <b id="topLvl">1</b></span>
+      <span class="stat-chip buffs buffs-empty" id="buffsRow" title="активные эффекты"></span>
       <button class="btn-icon" id="btnSound" title="звук">🔊</button>
     </div>
   </div>
@@ -1275,13 +1295,14 @@
             <span class="hud-item game-timer" title="время на ответ"><span id="gameClockIcon"></span> <b id="gameTimer">25</b></span>
             <span class="hud-item game-coins" title="монеты"><span id="gameCoinsIcon"></span> <b id="gameCoins">0</b></span>
             <span class="hud-item game-hearts" id="gameHearts" title="жизни"></span>
+            <span class="hud-item game-buffs" id="gameBuffs" title="активные эффекты"></span>
           </div>
           <span class="hud-item game-kp" title="очки KP"><span id="gameKpIcon"></span> <b id="gameKp">0</b> KP</span>
         </div>
         <div class="game-scene">
           <div class="game-left">
             <div class="game-card">
-              <div class="gb-head"><span class="gb-warn" id="gameWarnIcon"></span><span class="gb-title">ВНИМАНИЕ!</span></div>
+              <div class="gb-head"><span class="gb-warn" id="gameWarnIcon"></span><span class="gb-title">ВНИМАНИЕ!</span><span class="gb-net hidden" id="gameNetTag">подозрительная сеть</span></div>
               <div class="gb-text" id="gameQuestion">Хомяк получил письмо от «Сбербанка» с просьбой ввести код из СМС. Что делать?</div>
             </div>
             <div class="game-answers" id="gameAnswers"></div>
@@ -1300,6 +1321,8 @@
         МАГАЗИН ХОМЯКА
       </div>
       <p style="color:var(--ink-soft);font-size:1.1rem;margin-bottom:10px;font-weight:500">Зарабатывай монетки в уроках, одевай хомяка и обустраивай домик!</p>
+      <div class="shop-section-title">— АЙТЕМЫ (для игры) —</div>
+      <div class="shop-grid" id="shopItems"></div>
       <div class="shop-section-title">— ШАПКИ —</div>
       <div class="shop-grid" id="shopHats"></div>
       <div class="shop-section-title">— ОБОИ —</div>
@@ -1384,10 +1407,10 @@
     </div>
   </div>
 
-  <script src="content/config.js?v=27"></script>
-  <script src="content/content.js?v=27"></script>
-  <script src="content/lessons.js?v=27"></script>
-  <script src="content/shop.js?v=27"></script>
-  <script type="module" src="src/ui/app.js?v=27"></script>
+  <script src="content/config.js?v=28"></script>
+  <script src="content/content.js?v=28"></script>
+  <script src="content/lessons.js?v=28"></script>
+  <script src="content/shop.js?v=28"></script>
+  <script type="module" src="src/ui/app.js?v=28"></script>
 </body>
 </html>
