@@ -812,19 +812,23 @@ KAAKKAAAAAYYYAAAK..
 ...KK........KK....
 `;
 
-const CHECK_ICON = `
-...........KK....
-..........KGGK...
-.........KGGGGK..
-........KGGGGGGK.
-.KKKKKKKKGGGGGGK.
-.KGGGGGGGGGGGGK..
-..KGGGGGGGGGGK...
-...KGGGGGGGGK....
-....KGGGGGGK.....
-.....KGGGGK......
-......KGGK.......
-.......KK........
+/* Tasks icon (ЗАДАЧИ): жирная зелёная галочка G с чёрным контуром K на белом скруглённом кружке-плашке W с чёрным контуром — единый эталон для верхней кнопки, нижней панели и заголовка экрана дел */
+const CHECK_BADGE_ICON = `
+.....KKKKK.....
+...KKWWWWWKK...
+..KKWWWWWWWKK..
+.KKWWWWWWWWKKK.
+.KWWWWWWWWKGKK.
+KWWWWWWWWKGGKWK
+KWWWWWWWKGGKWWK
+KWWKKKWKGGGKWWK
+KWWKGGKKGGKWWWK
+KWWKGGGGGKWWWWK
+.KWWKGGGKWWWWK.
+.KKWWKGGKWWWKK.
+..KKWWKWWWWKK..
+...KKWWWWWKK...
+.....KKKKK.....
 `;
 /* Lifebuoy icon (ПОМОЩЬ): толстое кольцо, 4 чередующихся сектора красный-белый-красный-белый (верх/право/низ/лево), чёрный пиксельный контур по внешнему И внутреннему краю, отверстие в центре */
 const LIFEBUOY_ICON = `
@@ -907,19 +911,6 @@ export function createGearIconSprite(scale = 3) { return createPixelSprite(GEAR_
 export function createBookIconSprite(scale = 3) { return createPixelSprite(BOOK_ICON, TOOLS, scale, 'sprite-book'); }
 export function createChartIconSprite(scale = 3) { return createPixelSprite(CHART_ICON, TOOLS, scale, 'sprite-chart'); }
 export function createLogoutIconSprite(scale = 3) { return createPixelSprite(LOGOUT_ICON, TOOLS, scale, 'sprite-logout'); }
-/* Document icon (left rail: задачи) */
-const DOC_ICON = `
-.KKKKKKKKKKKK...
-.KWWWWWWWWWWKKK.
-.KWkkkkkkkkWKK..
-.KWkkkkkkkkWK...
-.KWkkkkkkkkWK...
-.KWkkkkkkkkWK...
-.KWkkkkkkkkWK...
-.KWWWWWWWWWWK...
-.KKKKKKKKKKKK...
-`;
-
 /* Cup icon (left rail: магазин/еда) */
 const CUP_ICON = `
 ..k....k......
@@ -935,7 +926,6 @@ const CUP_ICON = `
 `;
 
 export function createLifebuoyIconSprite(scale = 3) { return createPixelSprite(LIFEBUOY_ICON, TOOLS, scale, 'sprite-lifebuoy'); }
-export function createDocIconSprite(scale = 3) { return createPixelSprite(DOC_ICON, TOOLS, scale, 'sprite-doc'); }
 export function createCupIconSprite(scale = 3) { return createPixelSprite(CUP_ICON, TOOLS, scale, 'sprite-cup'); }
 
 export function createShieldSprite() { return createPixelSprite(SHIELD, TOOLS, 3, 'sprite-shield'); }
@@ -950,7 +940,7 @@ export function createWarnIconSprite(scale = 3) { return createPixelSprite(WARN_
 export function createClockIconSprite(scale = 3) { return createPixelSprite(CLOCK_ICON, TOOLS, scale, 'sprite-clock'); }
 export function createHoriBodySprite(scale = 2) { return createPixelSprite(HORI_BODY, HORI, scale, 'sprite-hori-body'); }
 export function createHomeIconSprite(scale = 3) { return createPixelSprite(HOME_ICON, TOOLS, scale, 'sprite-home'); }
-export function createCheckIconSprite(scale = 3) { return createPixelSprite(CHECK_ICON, TOOLS, scale, 'sprite-check'); }
+export function createCheckBadgeIconSprite(scale = 3) { return createPixelSprite(CHECK_BADGE_ICON, TOOLS, scale, 'sprite-check-badge'); }
 
 export const SPRITE_FACTORIES = {
   hori_desk: createHoriDeskSprite,
@@ -977,7 +967,7 @@ export const SPRITE_FACTORIES = {
   home_icon: createHomeIconSprite,
   star: createStarSprite,
   play_icon: createPlayIconSprite,
-  check_icon: createCheckIconSprite,
+  check_badge_icon: createCheckBadgeIconSprite,
   lifebuoy_icon: createLifebuoyIconSprite,
   gear_icon: createGearIconSprite,
   book_icon: createBookIconSprite,
@@ -985,7 +975,6 @@ export const SPRITE_FACTORIES = {
   logout_icon: createLogoutIconSprite,
   plant: createPlantSprite,
   rug: createRugSprite,
-  doc_icon: createDocIconSprite,
   cup_icon: createCupIconSprite
 };
 
