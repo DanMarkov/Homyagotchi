@@ -55,18 +55,32 @@ function migrate(raw) {
   return s;
 }
 
+const BACKUP_KEY = SAVE_KEY + '.bak';
+
 export function load() {
+  // Сначала основной ключ, при порче/отсутствии — бэкап (чтобы прогресс не «пропадал»)
   try {
     const d = localStorage.getItem(SAVE_KEY);
-    return d ? migrate(JSON.parse(d)) : DEFAULT_STATE();
-  } catch (e) {
-    return DEFAULT_STATE();
-  }
+    if (d) return migrate(JSON.parse(d));
+  } catch (e) { /* падаем на бэкап ниже */ }
+  try {
+    const b = localStorage.getItem(BACKUP_KEY);
+    if (b) return migrate(JSON.parse(b));
+  } catch (e) { /* бэкап тоже битый */ }
+  return DEFAULT_STATE();
 }
 
 export function save(state) {
-  try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); } catch (e) {}
+  try {
+    const json = JSON.stringify(state);
+    localStorage.setItem(SAVE_KEY, json);
+    localStorage.setItem(BACKUP_KEY, json); // страховка от потери сохранения
+  } catch (e) {}
+}
+
+export function wipe() {
+  try { localStorage.removeItem(SAVE_KEY); localStorage.removeItem(BACKUP_KEY); } catch (e) {}
 }
 
 export function freshState() { return DEFAULT_STATE(); }
-export { SAVE_VERSION, SAVE_KEY, migrate, DEFAULT_STATE, MIGRATIONS };
+export { SAVE_VERSION, SAVE_KEY, BACKUP_KEY, migrate, DEFAULT_STATE, MIGRATIONS };

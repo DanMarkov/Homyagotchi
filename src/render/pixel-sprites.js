@@ -1,7 +1,8 @@
 const SCALE = 4;
 
 function drawPixelArt(canvas, art, palette, scale = SCALE) {
-  const lines = art.trim().split('\n').map((l) => l.replace(/\s+$/, ''));
+  // art — строка-шаблон ИЛИ массив строк (composeHat исторически мог вернуть массив; принимаем оба)
+  const lines = (typeof art === 'string' ? art.trim().split('\n') : art.map((l) => String(l))).map((l) => l.replace(/\s+$/, ''));
   const w = Math.max(...lines.map((l) => l.length));
   const h = lines.length;
   canvas.width = w * scale;
@@ -482,7 +483,7 @@ export function composeHat(art, hatId, ox, oy) {
       }
     }
   });
-  return rows.map((r) => r.join(''));
+  return rows.map((r) => r.join('')).join('\n'); // ВАЖНО: строка, а не массив — drawPixelArt ждёт строку
 }
 
 export function hatPalette(hatId) {
