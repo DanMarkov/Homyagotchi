@@ -1,9 +1,9 @@
-import { load, save, wipe } from '../core/store.js?v=31';
-import { tick, petState } from '../core/pet.js?v=31';
-import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert, useItem, isWifiEvent, itemCount, wifiBuffActive, coldBuffLeft, activeBuffs, satietyTick, applyFood } from '../core/game.js?v=31';
-import { sfx } from './audio.js?v=31';
-import { renderMoodChart, ChatUI } from './support.js?v=31';
-import { createSprite } from '../render/pixel-sprites.js?v=31';
+import { load, save, wipe } from '../core/store.js?v=32';
+import { tick, petState } from '../core/pet.js?v=32';
+import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert, useItem, isWifiEvent, itemCount, wifiBuffActive, coldBuffLeft, activeBuffs, satietyTick, applyFood } from '../core/game.js?v=32';
+import { sfx } from './audio.js?v=32';
+import { renderMoodChart, ChatUI } from './support.js?v=32';
+import { createSprite } from '../render/pixel-sprites.js?v=32';
 
 const CONTENT = window.__CONTENT__;
 const LESSONS = window.__LESSONS__;
