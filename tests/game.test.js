@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert';
-import { gainXP, buy, owns, toggleHabit, answerEvent, dailyGoalProgress, moodAvg, logMood, dayCheck, accuracy, securityRank, eventsForAudience, petAlert } from '../src/core/game.js';
+import { gainXP, buy, owns, toggleHabit, answerEvent, dailyGoalProgress, moodAvg, logMood, dayCheck, accuracy, securityRank, eventsForAudience, petAlert, useItem, isWifiEvent, itemCount, wifiBuffActive, coldBuffLeft, activeBuffs } from '../src/core/game.js';
 import { freshState } from '../src/core/store.js';
 
 test('gainXP levels up and awards coins', () => {
@@ -134,4 +134,58 @@ test('petAlert fires on sick / low health / low security / low mood only', () =>
   assert.ok(petAlert(s, 'idle').title.indexOf('скучает') !== -1);
   s.mood = 70;
   assert.ok(petAlert(s, 'sick').title.indexOf('чувствует') !== -1);
+});
+
+/* ============ ITEMS / БУФФЫ ============ */
+test('buy item: списывает монеты и кладёт в инвентарь; отказ при нехватке', () => {
+  const s = freshState();
+  const it = { id: 'item_hint', key: 'hint', price: 20 };
+  const r1 = buy(s, it, 'item');
+  assert.equal(r1.ok, true);
+  assert.equal(r1.action, 'item');
+  assert.equal(s.coins, 30 - 20);
+  assert.equal(itemCount(s, 'hint'), 1);
+  s.coins = 5;
+  const r2 = buy(s, it, 'item');
+  assert.equal(r2.ok, false);
+  assert.equal(r2.reason, 'poor');
+  assert.equal(itemCount(s, 'hint'), 1);
+});
+
+test('useItem wifi даёт бафф на 24ч, cold — на 3 сценария; пустой инвентарь отклоняется', () => {
+  const s = freshState();
+  s.items.wifi = 1; s.items.cold = 1;
+  const now = 1000000000000;
+  const r1 = useItem(s, 'wifi', now);
+  assert.equal(r1.ok, true);
+  assert.equal(s.items.wifi, 0);
+  assert.equal(wifiBuffActive(s, now), true);
+  assert.equal(wifiBuffActive(s, now + 24 * 3600 * 1000), false);
+  assert.equal(wifiBuffActive(s, now + 23 * 3600 * 1000), true);
+  const r2 = useItem(s, 'cold', now);
+  assert.equal(r2.ok, true);
+  assert.equal(coldBuffLeft(s), 3);
+  const r3 = useItem(s, 'wifi', now);
+  assert.equal(r3.ok, false);
+});
+
+test('isWifiEvent находит Wi-Fi/публичные сети по id/cat/q', () => {
+  assert.equal(isWifiEvent({ id: 'ev_public_wifi', cat: 'shield SECURITY', q: 'Публичный Wi-Fi в кафе' }), true);
+  assert.equal(isWifiEvent({ id: 'ev_sms', cat: 'shield SECURITY', q: 'SMS от банка' }), false);
+});
+
+test('activeBuffs отдаёт wifi-часы, cold-счётчик и key-счётчик для HUD', () => {
+  const s = freshState();
+  const now = 1000000000000;
+  assert.deepEqual(activeBuffs(s, now), []);
+  s.items.key = 1;
+  s.items.cold = 1;
+  s.items.wifi = 1;
+  useItem(s, 'cold', now);
+  useItem(s, 'wifi', now + 3600 * 1000); // осталось ~23ч
+  const list = activeBuffs(s, now + 3600 * 1000);
+  const byKey = Object.fromEntries(list.map((b) => [b.key, b]));
+  assert.ok(byKey.wifi && byKey.wifi.sprite === 'wifi_icon' && /ч/.test(byKey.wifi.label));
+  assert.equal(byKey.cold.label, '×3');
+  assert.equal(byKey.key.label, '×1');
 });

@@ -1,9 +1,9 @@
-import { load, save } from '../core/store.js?v=27';
-import { tick, petState } from '../core/pet.js?v=27';
-import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert } from '../core/game.js?v=27';
-import { sfx } from './audio.js?v=27';
-import { renderMoodChart, ChatUI } from './support.js?v=27';
-import { createSprite } from '../render/pixel-sprites.js?v=27';
+import { load, save } from '../core/store.js?v=28';
+import { tick, petState } from '../core/pet.js?v=28';
+import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert, useItem, isWifiEvent, itemCount, wifiBuffActive, coldBuffLeft, activeBuffs } from '../core/game.js?v=28';
+import { sfx } from './audio.js?v=28';
+import { renderMoodChart, ChatUI } from './support.js?v=28';
+import { createSprite } from '../render/pixel-sprites.js?v=28';
 
 const CONTENT = window.__CONTENT__;
 const LESSONS = window.__LESSONS__;
@@ -105,39 +105,72 @@ function updateRoomNote() {
   el.classList.toggle('hidden', total === 0 || seen >= total);
 }
 
+const TOOL_BG = { wifi: 'var(--blue-soft)', cold: '#d4f0fa', key: 'var(--yellow)', hint: 'var(--purple)' };
+const TOOL_LABEL = { wifi: 'ЗАЩИТА<br>WI-FI', cold: 'ХОЛОДНЫЙ<br>РАЗУМ', key: 'ЗАЩИТНЫЙ<br>КЛЮЧ', hint: 'ПОДСКАЗКА' };
+
+function syncNetTag() {
+  const t = els('gameNetTag');
+  if (t) t.classList.toggle('hidden', !netSuspect);
+}
+
+/* Подсказка: убрать один неверный вариант, не более 1 раза за вопрос */
+function applyHint() {
+  if (!currentEvent || hintUsed) return;
+  const wrong = $$('.game-answer').filter((b) => Number(b.dataset.orig) !== currentEvent.ok && !b.classList.contains('hint-removed'));
+  if (!wrong.length) return;
+  const b = wrong[Math.floor(Math.random() * wrong.length)];
+  b.classList.add('hint-removed');
+  b.disabled = true;
+  hintUsed = true;
+  toast('Подсказка: один неверный вариант убран!');
+}
+
+function useTool(key) {
+  const r = useItem(S, key);
+  if (!r.ok) { toast('Нет в инвентаре — купи в «Магазине»!'); return; }
+  sfx.click();
+  if (key === 'wifi') {
+    toast('Защита Wi-Fi активна на 24 часа!');
+    netSuspect = wifiBuffActive(S) && !!currentEvent && isWifiEvent(currentEvent);
+    syncNetTag();
+  }
+  if (key === 'cold') {
+    toast('Холодный разум: +10 сек на 3 следующих сценария');
+    if (currentEvent) { gameTimeLeft += 10; els('gameTimer').textContent = gameTimeLeft; coldApplied = true; }
+  }
+  if (key === 'key') toast('Защитный ключ в кармане: спасёт 1 сердце!');
+  if (key === 'hint') applyHint();
+  persist();
+  renderGameTools();
+  renderBuffs();
+}
+
 function renderGameTools() {
   const tools = els('gameTools');
   if (!tools) return;
   tools.innerHTML = '';
-  const defs = [
-    { key: 'shield', sprite: 'shield', label: 'ЗАЩИТА<br>WI-FI', bg: 'var(--blue-soft)' },
-    { key: 'cold', sprite: 'snowflake', label: 'ХОЛОДНЫЙ<br>РАЗУМ', bg: '#d4f0fa' },
-    { key: 'key', sprite: 'key', label: 'ЗАЩИТНЫЙ<br>КЛЮЧ', bg: 'var(--yellow)' },
-    { key: 'hint', sprite: 'question', label: 'ПОДСКАЗКА', bg: 'var(--purple)' }
-  ];
+  const defs = (SHOP.items || []).map((it) => ({ key: it.key, sprite: it.sprite }));
   defs.forEach((d) => {
     const btn = document.createElement('button');
     btn.className = 'game-tool';
     btn.dataset.tool = d.key;
+    const cnt0 = itemCount(S, d.key);
+    btn.disabled = cnt0 === 0;
     const iconWrap = document.createElement('span');
     iconWrap.className = 'gt-icon';
-    iconWrap.style.background = d.bg;
-    const sprite = createSprite(d.sprite);
+    iconWrap.style.background = TOOL_BG[d.key] || '#fff';
+    const sprite = createSprite(d.sprite, 3);
     if (sprite) iconWrap.appendChild(sprite);
+    const cnt = document.createElement('span');
+    cnt.className = 'gt-count';
+    cnt.textContent = '×' + cnt0;
+    btn.appendChild(cnt);
     const label = document.createElement('span');
     label.className = 'gt-label';
-    label.innerHTML = d.label;
+    label.innerHTML = TOOL_LABEL[d.key] || '';
     btn.appendChild(iconWrap);
     btn.appendChild(label);
-    btn.addEventListener('click', () => {
-      const labels = { shield: '🛡️ Защитник Wi-Fi', cold: '❄️ Холодный разум', key: '🔑 Защитный ключ', hint: '❓ Подсказка' };
-      toast(labels[d.key] + ' активирован!');
-      sfx.click();
-      if (d.key === 'hint' && currentEvent) {
-        const fb = els('gameFeedback');
-        fb.innerHTML = '<div class="lesson-feedback ok">💡 Подсказка: ' + currentEvent.tip + '</div>';
-      }
-    });
+    btn.addEventListener('click', () => useTool(d.key));
     tools.appendChild(btn);
   });
 }
@@ -198,6 +231,27 @@ $$('[data-goto]').forEach((btn) => {
 });
 
 /* ============ TOP BAR ============ */
+/* Активные баффы aitемов у HUD: значок + остаток (часы/счётчик) */
+function renderBuffs() {
+  const list = activeBuffs(S);
+  ['buffsRow', 'gameBuffs'].forEach((id) => {
+    const el = els(id);
+    if (!el) return;
+    el.innerHTML = '';
+    list.forEach((b) => {
+      const chip = document.createElement('span');
+      chip.className = 'buff-chip';
+      const sp = createSprite(b.sprite, 2);
+      if (sp) chip.appendChild(sp);
+      const t = document.createElement('b');
+      t.textContent = b.label;
+      chip.appendChild(t);
+      el.appendChild(chip);
+    });
+    el.classList.toggle('buffs-empty', !list.length);
+  });
+}
+
 function renderTopbar() {
   els('topCoins').textContent = S.coins;
   els('topKp').textContent = S.lvl * 10 + S.xp;
@@ -205,6 +259,7 @@ function renderTopbar() {
   els('gameKp').textContent = S.lvl * 10 + S.xp;
   const gc = els('gameCoins'); if (gc) gc.textContent = S.coins;
   renderTopbarSprites();
+  renderBuffs();
 }
 
 /* ============ AUDIENCE ============ */
@@ -292,6 +347,20 @@ function renderStats() {
     chip.className = 'item-chip';
     const found = [...(SHOP.hats || []), ...(SHOP.walls || []), ...(SHOP.food || [])].find((i) => i.id === id);
     chip.textContent = found ? found.icon : '🎁';
+    items.appendChild(chip);
+  });
+  (SHOP.items || []).forEach((it) => {
+    const n = itemCount(S, it.key);
+    if (!n) return;
+    const chip = document.createElement('div');
+    chip.className = 'item-chip item-sprite';
+    chip.title = it.name + ' ×' + n;
+    const sp = createSprite(it.sprite, 2);
+    if (sp) chip.appendChild(sp);
+    const c = document.createElement('i');
+    c.className = 'chip-count';
+    c.textContent = '×' + n;
+    chip.appendChild(c);
     items.appendChild(chip);
   });
   const totalKp = S.lvl * 10 + S.xp;
@@ -508,6 +577,9 @@ let gameTimer = null;
 let gameTimeLeft = 25;
 let currentEvent = null;
 let gameLives = 3;
+let hintUsed = false;   // подсказка использована в текущем вопросе
+let coldApplied = false; // «Холодный разум» дал +10 сек этому вопросу
+let netSuspect = false;  // текущий вопрос — «подозрительная сеть» (бафф Wi-Fi)
 
 function startGame() {
   if (currentEvent) return;
@@ -515,6 +587,11 @@ function startGame() {
   currentEvent = pool[Math.floor(Math.random() * pool.length)];
   gameTimeLeft = 25;
   gameLives = 3;
+  hintUsed = false;
+  coldApplied = coldBuffLeft(S) > 0;
+  if (coldApplied) gameTimeLeft += 10; // «Холодный разум»: +10 сек к таймеру этого сценария
+  netSuspect = wifiBuffActive(S) && isWifiEvent(currentEvent); // «Защита Wi-Fi»: пометка «подозрительная сеть»
+  syncNetTag();
   els('gameTimer').textContent = gameTimeLeft;
   els('gameQuestion').textContent = currentEvent.q;
   // предупреждающий треугольник — только для вопросов про мошенников
@@ -596,7 +673,20 @@ function answerGame(idx, timeout = false) {
   clearInterval(gameTimer);
   gameTimer = null;
   const ok = answerEvent(S, currentEvent, idx); // idx = -1 (таймаут) засчитывается как неверный ответ
-  if (!ok) gameLives = Math.max(0, gameLives - 1);
+  let keySaved = false;
+  if (!ok) {
+    if (netSuspect) {
+      // «Защита Wi-Fi»: провал в подозрительной сети не снимает сердечко (KP за провал и так не начисляется)
+    } else if (gameLives - 1 <= 0 && itemCount(S, 'key') > 0) {
+      S.items.key--; // «Защитный ключ»: одноразово восстанавливает 1 сердце при 0
+      gameLives = 1;
+      keySaved = true;
+    } else {
+      gameLives = Math.max(0, gameLives - 1);
+    }
+  }
+  const wasCold = coldApplied;
+  if (wasCold) { S.buffs.coldLeft = Math.max(0, coldBuffLeft(S) - 1); coldApplied = false; }
   renderGameHearts(!ok);
   $$('.game-answer').forEach((b) => {
     b.disabled = true;
@@ -620,13 +710,19 @@ function answerGame(idx, timeout = false) {
   const head = ok
     ? 'Верно! +10 монет, +' + (currentEvent.xp || 5) + ' KP. '
     : (timeout ? 'Время вышло — ответ засчитан как неверный. Минус сердечко. ' : 'Мимо! Минус сердечко. ');
-  fb.innerHTML = '<div class="lesson-feedback ' + (ok ? 'ok' : 'bad') + '">' + head + currentEvent.tip + '</div>' +
+  let extra = '';
+  if (wasCold) extra += '<div class="cold-phrase">Стоп. Дыши. Проверь.</div>';
+  if (!ok && netSuspect) extra += '<div class="cold-phrase" style="color:var(--red-dark)">Сеть «подозрительная»: сердце сохранено, KP не начислен.</div>';
+  if (keySaved) extra += '<div class="cold-phrase" style="color:var(--green-dark)">Защитный ключ восстановил 1 сердце!</div>';
+  fb.innerHTML = '<div class="lesson-feedback ' + (ok ? 'ok' : 'bad') + '">' + head + currentEvent.tip + '</div>' + extra +
     '<button class="btn btn-green btn-block" id="btnNextEvent" style="margin-top:12px">СЛЕДУЮЩЕЕ ЗАДАНИЕ →</button>';
   els('btnNextEvent').onclick = () => {
     currentEvent = null;
     persist();
     startGame();
   };
+  renderBuffs();
+  renderGameTools();
   persist();
 }
 
@@ -683,6 +779,55 @@ function renderShop() {
   fill('shopHats', SHOP.hats, 'hat');
   fill('shopWalls', SHOP.walls, 'wall');
   fill('shopFood', SHOP.food, 'food');
+  fillItems();
+}
+
+/* Секция «АЙТЕМЫ»: иконка-спрайт + название + строка эффекта + цена + баланс рядом с кнопкой */
+function fillItems() {
+  const el = els('shopItems');
+  if (!el) return;
+  el.innerHTML = '';
+  (SHOP.items || []).forEach((it) => {
+    const div = document.createElement('div');
+    div.className = 'shop-item';
+    const icon = document.createElement('span');
+    icon.className = 's-icon s-sprite';
+    const sp = createSprite(it.sprite, 3);
+    if (sp) icon.appendChild(sp);
+    const name = document.createElement('span');
+    name.className = 's-name';
+    name.textContent = it.name;
+    const effect = document.createElement('span');
+    effect.className = 's-effect';
+    effect.textContent = it.effect;
+    const price = document.createElement('span');
+    price.className = 's-price';
+    price.textContent = it.price + ' МОНЕТ';
+    const bal = document.createElement('span');
+    bal.className = 's-balance';
+    bal.textContent = 'Баланс: ' + S.coins + ' • в наличии: ' + itemCount(S, it.key);
+    const btn = document.createElement('button');
+    btn.className = 'btn btn-orange';
+    btn.textContent = 'КУПИТЬ';
+    if (S.coins < it.price) btn.disabled = true;
+    btn.onclick = () => {
+      const r = buy(S, it, 'item');
+      if (!r.ok) { toast('Не хватает монет!'); return; }
+      toast('Куплено: ' + it.name + '!');
+      sfx.correct();
+      persist();
+      renderShop();
+      renderGameTools();
+      renderBuffs();
+    };
+    div.appendChild(icon);
+    div.appendChild(name);
+    div.appendChild(effect);
+    div.appendChild(price);
+    div.appendChild(bal);
+    div.appendChild(btn);
+    el.appendChild(div);
+  });
 }
 
 /* ============ SUPPORT / CHAT ============ */
@@ -819,6 +964,7 @@ if (S.onboarded) {
 }
 
 setInterval(() => { tick(S, 1); persist(); }, 4000);
+setInterval(renderBuffs, 30000); // обновление остатка баффов у HUD
 setInterval(renderPetBubble, 8000);
 setInterval(checkPetNotifications, 60000);
 document.addEventListener('visibilitychange', () => { if (document.hidden) checkPetNotifications(); });

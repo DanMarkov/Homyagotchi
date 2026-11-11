@@ -29,6 +29,13 @@ export function addCoins(state, n) { state.coins = Math.max(0, state.coins + n);
 export function owns(state, id) { return state.owned.indexOf(id) !== -1; }
 
 export function buy(state, item, type) {
+  if (type === 'item') {
+    if (state.coins < item.price) return { ok: false, reason: 'poor' };
+    state.coins -= item.price;
+    if (!state.items) state.items = { wifi: 0, cold: 0, key: 0, hint: 0 };
+    state.items[item.key] = (state.items[item.key] || 0) + 1;
+    return { ok: true, action: 'item', item };
+  }
   if (type === 'food') {
     if (state.coins < item.price) return { ok: false, reason: 'poor' };
     state.coins -= item.price;
@@ -129,6 +136,53 @@ export function petAlert(state, ps) {
     return { title: 'Хори скучает... 💜', body: 'Отметь привычки и загляни в «Помощь» — он будет рад!' };
   }
   return null;
+}
+
+/* ============ ITEMS / БУФФЫ (айтемы магазина, применяются в игре) ============ */
+
+export const WIFI_RE = /wi-?fi|публичн|общедоступн|open\s*wi-?fi/i;
+
+export function isWifiEvent(ev) {
+  const text = ((ev.id || '') + ' ' + (ev.cat || '') + ' ' + (ev.q || ''));
+  return WIFI_RE.test(text);
+}
+
+export function itemCount(state, key) {
+  return (state.items && state.items[key]) || 0;
+}
+
+/* Использовать 1 шт. aitема из инвентаря; now — ms. Возвращает { ok, key } */
+export function useItem(state, key, now = Date.now()) {
+  if (!state.items || !state.items[key]) return { ok: false, reason: 'none' };
+  state.items[key]--;
+  if (!state.buffs) state.buffs = { wifiUntil: 0, coldLeft: 0 };
+  if (key === 'wifi') state.buffs.wifiUntil = now + 24 * 3600 * 1000; // 24 ч
+  if (key === 'cold') state.buffs.coldLeft = 3; // 3 следующих сценария
+  return { ok: true, key };
+}
+
+export function wifiBuffActive(state, now = Date.now()) {
+  return !!(state.buffs && state.buffs.wifiUntil && state.buffs.wifiUntil > now);
+}
+
+export function coldBuffLeft(state) {
+  return (state.buffs && state.buffs.coldLeft) || 0;
+}
+
+/* Активные эффекты для HUD: [{ key, sprite, label }] */
+export function activeBuffs(state, now = Date.now()) {
+  const out = [];
+  if (wifiBuffActive(state, now)) {
+    const ms = state.buffs.wifiUntil - now;
+    const h = Math.floor(ms / 3600000);
+    const m = Math.ceil((ms % 3600000) / 60000);
+    out.push({ key: 'wifi', sprite: 'wifi_icon', label: (h > 0 ? h + 'ч' : '') + (m > 0 ? (h > 0 ? ' ' : '') + m + 'м' : '') || '24ч' });
+  }
+  const cold = coldBuffLeft(state);
+  if (cold > 0) out.push({ key: 'cold', sprite: 'cold_icon', label: '×' + cold });
+  const keys = itemCount(state, 'key');
+  if (keys > 0) out.push({ key: 'key', sprite: 'key_icon', label: '×' + keys });
+  return out;
 }
 
 export function answerEvent(state, ev, idx) {
