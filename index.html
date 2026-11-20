@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>🐹 Хомягочи</title>
 <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="src/render/sprites.css?v=33">
+<link rel="stylesheet" href="src/render/sprites.css?v=34">
 <style>
   :root {
     --bg: #cfe9f9;
@@ -1120,7 +1120,7 @@
     #screen-home .room { display: flex; flex-direction: column; min-height: 520px; padding: 10px; }
     .room-floor { height: 26%; }
     .room-rug { top: auto; bottom: 31%; }
-    .room-rug canvas { width: 192px !important; height: 56px !important; } /* кратный ×2, pixelated */
+    .room-rug canvas { width: 288px !important; height: 84px !important; } /* кратный ×3, pixelated */
     .room-actions-top { position: static; order: 0; flex-wrap: wrap; justify-content: center; gap: 8px; padding: 0; }
     .room-action-btn { width: auto; flex: 1 1 30%; min-width: 0; min-height: 48px; font-size: .66rem; padding: 8px 4px; gap: 4px; white-space: normal; }
     .room-action-btn .ra-icon { min-width: 26px; height: 26px; }
@@ -1132,8 +1132,9 @@
     .room-decor-right, .room-decor-left { display: none; }
     .room-pet { position: static; order: 2; transform: none; margin: 6px auto 0; }
     .room-pet .pet-bubble { white-space: normal; max-width: 92vw; text-align: center; font-size: .95rem; padding: 8px 12px; }
-    #screen-home .room-pet .pet-sprite-wrap .sprite-hori-scene { width: 192px !important; height: 171px !important; }
-    #screen-home .room-pet .pet-sprite-wrap canvas.sprite-hori { position: absolute; top: 0; left: 0; width: 192px !important; height: 171px !important; image-rendering: pixelated; } /* кратный ×3 */
+    /* освободившееся место от скрытых кнопок отдаём сцене: Хори крупнее, кратный ×4 */
+    #screen-home .room-pet .pet-sprite-wrap .sprite-hori-scene { width: 256px !important; height: 228px !important; }
+    #screen-home .room-pet .pet-sprite-wrap canvas.sprite-hori { position: absolute; top: 0; left: 0; width: 256px !important; height: 228px !important; image-rendering: pixelated; } /* кратный ×4 */
     .room-actions-bottom { position: static; order: 3; display: flex; gap: 8px; margin-top: 10px; }
     .room-btn-theory, .room-btn-settings { position: static; flex: 1 1 0; min-width: 0; min-height: 48px; font-size: .72rem; padding: 10px 6px; }
 
@@ -1166,7 +1167,9 @@
      Обработчик и логика остаются, кнопка просто невидима. «НАСТРОЙКИ» не скрываем — в панели её нет. */
   @media (max-width: 767px) {
     .room-btn-theory { display: none; }
+    .room-side-btn.support { display: none; } /* «Помощь» дублируется нижней панелью (спасательный круг) */
     .room-actions-bottom { justify-content: center; } /* одиночная «НАСТРОЙКИ» — по центру, без дыры */
+    .room-side-left { justify-content: center; } /* ряд side-кнопок ровный, без дыр после скрытия */
   }
 
   /* ===== PIXEL SPRITE SIZES ===== */
@@ -1495,10 +1498,10 @@
     </div>
   </div>
 
-  <script src="content/config.js?v=33"></script>
-  <script src="content/content.js?v=33"></script>
-  <script src="content/lessons.js?v=33"></script>
-  <script src="content/shop.js?v=33"></script>
-  <script type="module" src="src/ui/app.js?v=33"></script>
+  <script src="content/config.js?v=34"></script>
+  <script src="content/content.js?v=34"></script>
+  <script src="content/lessons.js?v=34"></script>
+  <script src="content/shop.js?v=34"></script>
+  <script type="module" src="src/ui/app.js?v=34"></script>
 </body>
 </html>
