@@ -1,0 +1,6 @@
+name = "homyag-help-proxy"
+main = "src/index.js"
+compatibility_date = "2026-11-11"
+
+# Секреты НЕ здесь, а через: wrangler secret put MISTRAL_API_KEY
+# Dev-origin для локальной разработки: wrangler secret put ALLOWED_DEV_ORIGIN (например http://localhost:5173)
