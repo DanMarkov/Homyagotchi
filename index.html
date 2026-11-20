@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>🐹 Хомягочи</title>
 <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="src/render/sprites.css?v=34">
+<link rel="stylesheet" href="src/render/sprites.css?v=35">
 <style>
   :root {
     --bg: #cfe9f9;
@@ -1168,6 +1168,7 @@
   @media (max-width: 767px) {
     .room-btn-theory { display: none; }
     .room-side-btn.support { display: none; } /* «Помощь» дублируется нижней панелью (спасательный круг) */
+    .room-side-btn.habits { display: none; } /* «Задачи» дублируются нижней панелью (галочка) */
     .room-actions-bottom { justify-content: center; } /* одиночная «НАСТРОЙКИ» — по центру, без дыры */
     .room-side-left { justify-content: center; } /* ряд side-кнопок ровный, без дыр после скрытия */
   }
@@ -1407,7 +1408,7 @@
     <!-- ===== SHOP ===== -->
     <div class="screen" id="screen-shop">
       <div class="screen-title">
-        <span class="t-icon" style="background:#fff3e0">🛒</span>
+        <span class="t-icon" style="background:#fff3e0" id="shopTitleIcon"></span>
         МАГАЗИН ХОМЯКА
         <span class="shop-pet" id="shopPetWrap"></span>
       </div>
@@ -1498,10 +1499,10 @@
     </div>
   </div>
 
-  <script src="content/config.js?v=34"></script>
-  <script src="content/content.js?v=34"></script>
-  <script src="content/lessons.js?v=34"></script>
-  <script src="content/shop.js?v=34"></script>
-  <script type="module" src="src/ui/app.js?v=34"></script>
+  <script src="content/config.js?v=35"></script>
+  <script src="content/content.js?v=35"></script>
+  <script src="content/lessons.js?v=35"></script>
+  <script src="content/shop.js?v=35"></script>
+  <script type="module" src="src/ui/app.js?v=35"></script>
 </body>
 </html>
