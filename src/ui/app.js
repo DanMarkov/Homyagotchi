@@ -1,9 +1,9 @@
-import { load, save, wipe } from '../core/store.js?v=34';
-import { tick, petState } from '../core/pet.js?v=34';
-import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert, useItem, isWifiEvent, itemCount, wifiBuffActive, coldBuffLeft, activeBuffs, satietyTick, applyFood } from '../core/game.js?v=34';
-import { sfx } from './audio.js?v=34';
-import { renderMoodChart, ChatUI } from './support.js?v=34';
-import { createSprite } from '../render/pixel-sprites.js?v=34';
+import { load, save, wipe } from '../core/store.js?v=35';
+import { tick, petState } from '../core/pet.js?v=35';
+import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert, useItem, isWifiEvent, itemCount, wifiBuffActive, coldBuffLeft, activeBuffs, satietyTick, applyFood } from '../core/game.js?v=35';
+import { sfx } from './audio.js?v=35';
+import { renderMoodChart, ChatUI } from './support.js?v=35';
+import { createSprite } from '../render/pixel-sprites.js?v=35';
 
 const CONTENT = window.__CONTENT__;
 const LESSONS = window.__LESSONS__;
@@ -163,7 +163,7 @@ function renderRoomIcons() {
   mountSprite('roomPlayIcon', 'play_icon', 3);
   mountSprite('roomStatsIcon', 'trophy_icon', 3);
   mountSprite('roomHabitsIcon', 'check_badge_icon', 3);
-  mountSprite('roomShopIcon', 'cup_icon', 3);
+  mountSprite('roomShopIcon', 'shop_icon', 3);
   mountSprite('roomSupportIcon', 'lifebuoy_icon', 3);
   mountSprite('roomTheoryIcon', 'book_icon', 2);
   mountSprite('roomSettingsIcon', 'gear_icon', 2);
@@ -1088,6 +1088,7 @@ function renderNavIcons() {
 }
 renderNavIcons();
 mountSprite('statsTitleIcon', 'trophy_icon', 2);
+mountSprite('shopTitleIcon', 'shop_icon', 2);
 mountSprite('supportTitleIcon', 'lifebuoy_icon', 2);
 mountSprite('habitsTitleIcon', 'check_badge_icon', 2);
 renderTopbar();
