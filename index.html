@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>🐹 Хомягочи</title>
 <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="src/render/sprites.css?v=35">
+<link rel="stylesheet" href="src/render/sprites.css?v=36">
 <style>
   :root {
     --bg: #cfe9f9;
@@ -473,7 +473,7 @@
   .room-actions-bottom {
     position: absolute;
     left: 32px; right: 32px; bottom: 24px;
-    display: flex; justify-content: space-between; gap: 12px;
+    display: flex; justify-content: center; gap: 12px; /* одиночная кнопка по центру, без пустой зоны */
     z-index: 10;
   }
   .room-btn-theory, .room-btn-settings {
@@ -1032,6 +1032,7 @@
   .bottom-nav .nav-item[data-goto="theory"].active { background: #E9E2FD; }
   .bottom-nav .nav-item[data-goto="game"].active { background: #FDE3EA; }
   .bottom-nav .nav-item[data-goto="support"].active { background: #FFEDD6; }
+  .bottom-nav .nav-item[data-goto="settings"].active { background: #E8EEF5; }
 
   /* ===== MODAL ===== */
   .modal-bg {
@@ -1167,9 +1168,9 @@
      Обработчик и логика остаются, кнопка просто невидима. «НАСТРОЙКИ» не скрываем — в панели её нет. */
   @media (max-width: 767px) {
     .room-btn-theory { display: none; }
+    .room-actions-bottom { display: none; } /* нижний ряд пуст на мобильном: ТЕОРИЯ в панели, НАСТРОЙКИ переехали в панель */
     .room-side-btn.support { display: none; } /* «Помощь» дублируется нижней панелью (спасательный круг) */
     .room-side-btn.habits { display: none; } /* «Задачи» дублируются нижней панелью (галочка) */
-    .room-actions-bottom { justify-content: center; } /* одиночная «НАСТРОЙКИ» — по центру, без дыры */
     .room-side-left { justify-content: center; } /* ряд side-кнопок ровный, без дыр после скрытия */
   }
 
@@ -1302,7 +1303,6 @@
 
         <div class="room-actions-bottom">
           <button class="btn room-btn-theory" data-goto="theory"><span class="rb-icon" id="roomTheoryIcon"></span>ТЕОРИЯ</button>
-          <button class="btn room-btn-settings" data-goto="settings"><span class="rb-icon" id="roomSettingsIcon"></span>НАСТРОЙКИ</button>
         </div>
       </div>
     </div>
@@ -1487,6 +1487,10 @@
       <span class="ni-icon" id="navSupportIcon"></span>
       <span class="ni-label">ПОМОЩЬ</span>
     </button>
+    <button class="nav-item" data-goto="settings">
+      <span class="ni-icon" id="navSettingsIcon"></span>
+      <span class="ni-label">НАСТР.</span>
+    </button>
   </nav>
 
   <!-- ===== MODAL ===== -->
@@ -1499,10 +1503,10 @@
     </div>
   </div>
 
-  <script src="content/config.js?v=35"></script>
-  <script src="content/content.js?v=35"></script>
-  <script src="content/lessons.js?v=35"></script>
-  <script src="content/shop.js?v=35"></script>
-  <script type="module" src="src/ui/app.js?v=35"></script>
+  <script src="content/config.js?v=36"></script>
+  <script src="content/content.js?v=36"></script>
+  <script src="content/lessons.js?v=36"></script>
+  <script src="content/shop.js?v=36"></script>
+  <script type="module" src="src/ui/app.js?v=36"></script>
 </body>
 </html>
