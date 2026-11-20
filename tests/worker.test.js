@@ -46,6 +46,12 @@ beforeEach(() => {
     if (mistralBehavior === 'ok') {
       return new Response(JSON.stringify({ choices: [{ message: { content: 'Всё будет хорошо! Сделай глубокий вдох. 🌬️' } }] }), { status: 200 });
     }
+    if (mistralBehavior === 'varied') {
+      // ответ зависит от user-сообщения, чтобы на разные custom приходили разные формулировки
+      const parsed = JSON.parse(opts.body);
+      const user = parsed.messages[parsed.messages.length - 1].content;
+      return new Response(JSON.stringify({ choices: [{ message: { content: 'Я слышу тебя: «' + user.slice(-80) + '». Держись 🌱' } }] }), { status: 200 });
+    }
     if (mistralBehavior === 'empty') return new Response(JSON.stringify({ choices: [{ message: { content: '  ' } }] }), { status: 200 });
     if (mistralBehavior === 'error') return new Response('err', { status: 500 });
     if (mistralBehavior === 'hang') return new Promise((_, rej) => { // как настоящий fetch: падает по signal.abort
@@ -179,4 +185,43 @@ test('seeds.json покрывает все 5 эмоций × 6 тем из UI', 
   const topics = ['тревога', 'стресс и учёба', 'грустно', 'одиноко', 'злюсь', 'мне хорошо 👋'];
   assert.equal(Object.keys(SEEDS).length, 30);
   for (const e of emojis) for (const t of topics) assert.ok(SEEDS[e + '|' + t], 'seed для ' + e + '|' + t);
+});
+
+test('модуль 6: 20 запросов с разным custom — все 200, ответы варьируются', async () => {
+  mistralBehavior = 'varied';
+  const answers = new Set();
+  for (let i = 0; i < 20; i++) {
+    // разные IP, чтобы не поймать 429 (лимит 10/час/IP)
+    const r = await ask({ emotion: '😒', topic: 'учёба', custom: 'не успеваю, вариант номер ' + i }, { ip: '10.1.0.' + i });
+    assert.equal(r.status, 200, 'запрос #' + i);
+    const d = await r.json();
+    assert.ok(d.answer && d.answer.length > 10);
+    answers.add(d.answer);
+  }
+  assert.equal(answers.size, 20, 'на разные custom — разные ответы, уникальных: ' + answers.size + '/20');
+});
+
+test('модуль 6: 8 одинаковых запросов подряд — Mistral вызван ровно 1 раз (сработал кэш)', async () => {
+  mistralBehavior = 'varied';
+  const b = { emotion: '😒', topic: 'учёба', custom: 'один и тот же текст' };
+  let first;
+  for (let i = 0; i < 8; i++) {
+    const r = await ask(b, { ip: '7.7.7.7' });
+    assert.equal(r.status, 200);
+    const d = await r.json();
+    if (i === 0) first = d; else assert.equal(d.cached, true, 'повтор #' + i + ' из кэша');
+  }
+  assert.equal(first.cached, false);
+  assert.equal(mistralCalls, 1, 'Mistral дёрнут только на первый запрос');
+});
+
+test('модуль 6: 15 быстрых запросов с одного IP — после 10-го срабатывает лимит 429', async () => {
+  mistralBehavior = 'varied';
+  let ok = 0, limited = 0;
+  for (let i = 0; i < 15; i++) {
+    const r = await ask({ emotion: '😆', topic: 'другая тема ' + i, custom: 'спам ' + i }, { ip: '6.6.6.6' });
+    if (r.status === 200) ok++; else if (r.status === 429) limited++;
+  }
+  assert.equal(ok, 10);
+  assert.equal(limited, 5);
 });

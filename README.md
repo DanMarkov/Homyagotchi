@@ -125,6 +125,28 @@ node --test "tests/*.test.js"
 
 Редактируй `content/content.json` (события, советы) или `content/lessons.json` (уроки) — затем `node tools/build-content.js` перегенерирует JS-обёртки.
 
+## 🤖 Раздел «Помощь»: генеративные ответы
+
+**Раздел помощи использует генеративную модель Mistral (открытые веса) через собственный прокси; при недоступности — офлайн-заготовки.**
+
+Архитектура: статический сайт (GitHub Pages) → Cloudflare Worker `homyag-help-proxy` (`worker/`) → Mistral API (`mistral-small-latest`). Клиент знает только публичный URL прокси `…/ask` — ни `api.mistral`, ни API-ключ в коде страницы нет (проверяется тестом `tests/support-ai.test.js`).
+
+- **Прокси** (`worker/src/index.js`): только `POST /ask` (`GET` — health-check `{status:"ok"}`); валидация входа → 400 без вызова API; ключ — только из `env.MISTRAL_API_KEY`; CORS строго `https://danmarkov.github.io` (+ `ALLOWED_DEV_ORIGIN` для локальной разработки); rate limit 10 запросов/час на IP (Cache API) → 429; таймаут Mistral 10 с → 503 `{fallback:true}`; системный промпт хранится в воркере, не в клиенте; кризисные сообщения получают детерминированный ответ с телефоном доверия 8-800-2000-122 без вызова модели.
+- **Кэш** (в воркере): слой 1 — Cache API, ключ `sha256(emotion|topic|lower(custom))`, max-age 24 ч; слой 2 — pre-seeded ответы `worker/src/seeds.json` для всех стандартных пар «эмоция × тема» (50 % на промахе кэша). В ответе всегда есть поле `cached: true/false` (для отладки, в UI не показывается).
+- **Fallback в клиенте** (`src/ui/support.js`): статичные заготовки для каждой пары НЕ удалены — это офлайн-слой. Цепочка: 200 → сгенерированный ответ; 503/`{fallback:true}` → локальная заготовка; 429 → заготовка + плашка «отдохни немного»; сеть недоступна или таймаут клиента 12 с → заготовка. Ответ есть всегда, «вечного спиннера» нет. Локальный лимит — 3 генеративных ответа за сессию (localStorage, пользователь не знает); кнопка «🔄 ещё один вариант» — перегенерация, считается в лимит. В UI нет упоминаний модели: тот же экран ответа, typewriter ~30 мс/символ.
+
+Деплой прокси (нужен аккаунт Cloudflare и ключ Mistral):
+
+```bash
+cd worker
+wrangler secret put MISTRAL_API_KEY   # ключ никогда не коммиттится
+wrangler deploy                        # → https://homyag-help-proxy.<subdomain>.workers.dev
+# при необходимости пропиши его в HELP_AI_URL в src/ui/support.js
+# для локальной разработки: wrangler secret put ALLOWED_DEV_ORIGIN  (например, http://localhost:5500)
+```
+
+Тесты: `tests/worker.test.js` (handler воркера со стабами Cache API/fetch: 200-схема, 400/405, CORS, кэш, seed, 429, таймаут→53, кризис→hotline, 20 varied-запросов, 15 быстрых → лимит) и `tests/support-ai.test.js` (клиентский `askHelpAI`: fallback-цепочка, лимит 3/сессию, отсутствие `api.mistral` в клиентском коде).
+
 ## ☁️ Облачная синхронизация (Supabase)
 
 Игра работает локально (localStorage). Опционально — синхронизация прогресса через Supabase:

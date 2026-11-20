@@ -1,4 +1,77 @@
-import { moodAvg } from '../core/game.js?v=37';
+import { moodAvg } from '../core/game.js?v=38';
+
+/* ===== Генеративные ответы раздела «Помощь» через собственный прокси (Cloudflare Worker).
+   API-ключ и системный промпт живут ТОЛЬКО на сервере; в клиенте — только публичный URL прокси. ===== */
+const HELP_AI_URL = 'https://homyag-help-proxy.workers.dev/ask';
+const AI_SESSION_LIMIT = 3;   // генеративных ответов за сессию (локальный лимит, пользователь о нём не знает)
+const AI_TIMEOUT_MS = 12000;  // таймаут клиента: дальше — офлайн-заготовка, никакого «вечного спиннера»
+const AI_LS_KEY = 'khomyagochi_help_ai';
+const AI_SID_KEY = 'khomyagochi_sid';
+
+let lastMoodEmoji = '🙂';
+export function setLastMoodEmoji(e) { if (e) lastMoodEmoji = e; }
+
+function aiSessionId() {
+  try {
+    let sid = sessionStorage.getItem(AI_SID_KEY);
+    if (!sid) {
+      sid = Math.random().toString(36).slice(2) + Date.now().toString(36);
+      sessionStorage.setItem(AI_SID_KEY, sid);
+    }
+    return sid;
+  } catch { return 'static'; }
+}
+
+function aiRecord() {
+  try {
+    const sid = aiSessionId();
+    const raw = localStorage.getItem(AI_LS_KEY);
+    const rec = raw ? JSON.parse(raw) : null;
+    if (rec && rec.sid === sid && typeof rec.used === 'number') return rec;
+    const fresh = { sid, used: 0 };
+    localStorage.setItem(AI_LS_KEY, JSON.stringify(fresh));
+    return fresh;
+  } catch { return { sid: 'static', used: 0 }; }
+}
+
+export function aiLeft() { return Math.max(0, AI_SESSION_LIMIT - aiRecord().used); }
+
+function aiConsume() {
+  try {
+    const rec = aiRecord();
+    rec.used += 1;
+    localStorage.setItem(AI_LS_KEY, JSON.stringify(rec));
+  } catch { /* localStorage недоступен — просто не считаем */ }
+}
+
+/* Запрос к прокси. НИКОГДА не бросает и всегда возвращает объект:
+   { text, source, cached } — есть сгенерированный ответ;
+   { fallback: true, rateLimited?, noLimit? } — показать локальную заготовку. */
+export async function askHelpAI(emotion, topic, custom) {
+  if (aiLeft() <= 0) return { fallback: true, noLimit: true };
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), AI_TIMEOUT_MS);
+  try {
+    const resp = await fetch(HELP_AI_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ emotion, topic, custom: (custom || '').slice(0, 500) }),
+      signal: ctrl.signal
+    });
+    if (resp.status === 429) return { fallback: true, rateLimited: true };
+    if (!resp.ok) return { fallback: true }; // 503 {fallback:true} и любые другие статусы — заготовка
+    const data = await resp.json().catch(() => null);
+    if (!data || data.fallback || typeof data.answer !== 'string' || !data.answer.trim()) {
+      return { fallback: true };
+    }
+    aiConsume();
+    return { text: data.answer, cached: !!data.cached, source: data.source || 'gen' };
+  } catch {
+    return { fallback: true }; // сеть недоступна / таймаут 12 с — заготовка
+  } finally {
+    clearTimeout(timer);
+  }
+}
 
 export function renderMoodChart(state, el) {
   const days = {};
@@ -41,56 +114,56 @@ const CRISIS_WORDS = ['суицид', 'покончить', 'убить себя
 
 const TOPICS = [
   {
-    id: 'anxiety', words: ['тревог', 'паник', 'боюсь', 'страшно', 'страха', 'нервнича', 'волну', 'трясет', 'паник атак', 'паника атак'],
+    id: 'anxiety', label: 'тревога', words: ['тревог', 'паник', 'боюсь', 'страшно', 'страха', 'нервнича', 'волну', 'трясет', 'паник атак', 'паника атак'],
     empath: 'Тревога — это очень тяжело. Тело как будто говорит тревогу без причины, и это изменяет. Ты не слабый(ая) — тревога так работает.',
     asks: ['где ты её чувствуешь больше всего — в теле или в мыслях?', 'что обычно помогает тебе чуть-чуть отпустить?'],
     tools: [{ label: '🛏️ отдохнуть с хомяком в домике', tab: 'home' }, { label: '💪 отметить привычку — забота о себе', tab: 'habit' }],
     tips: ['Медленный выдох длиннее вдоха — сигнал мозгу «мы в безопасности».', 'Тревога — не факт о будущем, а эмоция в настоящем.']
   },
   {
-    id: 'stress', words: ['стресс', 'устал', 'выгор', 'перегруз', 'не успева', 'завал', 'дедлайн', 'сесси', 'экзамен', 'контрольн'],
+    id: 'stress', label: 'стресс и учёба', words: ['стресс', 'устал', 'выгор', 'перегруз', 'не успева', 'завал', 'дедлайн', 'сесси', 'экзамен', 'контрольн'],
     empath: 'Похоже, на тебя сейчас давит много всего сразу. Когда всё срочно — легко забыть, что ты живой человек, а не машина для задач.',
     asks: ['если бы можно было отложить одну вещь — какую?', 'когда ты последний раз пил(а) воду?'],
     tools: [{ label: '📝 отметить привычку', tab: 'habit' }, { label: '🏠 посидеть с хомяком', tab: 'home' }],
     tips: ['Правило 15 минут: мозг боится «всего», но справляется с маленьким кусочком.', 'Отдых — не награда за работу, а условие.']
   },
   {
-    id: 'sad', words: ['груст', 'тоск', 'печаль', 'плохо на душе', 'депресс', 'плак', 'пусто внутри'],
+    id: 'sad', label: 'грустно', words: ['груст', 'тоск', 'печаль', 'плохо на душе', 'депресс', 'плак', 'пусто внутри'],
     empath: 'Мне жаль, что сейчас так. Грусть — не слабость, а знак, что тебе не безразлично то, что происходит. Хомяк рядом, ты не один(одна).',
     asks: ['как давно ты так себя чувствуешь?', 'есть ли кто-то, кому ты можешь об этом сказать?'],
     tools: [{ label: '💬 поговорить с хомяком в домике', tab: 'home' }, { label: '🧠 заземление 5-4-3-2-1', tab: 'ground' }],
     tips: ['Если тоска держится дольше двух недель — это повод поговорить со специалистом. Это нормальная забота о себе.', 'Не нужно быть «сильным(ой)» постоянно. Просить помощи — это навык.']
   },
   {
-    id: 'anger', words: ['злюсь', 'бесит', 'злость', 'ненавиж', 'раздража', 'ярост'],
+    id: 'anger', label: 'злюсь', words: ['злюсь', 'бесит', 'злость', 'ненавиж', 'раздража', 'ярост'],
     empath: 'Злость часто — сигнал, что твои границы нарушили. Он не «плохая», она — причина что-то важное для тебя.',
     asks: ['что именно задело больше всего?', 'если бы злость могла говорить — что бы она сказала?'],
     tools: [{ label: '🏠 пойти погладить хомяка', tab: 'home' }],
     tips: ['Злость — вторичная эмоция: под ней часто обида или усталость.', 'Физическая разрядка (пройтись, сжать-разжать кулаки) помогает сбросить напряжение.']
   },
   {
-    id: 'lonely', words: ['одинок', 'никто не поним', 'нет друзей', 'не с кем', 'изолиров'],
+    id: 'lonely', label: 'одиноко', words: ['одинок', 'никто не поним', 'нет друзей', 'не с кем', 'изолиров'],
     empath: 'Одиночество — одна из самых человеческих болей. Особенно когда вокруг люди, а ощущение — «некому».',
     asks: ['в каком моменте тебе особенно одиноко?', 'был ли человек, с которым было легко?'],
     tools: [{ label: '💜 чек-ин настроения', tab: 'mood' }],
     tips: ['Одиночество — сигнал о потребности в близости, а не «не со мной что-то не так».', 'Один честный «мне сейчас одиноко» сокращает дистанцию больше, чем «нормально».']
   },
   {
-    id: 'study', words: ['учеб', 'универ', 'школ', 'провал', 'оценк', 'не получ', 'не поним', 'отчисл', 'тест'],
+    id: 'study', label: 'учёба', words: ['учеб', 'универ', 'школ', 'провал', 'оценк', 'не получ', 'не поним', 'отчисл', 'тест'],
     empath: 'Учёба давит, когда кажется, что оценка = твоя ценность. Но это не так. Один тест — не приговор твоим способностям.',
     asks: ['какая часть учёбы даётся сильнее всего?', 'что для тебя в учёбе важно — оценки или знания?'],
     tools: [{ label: '🎓 закрыть — урок', tab: 'lessons' }],
     tips: ['«Я ярлык» («я тупой») — когнитивное искажение. Факт «не сдал» ≠ вывод о себе.', 'Сон и конспекты важнее зубрёжки.']
   },
   {
-    id: 'sleep', words: ['не сплю', 'бессонн', 'не могу уснуть', 'не высыпа', 'сон', 'ночн кошмар'],
+    id: 'sleep', label: 'сон', words: ['не сплю', 'бессонн', 'не могу уснуть', 'не высыпа', 'сон', 'ночн кошмар'],
     empath: 'Без сна всё кажется тяжелее — это не лень, тело реально восстанавливается ночью. Хомяк спец по сну, он знает.',
     asks: ['что мешает уснуть — мысли или тело?', 'сколько ты спишь в обычную ночь?'],
     tools: [{ label: '📵 привычка «без телефона перед сном»', tab: 'habit' }],
     tips: ['Экран за 30 минут до сна — главный вор сна у студентов.', 'Один и тот же время отхода ко сну важнее, чем «доспать» в выходные.']
   },
   {
-    id: 'good', words: ['хорошо', 'отлично', 'рад', 'счастлив', 'круто', 'получилось', 'горж'],
+    id: 'good', label: 'мне хорошо 👋', words: ['хорошо', 'отлично', 'рад', 'счастлив', 'круто', 'получилось', 'горж'],
     empath: 'Здорово! Хорошее важно замечать так же, как и тяжёлое. Хомяк шепчет лапкой и радуется с тобой! 🎉',
     asks: ['что случилось хорошего?', 'чем ты можешь это отметить?'],
     tools: [{ label: '🎓 закрепить — урок', tab: 'lessons' }],
@@ -179,6 +252,43 @@ export class ChatUI {
     setTimeout(() => this.addMsg(text, 'bot'), delay);
   }
 
+  /* Псевдо-typewriter: ответ «оживает» (~30 мс/символ, длинные — быстрее). */
+  typeBot(text, done) {
+    const div = document.createElement('div');
+    div.className = 'chat-msg bot';
+    this.msgsEl.appendChild(div);
+    if (this.sfx) this.sfx.blip();
+    let i = 0;
+    const step = text.length > 240 ? 3 : text.length > 120 ? 2 : 1;
+    const iv = setInterval(() => {
+      i += step;
+      div.textContent = text.slice(0, i);
+      this.msgsEl.scrollTop = this.msgsEl.scrollHeight;
+      if (i >= text.length) {
+        clearInterval(iv);
+        div.textContent = text;
+        this.msgsEl.scrollTop = this.msgsEl.scrollHeight;
+        if (done) done();
+      }
+    }, 30);
+  }
+
+  /* Ответ на выбранную тему: сначала генеративный ответ через прокси,
+     при ЛЮБОМ промахе (503/429/сеть/лимит/таймаут) — обычная офлайн-заготовка. */
+  async aiAnswer(customText, done) {
+    const topic = this.topic;
+    if (!topic) { if (done) done(); return; }
+    const r = await askHelpAI(lastMoodEmoji, topic.label, customText || '');
+    if (!this.topic || this.topic.id !== topic.id) { if (done) done(); return; } // тему сменили, пока ждали
+    if (r.text) {
+      this.typeBot(r.text, done);
+    } else {
+      this.bot(topic.empath, 400);
+      if (r.rateLimited) this.bot('Чуть отдохни немного 🙂 Я рядом.', 1000);
+      setTimeout(() => { if (done) done(); }, 1200);
+    }
+  }
+
   send(input) {
     const text = input.value.trim();
     if (!text) return;
@@ -193,8 +303,7 @@ export class ChatUI {
       if (this.topic) {
         this.stage = 'dialog';
         this.step = 0;
-        this.bot(this.topic.empath, 400);
-        this.bot('Скажи, ' + this.topic.asks[0], 1100);
+        this.aiAnswer(text, () => this.bot('Скажи, ' + this.topic.asks[0], 500));
       } else if (text.includes('?')) {
         this.bot('Хороший вопрос. Расскажи чуть подробнее, что происходит, чтобы я смог(ла) точнее подсказать.', 400);
       } else {
@@ -228,6 +337,11 @@ export class ChatUI {
       b.onclick = () => this.actions.goTo(tool.tab, tool.label);
       q.appendChild(b);
     });
+    const regen = document.createElement('button');
+    regen.className = 'chat-chip';
+    regen.textContent = '🔄 ещё один вариант';
+    regen.onclick = () => { this.aiAnswer(''); }; // перегенерация, считается в лимит
+    q.appendChild(regen);
     const other = document.createElement('button');
     other.className = 'chat-chip';
     other.textContent = 'поговорить о другом';
