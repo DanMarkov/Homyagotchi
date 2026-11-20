@@ -1,5 +1,8 @@
 # homyag-help-proxy — Cloudflare Worker (прокси для раздела «Помощь»)
 
+> Основной open-source хост прокси — Supabase Edge Function (`supabase/functions/help-ask`, см. раздел «Помощь» в основном README). Этот Cloudflare Worker — запасной вариант того же обработчика.
+
+
 Принимает `POST /ask` от статического сайта (GitHub Pages) и проксирует запросы в Mistral API.
 **API-ключ и системный промпт живут только здесь** — в клиентском коде игры их нет.
 

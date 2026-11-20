@@ -129,23 +129,26 @@ node --test "tests/*.test.js"
 
 **Раздел помощи использует генеративную модель Mistral (открытые веса) через собственный прокси; при недоступности — офлайн-заготовки.**
 
-Архитектура: статический сайт (GitHub Pages) → Cloudflare Worker `homyag-help-proxy` (`worker/`) → Mistral API (`mistral-small-latest`). Клиент знает только публичный URL прокси `…/ask` — ни `api.mistral`, ни API-ключ в коде страницы нет (проверяется тестом `tests/support-ai.test.js`).
+Архитектура: статический сайт (GitHub Pages) → Supabase Edge Function `help-ask` (`supabase/functions/`, рантайм Deno — open source, Apache-2.0) → Mistral API (`mistral-small-latest`). Прокси сам открытый (Apache-2.0, лежит в этом репозитории). Клиент знает только публичный URL функции — ни `api.mistral`, ни API-ключ в коде страницы нет (проверяется тестом `tests/support-ai.test.js`). URL функции клиент собирает из `window.__SUPABASE_URL__` (`content/config.js`): `<SUPABASE_URL>/functions/v1/help-ask`; если Supabase не настроен — тихий fallback на офлайн-заготовки. Запасной хост тогого обработчика — Cloudflare Worker в `worker/` (см. `worker/README.md`).
 
-- **Прокси** (`worker/src/index.js`): только `POST /ask` (`GET` — health-check `{status:"ok"}`); валидация входа → 400 без вызова API; ключ — только из `env.MISTRAL_API_KEY`; CORS строго `https://danmarkov.github.io` (+ `ALLOWED_DEV_ORIGIN` для локальной разработки); rate limit 10 запросов/час на IP (Cache API) → 429; таймаут Mistral 10 с → 503 `{fallback:true}`; системный промпт хранится в воркере, не в клиенте; кризисные сообщения получают детерминированный ответ с телефоном доверия 8-800-2000-122 без вызова модели.
-- **Кэш** (в воркере): слой 1 — Cache API, ключ `sha256(emotion|topic|lower(custom))`, max-age 24 ч; слой 2 — pre-seeded ответы `worker/src/seeds.json` для всех стандартных пар «эмоция × тема» (50 % на промахе кэша). В ответе всегда есть поле `cached: true/false` (для отладки, в UI не показывается).
+- **Прокси** (`supabase/functions/_shared/proxy.js`, entry `supabase/functions/help-ask/index.ts`): только POST (GET — health-check `{status:"ok"}`); валидация входа → 400 без вызова API; ключ — только из секрета `MISTRAL_API_KEY`; CORS строго `https://danmarkov.github.io` (+ `ALLOWED_DEV_ORIGIN` для локальной разработки); rate limit 10 запросов/час на IP → 429 + `Retry-After`; таймаут Mistral 10 с (abort) → 503 `{fallback:true}`; системный промпт хранится на сервере, не в клиенте; кризисные сообщения получают детерминированный ответ с телефоном доверия 8-800-2000-122 без вызова модели.
+- **Кэш** (in-memory, по isolate edge-функции): ключ `sha256(emotion|topic|lower(custom))`, TTL 24 ч; для стандартных пар «эмоция × тема» из UI — pre-seeded ответы `seeds.json` (50 % на промахе кэша). В ответе всегда есть поле `cached: true/false` (для отладки, в UI не показывается).
 - **Fallback в клиенте** (`src/ui/support.js`): статичные заготовки для каждой пары НЕ удалены — это офлайн-слой. Цепочка: 200 → сгенерированный ответ; 503/`{fallback:true}` → локальная заготовка; 429 → заготовка + плашка «отдохни немного»; сеть недоступна или таймаут клиента 12 с → заготовка. Ответ есть всегда, «вечного спиннера» нет. Локальный лимит — 3 генеративных ответа за сессию (localStorage, пользователь не знает); кнопка «🔄 ещё один вариант» — перегенерация, считается в лимит. В UI нет упоминаний модели: тот же экран ответа, typewriter ~30 мс/символ.
 
-Деплой прокси (нужен аккаунт Cloudflare и ключ Mistral):
+**Деплой edge-функции** (Supabase — open source; бесплатный тариф включает 500k вызовов функций/мес):
 
 ```bash
-cd worker
-wrangler secret put MISTRAL_API_KEY   # ключ никогда не коммиттится
-wrangler deploy                        # → https://homyag-help-proxy.<subdomain>.workers.dev
-# при необходимости пропиши его в HELP_AI_URL в src/ui/support.js
-# для локальной разработки: wrangler secret put ALLOWED_DEV_ORIGIN  (например, http://localhost:5500)
+npm i -g supabase
+supabase login && supabase link --project-ref <project-ref>
+supabase secrets set MISTRAL_API_KEY=<ключ из console.mistral.ai>   # ключ не коммитится
+supabase functions deploy help-ask --no-verify-jwt   # без JWT: защита наша — CORS + rate limit
+# URL функции: https://<project-ref>.supabase.co/functions/v1/help-ask
+# клиент подхватит его сам из SUPABASE_URL (content/config.js — GitHub Actions variable при деплое Pages)
 ```
 
-Тесты: `tests/worker.test.js` (handler воркера со стабами Cache API/fetch: 200-схема, 400/405, CORS, кэш, seed, 429, таймаут→53, кризис→hotline, 20 varied-запросов, 15 быстрых → лимит) и `tests/support-ai.test.js` (клиентский `askHelpAI`: fallback-цепочка, лимит 3/сессию, отсутствие `api.mistral` в клиентском коде).
+Через Dashboard: Edge Functions → New function `help-ask` → код из `supabase/functions/`; секрет — Project Settings → Secrets. Локально: `supabase functions serve help-ask`. Проверка: `curl https://<project-ref>.supabase.co/functions/v1/help-ask` → `{"status":"ok"}`; POST с `{emotion, topic, custom}` → 200 `{answer, cached, source}`.
+
+Тесты: `tests/edge-proxy.test.js` (обработчик edge-функции со стабом fetch: health, 405/404, CORS, 400 без вызова API, 200-схема, кэш, seed, 429, таймаут→503, кризис→hotline, 20 varied-запросов, 15 быстрых→лимит, паритет seeds с `worker/`), `tests/worker.test.js` (запасной Cloudflare Worker), `tests/support-ai.test.js` (клиентский `askHelpAI`: fallback-цепочка, лимит 3/сессию, guard «нет `api.mistral` в клиентском коде»).
 
 ## ☁️ Облачная синхронизация (Supabase)
 

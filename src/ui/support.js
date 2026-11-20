@@ -1,8 +1,11 @@
-import { moodAvg } from '../core/game.js?v=38';
+import { moodAvg } from '../core/game.js?v=39';
 
-/* ===== Генеративные ответы раздела «Помощь» через собственный прокси (Cloudflare Worker).
-   API-ключ и системный промпт живут ТОЛЬКО на сервере; в клиенте — только публичный URL прокси. ===== */
-const HELP_AI_URL = 'https://homyag-help-proxy.workers.dev/ask';
+/* ===== Генеративные ответы раздела «Помощь» через собственный edge-прокси (Supabase Edge Function,
+   open source; альтернативный хост — Cloudflare Worker в worker/). API-ключ и системный промпт
+   живут ТОЛЬКО на сервере; в клиенте — только публичный URL функции. URL собирается из
+   window.__SUPABASE_URL__ (content/config.js): <SUPABASE_URL>/functions/v1/help-ask. ===== */
+const SUPABASE_BASE = (typeof window !== 'undefined' && window.__SUPABASE_URL__ ? String(window.__SUPABASE_URL__) : '').replace(/\/+$/, '');
+const HELP_AI_URL = (SUPABASE_BASE || 'https://YOUR-PROJECT-REF.supabase.co') + '/functions/v1/help-ask';
 const AI_SESSION_LIMIT = 3;   // генеративных ответов за сессию (локальный лимит, пользователь о нём не знает)
 const AI_TIMEOUT_MS = 12000;  // таймаут клиента: дальше — офлайн-заготовка, никакого «вечного спиннера»
 const AI_LS_KEY = 'khomyagochi_help_ai';

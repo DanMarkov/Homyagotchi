@@ -1,7 +1,7 @@
 import { test, beforeEach } from 'node:test';
 import assert from 'node:assert';
 import { readFileSync } from 'node:fs';
-import { askHelpAI, aiLeft, setLastMoodEmoji } from '../src/ui/support.js?v=38';
+import { askHelpAI, aiLeft, setLastMoodEmoji } from '../src/ui/support.js?v=39';
 
 /* Стабы браузерного окружения: localStorage/sessionStorage/fetch */
 function makeStorage() {
