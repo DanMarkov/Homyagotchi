@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>🐹 Хомягочи</title>
 <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="src/render/sprites.css?v=36">
+<link rel="stylesheet" href="src/render/sprites.css?v=37">
 <style>
   :root {
     --bg: #cfe9f9;
@@ -1159,6 +1159,13 @@
     .bottom-nav .nav-item .ni-icon canvas { image-rendering: pixelated; }
     .bottom-nav .nav-item .ni-label { font-size: .34rem; }
 
+    /* экран «Помощь»: ряд смайликов — flex-wrap по центру (3+2), тапы ≥56px, без выхода за экран */
+    .mood-scale { flex-wrap: wrap; justify-content: center; gap: 8px; }
+    .mood-scale button { flex: 1 1 30%; min-width: 56px; min-height: 56px; font-size: 1.9rem; padding: 8px; }
+    .chat-chip { min-height: 44px; } /* карточки-категории уже во flex-wrap, теперь и тап ≥44px */
+    .chat-msgs { height: 240px; }
+    .screen-title, #screen-support p, .card h3 { overflow-wrap: break-word; } /* заголовки переносятся, без обрезки */
+
     /* тосты/модалки в границах экрана */
     .toast { white-space: normal; max-width: calc(100vw - 24px); text-align: center; top: 84px; font-size: .9rem; }
     .modal { padding: 20px; }
@@ -1503,10 +1510,10 @@
     </div>
   </div>
 
-  <script src="content/config.js?v=36"></script>
-  <script src="content/content.js?v=36"></script>
-  <script src="content/lessons.js?v=36"></script>
-  <script src="content/shop.js?v=36"></script>
-  <script type="module" src="src/ui/app.js?v=36"></script>
+  <script src="content/config.js?v=37"></script>
+  <script src="content/content.js?v=37"></script>
+  <script src="content/lessons.js?v=37"></script>
+  <script src="content/shop.js?v=37"></script>
+  <script type="module" src="src/ui/app.js?v=37"></script>
 </body>
 </html>
