@@ -1,5 +1,6 @@
 import { test, beforeEach } from 'node:test';
 import assert from 'node:assert';
+import { readFileSync, readdirSync } from 'node:fs';
 import RU_JSON from '../locales/ru.json' with { type: 'json' };
 import EN_JSON from '../locales/en.json' with { type: 'json' };
 import FR_JSON from '../locales/fr.json' with { type: 'json' };
@@ -207,4 +208,19 @@ test('worker: lang-параметр — normLang/systemPromptFor/detectCrisisTex
   assert.equal(wBuild('😒', 'учёба', 'x'), '[Эмоция: 😒, тема: «учёба», слова пользователя: «x»}]');
   assert.ok(wBuild('😒', 'études', 'x', 'fr').includes('Émotion'));
   assert.equal(typeof worker.fetch, 'function');
+});
+
+/* ===== регрессия: затенение импортированной t("…") локальной переменной t (баг экрана «Теория») ===== */
+test('i18n-guard: в src нет стрелки/параметра (t) =>, затеняющего t() из i18n', () => {
+  const files = readdirSync('src', { recursive: true }).map(String)
+    .filter((f) => f.endsWith('.js') && readFileSync('src/' + f, 'utf8').includes('i18n.js'))
+    .map((f) => 'src/' + f);
+  assert.ok(files.length >= 5, 'ожидались файлы, импортирующие i18n: ' + files.join(','));
+  for (const f of files) {
+    const src = readFileSync(f, 'utf8');
+    assert.ok(!/\(t\)\s*=>/.test(src), `${f}: параметр (t) => затеняет t() из i18n — внутри такого scope любой t("…") упадёт с TypeError`);
+  }
+  const app = readFileSync('src/ui/app.js', 'utf8');
+  assert.ok(!app.includes('const t = THEORY_TOPICS'), 'app.js: локальная const t = THEORY_TOPICS затеняет t() (баг теории)');
+  assert.ok(!app.includes('forEach((t) =>'), 'app.js: forEach((t) => затеняет t()');
 });
