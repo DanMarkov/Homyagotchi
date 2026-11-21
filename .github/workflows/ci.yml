@@ -14,8 +14,12 @@ jobs:
           node-version: 20
       - name: Syntax check
         run: |
-          for f in $(find src tests -name '*.js'); do node --check "$f"; done
+          for f in $(find src tests tools locales worker/src supabase/functions -name '*.js'); do node --check "$f"; done
       - name: Unit tests
         run: node --test tests/*.test.js
       - name: Validate content JSON
         run: node -e "JSON.parse(require('fs').readFileSync('content/content.json','utf8')); JSON.parse(require('fs').readFileSync('content/lessons.json','utf8')); console.log('content OK')"
+      - name: Validate locales (ru/en/fr парность ключей и плейсхолдеров, data-i18n, t()-ключи)
+        run: |
+          node -e "for (const l of ['ru','en','fr']) { JSON.parse(require('fs').readFileSync('locales/'+l+'.json','utf8')); } console.log('locales JSON OK')"
+          node tools/check-locales.mjs

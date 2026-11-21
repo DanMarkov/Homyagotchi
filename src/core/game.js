@@ -1,3 +1,4 @@
+import { t, tr } from '../i18n.js?v=42';
 export function todayStr() { return new Date().toDateString(); }
 
 export function gainXP(state, n) {
@@ -19,7 +20,7 @@ export function dayCheck(state, log) {
     state.streak = state.lastDay ? state.streak + 1 : 1;
     state.lastDay = today;
     state.dailyXp = 0; state.dailyXpDay = today;
-    if (log) log('📅 день ' + state.streak + ' серии!');
+    if (log) log(t("j.game.streak-log", { n: state.streak }));
   }
   return state;
 }
@@ -87,11 +88,11 @@ export function recordAnswer(state, correct) {
 }
 
 export const RANKS = [
-  { min: 0, title: 'Новичок', icon: '🌱' },
-  { min: 60, title: 'Любитель', icon: '🔍' },
-  { min: 75, title: 'Знаток', icon: '🛡️' },
-  { min: 90, title: 'Эксперт', icon: '🏅' },
-  { min: 95, title: 'Мастер киберзащиты', icon: '👑' }
+  { min: 0, get title() { return t("j.game.novichok-2"); }, icon: '🌱' },
+  { min: 60, get title() { return t("j.game.lyubitel-2"); }, icon: '🔍' },
+  { min: 75, get title() { return t("j.game.znatok-2"); }, icon: '🛡️' },
+  { min: 90, get title() { return t("j.game.ekspert-2"); }, icon: '🏅' },
+  { min: 95, get title() { return t("j.game.master-kiberzaschity-2"); }, icon: '👑' }
 ];
 
 export function accuracy(state) {
@@ -127,13 +128,13 @@ export function eventsForAudience(events, audience) {
 
 export function petAlert(state, ps) {
   if (ps === 'sick' || (state.health || 0) < 30) {
-    return { title: 'Хори плохо себя чувствует! 🤒', body: 'Здоровье на исходе — поиграй с ним в разделе «Играть» и пройди урок!' };
+    return { get title() { return t("j.game.hori-ploho-sebya-chuvstvuet-2"); }, body: t("j.game.zdorove-na-ishode-poigray-2") };
   }
   if ((state.sec || 0) < 30) {
-    return { title: 'Хори в опасности! ⚠️', body: 'Низкий уровень безопасности: пройди задание против мошенников в «Игре».' };
+    return { get title() { return t("j.game.hori-v-opasnosti-2"); }, body: t("j.game.nizkiy-uroven-bezopasnosti-proydi-2") };
   }
   if ((state.mood || 0) < 30) {
-    return { title: 'Хори скучает... 💜', body: 'Отметь привычки и загляни в «Помощь» — он будет рад!' };
+    return { get title() { return t("j.game.hori-skuchaet-2"); }, body: t("j.game.otmet-privychki-i-zaglyani-2") };
   }
   return null;
 }
@@ -176,7 +177,7 @@ export function activeBuffs(state, now = Date.now()) {
     const ms = state.buffs.wifiUntil - now;
     const h = Math.floor(ms / 3600000);
     const m = Math.ceil((ms % 3600000) / 60000);
-    out.push({ key: 'wifi', sprite: 'wifi_icon', label: (h > 0 ? h + 'ч' : '') + (m > 0 ? (h > 0 ? ' ' : '') + m + 'м' : '') || '24ч' });
+    out.push({ key: 'wifi', sprite: 'wifi_icon', label: (h > 0 ? h + t("j.game.ch-2") : '') + (m > 0 ? (h > 0 ? ' ' : '') + m + t("j.game.m-2") : '') || t("j.game.24ch-2") });
   }
   const cold = coldBuffLeft(state);
   if (cold > 0) out.push({ key: 'cold', sprite: 'cold_icon', label: '×' + cold });

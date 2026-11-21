@@ -1,4 +1,5 @@
-import { moodAvg } from '../core/game.js?v=41';
+import { t, tr, getLang, applyStatic } from '../i18n.js?v=42';
+import { moodAvg } from '../core/game.js?v=42';
 
 /* ===== Генеративные ответы раздела «Помощь» через собственный edge-прокси (Supabase Edge Function,
    open source; альтернативный хост — Cloudflare Worker в worker/). API-ключ и системный промпт
@@ -58,7 +59,7 @@ export async function askHelpAI(emotion, topic, custom) {
     const resp = await fetch(HELP_AI_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ emotion, topic, custom: (custom || '').slice(0, 500) }),
+      body: JSON.stringify({ emotion, topic, custom: (custom || '').slice(0, 500), lang: getLang() }),
       signal: ctrl.signal
     });
     if (resp.status === 429) return { fallback: true, rateLimited: true };
@@ -85,7 +86,7 @@ export function renderMoodChart(state, el) {
   const entries = Object.entries(days).slice(-7);
   el.innerHTML = '';
   if (!entries.length) {
-    el.innerHTML = '<p style="color:var(--ink-soft);font-size:.9rem;font-weight:600">Отмечай настроение — появится график недели ❤️</p>';
+    el.innerHTML = `<p style="color:var(--ink-soft);font-size:.9rem;font-weight:600">${t("h.otmechay-nastroenie-poyavitsya-grafik")}</p>`;
     return;
   }
   const avg = moodAvg(state.moodLog, 7);
@@ -109,79 +110,25 @@ export function renderMoodChart(state, el) {
   el.appendChild(wrap);
   const avgEl = document.createElement('p');
   avgEl.style.cssText = 'color:var(--ink-soft);font-size:.85rem;font-weight:700;margin-top:8px';
-  avgEl.textContent = 'Среднее за неделю: ' + avg.toFixed(1) + '/5';
+  avgEl.textContent = t("j.support.srednee-za-nedelyu", { avg: avg.toFixed(1) });
   el.appendChild(avgEl);
 }
 
-const CRISIS_WORDS = ['суицид', 'покончить', 'убить себя', 'не хочу жить', 'умереть', 'покончить с собой', 'сделать с собой', 'всё надоело навсегда'];
+function crisisWords() {
+  return [t("j.support.suitsid-2"), t("j.support.pokonchit-2"), t("j.support.ubit-sebya-2"), t("j.support.ne-hochu-zhit-2"), t("j.support.umeret-2"), t("j.support.pokonchit-s-soboy-2"), t("j.support.sdelat-s-soboy-2"), t("j.support.vse-nadoelo-navsegda-2")];
+}
 
-const TOPICS = [
-  {
-    id: 'anxiety', label: 'тревога', words: ['тревог', 'паник', 'боюсь', 'страшно', 'страха', 'нервнича', 'волну', 'трясет', 'паник атак', 'паника атак'],
-    empath: 'Тревога — это очень тяжело. Тело как будто говорит тревогу без причины, и это изменяет. Ты не слабый(ая) — тревога так работает.',
-    asks: ['где ты её чувствуешь больше всего — в теле или в мыслях?', 'что обычно помогает тебе чуть-чуть отпустить?'],
-    tools: [{ label: '🛏️ отдохнуть с хомяком в домике', tab: 'home' }, { label: '💪 отметить привычку — забота о себе', tab: 'habit' }],
-    tips: ['Медленный выдох длиннее вдоха — сигнал мозгу «мы в безопасности».', 'Тревога — не факт о будущем, а эмоция в настоящем.']
-  },
-  {
-    id: 'stress', label: 'стресс и учёба', words: ['стресс', 'устал', 'выгор', 'перегруз', 'не успева', 'завал', 'дедлайн', 'сесси', 'экзамен', 'контрольн'],
-    empath: 'Похоже, на тебя сейчас давит много всего сразу. Когда всё срочно — легко забыть, что ты живой человек, а не машина для задач.',
-    asks: ['если бы можно было отложить одну вещь — какую?', 'когда ты последний раз пил(а) воду?'],
-    tools: [{ label: '📝 отметить привычку', tab: 'habit' }, { label: '🏠 посидеть с хомяком', tab: 'home' }],
-    tips: ['Правило 15 минут: мозг боится «всего», но справляется с маленьким кусочком.', 'Отдых — не награда за работу, а условие.']
-  },
-  {
-    id: 'sad', label: 'грустно', words: ['груст', 'тоск', 'печаль', 'плохо на душе', 'депресс', 'плак', 'пусто внутри'],
-    empath: 'Мне жаль, что сейчас так. Грусть — не слабость, а знак, что тебе не безразлично то, что происходит. Хомяк рядом, ты не один(одна).',
-    asks: ['как давно ты так себя чувствуешь?', 'есть ли кто-то, кому ты можешь об этом сказать?'],
-    tools: [{ label: '💬 поговорить с хомяком в домике', tab: 'home' }, { label: '🧠 заземление 5-4-3-2-1', tab: 'ground' }],
-    tips: ['Если тоска держится дольше двух недель — это повод поговорить со специалистом. Это нормальная забота о себе.', 'Не нужно быть «сильным(ой)» постоянно. Просить помощи — это навык.']
-  },
-  {
-    id: 'anger', label: 'злюсь', words: ['злюсь', 'бесит', 'злость', 'ненавиж', 'раздража', 'ярост'],
-    empath: 'Злость часто — сигнал, что твои границы нарушили. Он не «плохая», она — причина что-то важное для тебя.',
-    asks: ['что именно задело больше всего?', 'если бы злость могла говорить — что бы она сказала?'],
-    tools: [{ label: '🏠 пойти погладить хомяка', tab: 'home' }],
-    tips: ['Злость — вторичная эмоция: под ней часто обида или усталость.', 'Физическая разрядка (пройтись, сжать-разжать кулаки) помогает сбросить напряжение.']
-  },
-  {
-    id: 'lonely', label: 'одиноко', words: ['одинок', 'никто не поним', 'нет друзей', 'не с кем', 'изолиров'],
-    empath: 'Одиночество — одна из самых человеческих болей. Особенно когда вокруг люди, а ощущение — «некому».',
-    asks: ['в каком моменте тебе особенно одиноко?', 'был ли человек, с которым было легко?'],
-    tools: [{ label: '💜 чек-ин настроения', tab: 'mood' }],
-    tips: ['Одиночество — сигнал о потребности в близости, а не «не со мной что-то не так».', 'Один честный «мне сейчас одиноко» сокращает дистанцию больше, чем «нормально».']
-  },
-  {
-    id: 'study', label: 'учёба', words: ['учеб', 'универ', 'школ', 'провал', 'оценк', 'не получ', 'не поним', 'отчисл', 'тест'],
-    empath: 'Учёба давит, когда кажется, что оценка = твоя ценность. Но это не так. Один тест — не приговор твоим способностям.',
-    asks: ['какая часть учёбы даётся сильнее всего?', 'что для тебя в учёбе важно — оценки или знания?'],
-    tools: [{ label: '🎓 закрыть — урок', tab: 'lessons' }],
-    tips: ['«Я ярлык» («я тупой») — когнитивное искажение. Факт «не сдал» ≠ вывод о себе.', 'Сон и конспекты важнее зубрёжки.']
-  },
-  {
-    id: 'sleep', label: 'сон', words: ['не сплю', 'бессонн', 'не могу уснуть', 'не высыпа', 'сон', 'ночн кошмар'],
-    empath: 'Без сна всё кажется тяжелее — это не лень, тело реально восстанавливается ночью. Хомяк спец по сну, он знает.',
-    asks: ['что мешает уснуть — мысли или тело?', 'сколько ты спишь в обычную ночь?'],
-    tools: [{ label: '📵 привычка «без телефона перед сном»', tab: 'habit' }],
-    tips: ['Экран за 30 минут до сна — главный вор сна у студентов.', 'Один и тот же время отхода ко сну важнее, чем «доспать» в выходные.']
-  },
-  {
-    id: 'good', label: 'мне хорошо 👋', words: ['хорошо', 'отлично', 'рад', 'счастлив', 'круто', 'получилось', 'горж'],
-    empath: 'Здорово! Хорошее важно замечать так же, как и тяжёлое. Хомяк шепчет лапкой и радуется с тобой! 🎉',
-    asks: ['что случилось хорошего?', 'чем ты можешь это отметить?'],
-    tools: [{ label: '🎓 закрепить — урок', tab: 'lessons' }],
-    tips: ['Фиксация хорошего укрепляет ресурс.', 'Поделись радостью — она станет больше.']
-  }
-];
+const TOPICS_RAW = (typeof window !== 'undefined' && window.__CONTENT__ && window.__CONTENT__.topics) || [];
+function topics() { return tr(TOPICS_RAW, 'c.content.topics'); }
 
 function detectCrisis(text) {
   const t = text.toLowerCase();
-  return CRISIS_WORDS.some((w) => t.includes(w));
+  return crisisWords().some((w) => t.includes(w));
 }
 
 function detectTopic(text) {
   const t = text.toLowerCase();
-  for (const topic of TOPICS) {
+  for (const topic of topics()) {
     if (topic.words.some((w) => t.includes(w))) return topic;
   }
   return null;
@@ -192,17 +139,20 @@ function detectTopic(text) {
    поддерживающая заготовка, своя для каждой темы (topic.empath) и каждой эмоции
    (MOOD_FALLBACKS). В основном пути статических «ответов ассистента» нет вообще —
    любой ввод пользователя (длинный, короткий, эмодзи) уходит в генерацию через прокси. */
-const MOOD_FALLBACKS = {
-  '😞': 'Мне очень жаль, что сейчас так. Ты не один — я рядом 🤍',
-  '😕': 'Вижу, что тебе сейчас непросто. Мы разберёмся потихоньку.',
-  '😐': 'Понимаю тебя. Иногда просто «есть» — и это нормально. Я рядом.',
-  '🙂': 'Я слышу тебя и рядом. Что происходило?',
-  '😄': 'Рад тебя видеть! Расскажи, что хорошего сегодня 🌟',
-};
+function moodFallbacks() {
+  return {
+  '😞': t("j.support.mne-ochen-zhal-chto-2"),
+  '😕': t("j.support.vizhu-chto-tebe-seychas-2"),
+  '😐': t("j.support.ponimayu-tebya-inogda-prosto-2"),
+  '🙂': t("j.support.ya-slyshu-tebya-i-2"),
+  '😄': t("j.support.rad-tebya-videt-rasskazhi-2"),
+  };
+}
+
 export function pickFallback(emotion, topicLabel) {
-  const t = TOPICS.find((x) => x.label === topicLabel);
-  if (t) return t.empath;
-  return MOOD_FALLBACKS[emotion] || MOOD_FALLBACKS['🙂'];
+  const tp = topics().find((x) => x.label === topicLabel);
+  if (tp) return tp.empath;
+  return moodFallbacks()[emotion] || moodFallbacks()['🙂'];
 }
 
 export class ChatUI {
@@ -225,24 +175,35 @@ export class ChatUI {
       <div class="chat-header">
         <span class="ch-avatar">🐹</span>
         <div>
-          <div class="ch-name">Хомя-психолог</div>
-          <div class="ch-status">● на связи • анонимно</div>
+          <div class="ch-name" data-i18n="h.homya-psiholog"></div>
+          <div class="ch-status" data-i18n="h.na-svyazi-anonimno"></div>
         </div>
       </div>
       <div class="chat-msgs" id="chatMsgs"></div>
       <div class="chat-input-row">
-        <input id="chatInput" placeholder="расскажи, что чувствуешь..." maxlength="200">
+        <input id="chatInput" placeholder="" data-i18n-ph="h.rasskazhi-chto-chuvstvuesh" maxlength="200">
         <button class="btn btn-purple" id="chatSend" style="padding:12px 18px">➤</button>
       </div>
       <div class="chat-quick" id="chatQuick"></div>`;
+    applyStatic(el);
     this.msgsEl = el.querySelector('#chatMsgs');
     const input = el.querySelector('#chatInput');
     const send = el.querySelector('#chatSend');
     send.onclick = () => this.send(input);
     input.addEventListener('keydown', (e) => { if (e.key === 'Enter') this.send(input); });
-    this.renderQuick(['тревога', 'стресс и учёба', 'грустно', 'одиноко', 'злюсь', 'мне хорошо 👋']);
-    this.bot('Привет! Я хомяк-психолог. Здесь можно писать как есть — без цензуры и осуждения. С чего начнём?');
+    this.renderQuick([t("j.support.trevoga-4"), t("j.support.stress-i-ucheba-4"), t("j.support.grustno-4"), t("j.support.odinoko-4"), t("j.support.zlyus-4"), t("j.support.mne-horosho-4")]);
+    this.bot(t("j.support.privet-ya-homyak-psiholog-2"));
     this.analyzeWeek();
+  }
+
+  relocalize() {
+    if (!this.el) return;
+    applyStatic(this.el);
+    if (this.topic) {
+      const tp = topics().find((x) => x.id === this.topic.id);
+      if (tp) this.topic = tp;
+    }
+    this.renderQuick([t("j.support.trevoga-4"), t("j.support.stress-i-ucheba-4"), t("j.support.grustno-4"), t("j.support.odinoko-4"), t("j.support.zlyus-4"), t("j.support.mne-horosho-4")]);
   }
 
   renderQuick(options) {
@@ -312,7 +273,7 @@ export class ChatUI {
     if (topic && this.topic && this.topic.id !== topic.id) { if (done) done(); return; } // тему сменили, пока ждали
     if (r.noLimit) {
       // Лимит сессии исчерпан: функция НЕ вызывается, ответ НЕ подменяется шаблоном — только честная плашка
-      this.note('Давай сделаем паузу, я останусь рядом 💜');
+      this.note(t("j.support.davay-sdelaem-pauzu-ya-2"));
       if (done) done();
       return;
     }
@@ -321,8 +282,8 @@ export class ChatUI {
     } else {
       // fallback ТОЛЬКО при реальной ошибке сети/функции (503/429/сеть/таймаут): заготовка по теме или эмоции
       this.bot(pickFallback(lastMoodEmoji, topic ? topic.label : ''), 400);
-      if (topic) this.bot('Скажи, ' + topic.asks[0], 1000);
-      if (r.rateLimited) this.note('Чуть отдохни немного 🙂 Я рядом.');
+      if (topic) this.bot(t("j.support.skazhi", { q: topic.asks[0] }), 1000);
+      if (r.rateLimited) this.note(t("j.support.chut-otdohni-nemnogo-ya-2"));
       setTimeout(() => { if (done) done(); }, 1500);
     }
   }
@@ -356,35 +317,35 @@ export class ChatUI {
     });
     const regen = document.createElement('button');
     regen.className = 'chat-chip';
-    regen.textContent = '🔄 ещё один вариант';
+    regen.textContent = t("j.support.esche-odin-variant-2");
     regen.onclick = () => { this.aiAnswer(''); }; // перегенерация, считается в лимит
     q.appendChild(regen);
     const other = document.createElement('button');
     other.className = 'chat-chip';
-    other.textContent = 'поговорить о другом';
+    other.textContent = t("j.support.pogovorit-o-drugom-2");
     other.onclick = () => {
       this.stage = 'greeting';
-      this.renderQuick(['тревога', 'стресс и учёба', 'грустно', 'одиноко', 'злюсь', 'мне хорошо 👋']);
-      this.bot('Хорошо. О чём хочешь поговорить?');
+      this.renderQuick([t("j.support.trevoga-2"), t("j.support.stress-i-ucheba-2"), t("j.support.grustno-2"), t("j.support.odinoko-2"), t("j.support.zlyus-2"), t("j.support.mne-horosho-2")]);
+      this.bot(t("j.support.horosho-o-chem-hochesh-2"));
     };
     q.appendChild(other);
   }
 
   crisis() {
-    this.addMsg('Стоп. То, что ты описываешь, — очень серьёзно. Ты не должен(а) проходить это в одиночку.', 'bot');
-    this.addMsg('Пожалуйста, свяжись сейчас с кем-то, кто может помочь:', 'bot');
-    this.addMsg('📞 112 — экстренные службы', 'bot');
-    this.addMsg('📞 8-800-2000-122 — телефон доверия, круглосуточно, бесплатно, анонимно', 'bot');
-    this.addMsg('📞 8-800-100-49-94 — психологическая помощь взрослым', 'bot');
-    this.addMsg('Позвони. Разговор с живым человеком в такой момент — не слабость, а забота о себе. Хомяк верит в тебя. 💜', 'bot');
+    this.addMsg(t("j.support.stop-to-chto-ty-2"), 'bot');
+    this.addMsg(t("j.support.pozhaluysta-svyazhis-seychas-s-2"), 'bot');
+    this.addMsg(t("j.support.112-ekstrennye-sluzhby-2"), 'bot');
+    this.addMsg(t("j.support.8-800-2000-122-2"), 'bot');
+    this.addMsg(t("j.support.8-800-100-49-2"), 'bot');
+    this.addMsg(t("j.support.pozvoni-razgovor-s-zhivym-2"), 'bot');
     const q = this.el.querySelector('#chatQuick');
     q.innerHTML = '';
     const b = document.createElement('button');
     b.className = 'chat-chip tool';
-    b.textContent = '💬 остаться в чате — рассказывай дальше';
+    b.textContent = t("j.support.ostatsya-v-chate-rasskazyvay-2");
     q.appendChild(b);
     this.stage = 'greeting';
-    this.log && this.log('💜 хомяк направил к помощи');
+    this.log && this.log(t("j.support.homyak-napravil-k-pomoschi-2"));
   }
 
   analyzeWeek() {
@@ -393,11 +354,11 @@ export class ChatUI {
     const avg = moodAvg(log, 7);
     if (avg !== null && avg < 2.8) {
       setTimeout(() => {
-        this.addMsg('Кстати, я смотрю твой график недели: настроение было невысоким несколько дней. Если так держится — это повод поговорить со специалистом. Хочешь об этом?', 'bot');
+        this.addMsg(t("j.support.kstati-ya-smotryu-tvoy-2"), 'bot');
       }, 2200);
     } else if (avg !== null && avg >= 4) {
       setTimeout(() => {
-        this.addMsg('Вижу, что неделя в целом была хорошей — радуюсь вместе с тобой! ✨', 'bot');
+        this.addMsg(t("j.support.vizhu-chto-nedelya-v-2"), 'bot');
       }, 2200);
     }
   }

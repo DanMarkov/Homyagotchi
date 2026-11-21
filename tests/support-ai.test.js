@@ -1,7 +1,9 @@
 import { test, beforeEach } from 'node:test';
 import assert from 'node:assert';
 import { readFileSync } from 'node:fs';
-import { askHelpAI, aiLeft, setLastMoodEmoji, pickFallback } from '../src/ui/support.js?v=41';
+// window.__CONTENT__ подставляем ДО импорта support.js (иначе topics() пуст в Node)
+globalThis.window = { __CONTENT__: JSON.parse(readFileSync(new URL('../content/content.json', import.meta.url), 'utf8')) };
+const { askHelpAI, aiLeft, setLastMoodEmoji, pickFallback } = await import('../src/ui/support.js?v=41');
 
 /* Стабы браузерного окружения: localStorage/sessionStorage/fetch */
 function makeStorage() {
@@ -42,7 +44,7 @@ test('200: возвращает {text, source}, уходит в сеть на UR
   assert.equal(fetchCalls.length, 1);
   assert.ok(fetchCalls[0].url.startsWith('https://'), 'прокси по https');
   assert.ok(!fetchCalls[0].url.includes('mistral'), 'в URL запроса нет api.mistral');
-  assert.deepEqual(fetchCalls[0].body, { emotion: '😒', topic: 'стресс и учёба', custom: 'не успеваю ничего' });
+  assert.deepEqual(fetchCalls[0].body, { emotion: '😒', topic: 'стресс и учёба', custom: 'не успеваю ничего', lang: 'ru' }); // lang уходит в edge function (i18n)
 });
 
 test('503 {fallback:true} -> {fallback:true}, лимит НЕ тратится', async () => {

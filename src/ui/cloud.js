@@ -1,3 +1,4 @@
+import { t } from '../i18n.js?v=42';
 import { isCloudConfigured, initAuth, signIn, signUp, signOut, cloudSave, cloudLoad, getSession } from '../core/cloud.js?v=4';
 
 export class CloudUI {
@@ -21,25 +22,25 @@ export class CloudUI {
 
   formHtml() {
     return `
-      <p class="cloud-h">☁️ СИНХРОНИЗАЦИЯ</p>
-      <p class="cloud-msg">Войди, чтобы сохранять прогресс в облаке — играй с любого устройства!</p>
+      <p class="cloud-h">${t("h.sinhronizatsiya-2")}</p>
+      <p class="cloud-msg">${t("h.voydi-chtoby-sohranyat-progress")}</p>
       <div class="cloud-form">
         <input id="cloudEmail" placeholder="email" autocomplete="email">
-        <input id="cloudPass" placeholder="пароль" type="password" autocomplete="current-password">
-        <button class="act" id="cloudLogin">ВОЙТИ</button>
-        <button class="act" id="cloudSignup">РЕГИСТРАЦИЯ</button>
+        <input id="cloudPass" placeholder="" data-i18n-ph="h.parol" type="password" autocomplete="current-password">
+        <button class="act" id="cloudLogin">${t("h.voyti")}</button>
+        <button class="act" id="cloudSignup">${t("h.registratsiya")}</button>
       </div>`;
   }
 
   loggedInHtml() {
-    const email = this.user?.email || 'игрок';
+    const email = this.user?.email || t("j.cloud.igrok-2");
     return `
-      <p class="cloud-h">☁️ СИНХРОНИЗАЦИЯ</p>
-      <p class="cloud-msg">Вы вошли как <b>${email}</b></p>
+      <p class="cloud-h">${t("h.sinhronizatsiya")}</p>
+      <p class="cloud-msg">${t("h.vy-voshli-kak")}<b>${email}</b></p>
       <div class="cloud-form">
-        <button class="act primary" id="cloudPush">⬆ ОТПРАВИТЬ В ОБЛАКО</button>
-        <button class="act" id="cloudPull">⬇ ЗАГРУЗИТЬ ИЗ ОБЛАКА</button>
-        <button class="act" id="cloudLogout">ВЫЙТИ</button>
+        <button class="act primary" id="cloudPush">${t("h.otpravit-v-oblako")}</button>
+        <button class="act" id="cloudPull">${t("h.zagruzit-iz-oblaka")}</button>
+        <button class="act" id="cloudLogout">${t("h.vyyti")}</button>
       </div>`;
   }
 
@@ -65,7 +66,7 @@ export class CloudUI {
     const pass = document.getElementById('cloudPass').value;
     try {
       this.user = await signIn(email, pass);
-      this.log('☁️ вход выполнен: ' + (this.user.email || email));
+      this.log(t("j.cloud.vhod", { email: this.user.email || email }));
       this.renderPanel(this.loggedInHtml());
       this.bind();
     } catch (e) {
@@ -79,7 +80,7 @@ export class CloudUI {
     const pass = document.getElementById('cloudPass').value;
     try {
       this.user = await signUp(email, pass);
-      this.log('☁️ аккаунт создан: ' + (this.user.email || email));
+      this.log(t("j.cloud.akkaunt", { email: this.user.email || email }));
       this.renderPanel(this.loggedInHtml());
       this.bind();
     } catch (e) {
@@ -91,33 +92,33 @@ export class CloudUI {
   async doPush() {
     try {
       await cloudSave(this.state);
-      this.log('☁️ прогресс отправлен в облако');
-      this.renderPanel(this.loggedInHtml() + '<p class="cloud-ok">✅ Сохранено в облаке</p>');
+      this.log(t("j.cloud.progress-otpravlen-v-oblako-2"));
+      this.renderPanel(this.loggedInHtml() + `<p class="cloud-ok">${t("h.sohraneno-v-oblake")}</p>`);
       this.bind();
     } catch (e) {
-      this.log('⚠ облачная ошибка: ' + e.message);
+      this.log(t("j.cloud.oshibka", { msg: e.message }));
     }
   }
 
   async doPull() {
     try {
       const remote = await cloudLoad();
-      if (!remote) { this.log('☁️ в облаке пусто — отправь прогресс сначала'); return; }
+      if (!remote) { this.log(t("j.cloud.v-oblake-pusto-otprav-2")); return; }
       Object.assign(this.state, remote);
       this.saveLocal();
       this.render();
-      this.log('☁️ прогресс загружен из облака');
-      this.renderPanel(this.loggedInHtml() + '<p class="cloud-ok">✅ Загружено из облака</p>');
+      this.log(t("j.cloud.progress-zagruzhen-iz-oblaka-2"));
+      this.renderPanel(this.loggedInHtml() + `<p class="cloud-ok">${t("h.zagruzheno-iz-oblaka")}</p>`);
       this.bind();
     } catch (e) {
-      this.log('⚠ облачная ошибка: ' + e.message);
+      this.log(t("j.cloud.oshibka", { msg: e.message }));
     }
   }
 
   async doSignOut() {
     await signOut();
     this.user = null;
-    this.log('☁️ выход выполнен');
+    this.log(t("j.cloud.vyhod-vypolnen-2"));
     this.renderPanel(this.formHtml());
     this.bind();
   }
