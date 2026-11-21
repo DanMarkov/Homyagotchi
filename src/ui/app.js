@@ -528,32 +528,36 @@ const THEORY_TOPICS = [
   { id: 'dns', icon: '🌐', get name() { return t("j.app.dns-i-webrtc-2"); }, danger: false, get text() { return t("j.app.dns-zaprosy-i-webrtc-2"); } }
 ];
 
+let theoryTopicId = null; // выбранная тема теории (стабильный id, не зависит от языка)
+
 function renderTheory() {
   const topics = els('theoryTopics');
   topics.innerHTML = '';
-  THEORY_TOPICS.forEach((t) => {
+  THEORY_TOPICS.forEach((tp) => {
     const div = document.createElement('div');
-    div.className = 'theory-topic' + (t.danger ? ' danger' : '');
+    div.className = 'theory-topic' + (tp.danger ? ' danger' : '');
+    if (tp.id === theoryTopicId) div.classList.add('active');
     div.innerHTML =
-      '<span class="tt-icon">' + t.icon + '</span>' +
-      '<span>' + t.name + '</span>';
+      '<span class="tt-icon">' + tp.icon + '</span>' +
+      '<span>' + tp.name + '</span>';
     div.addEventListener('click', () => {
       $$('.theory-topic').forEach((x) => x.classList.remove('active'));
       div.classList.add('active');
+      theoryTopicId = tp.id;
       const content = els('theoryContent');
-      content.innerHTML = '<h3>' + t.icon + ' ' + t.name + '</h3><p>' + t.text + '</p>' +
-        '<button class="btn btn-blue" style="margin-top:8px" data-start-lesson="' + t.id + `">${t("h.proyti-urok-2")}</button>`;
+      content.innerHTML = '<h3>' + tp.icon + ' ' + tp.name + '</h3><p>' + tp.text + '</p>' +
+        '<button class="btn btn-blue" style="margin-top:8px" data-start-lesson="' + tp.id + `">${t("h.proyti-urok-2")}</button>`;
       const btn = content.querySelector('[data-start-lesson]');
-      btn.addEventListener('click', () => startLessonByTopic(t.id));
+      btn.addEventListener('click', () => startLessonByTopic(tp.id));
     });
     topics.appendChild(div);
   });
   if (!topics.querySelector('.active')) {
     topics.firstChild && topics.firstChild.classList.add('active');
-    const t = THEORY_TOPICS[0];
-    els('theoryContent').innerHTML = '<h3>' + t.icon + ' ' + t.name + '</h3><p>' + t.text + '</p>' +
-      '<button class="btn btn-blue" style="margin-top:8px" data-start-lesson="' + t.id + `">${t("h.proyti-urok")}</button>`;
-    els('theoryContent').querySelector('[data-start-lesson]').addEventListener('click', () => startLessonByTopic(t.id));
+    const tp = THEORY_TOPICS[0];
+    els('theoryContent').innerHTML = '<h3>' + tp.icon + ' ' + tp.name + '</h3><p>' + tp.text + '</p>' +
+      '<button class="btn btn-blue" style="margin-top:8px" data-start-lesson="' + tp.id + `">${t("h.proyti-urok")}</button>`;
+    els('theoryContent').querySelector('[data-start-lesson]').addEventListener('click', () => startLessonByTopic(tp.id));
   }
   mountSprite('theoryPet', 'hori_body', 3, hatNow());
 }
