@@ -2,9 +2,9 @@
    Словари-источники: /locales/{ru,en,fr}.json (парность ключей проверяет tools/check-locales.mjs в CI).
    /locales/{ru,en,fr}.js — сгенерированные ES-обёртки (tools/sync-locales.mjs), чтобы словарь
    грузился синхронно и переключение языка работало мгновенно и офлайн. */
-import RU from '../locales/ru.js?v=42';
-import EN from '../locales/en.js?v=42';
-import FR from '../locales/fr.js?v=42';
+import RU from '../locales/ru.js?v=43';
+import EN from '../locales/en.js?v=43';
+import FR from '../locales/fr.js?v=43';
 
 export const LANGS = ['ru', 'en', 'fr'];
 export const LANG_NAMES = { ru: 'Русский', en: 'English', fr: 'Français' };

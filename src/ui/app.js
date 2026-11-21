@@ -1,15 +1,19 @@
-import { initI18n, t, tr, getLang, setLang, onLangChange, applyStatic, LANG_NAMES } from '../i18n.js?v=42';
-import { load, save, wipe } from '../core/store.js?v=42';
-import { tick, petState } from '../core/pet.js?v=42';
-import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert, useItem, isWifiEvent, itemCount, wifiBuffActive, coldBuffLeft, activeBuffs, satietyTick, applyFood } from '../core/game.js?v=42';
-import { sfx } from './audio.js?v=42';
-import { renderMoodChart, ChatUI, setLastMoodEmoji } from './support.js?v=42';
-import { createSprite } from '../render/pixel-sprites.js?v=42';
+import { initI18n, t, tr, getLang, setLang, onLangChange, applyStatic, LANG_NAMES } from '../i18n.js?v=43';
+import { load, save, wipe } from '../core/store.js?v=43';
+import { tick, petState } from '../core/pet.js?v=43';
+import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert, useItem, isWifiEvent, itemCount, wifiBuffActive, coldBuffLeft, activeBuffs, satietyTick, applyFood } from '../core/game.js?v=43';
+import { sfx } from './audio.js?v=43';
+import { renderMoodChart, ChatUI, setLastMoodEmoji } from './support.js?v=43';
+import { createSprite } from '../render/pixel-sprites.js?v=43';
+import { FrenchUI, initFrSpeech } from './french.js?v=43';
 
 initI18n();
 let CONTENT = tr(window.__CONTENT__, 'c.content');
 let LESSONS = tr(window.__LESSONS__, 'c.lessons');
 let SHOP = tr(window.__SHOP__, 'c.shop');
+/* модуль «Французский»: контент bilingual (fr/ru) и НЕ ходит через tr() — только UI-строки в locales */
+const FRW = window.__FR_WORDS__ || { words: [] };
+const FRU = window.__FR_UNITS__ || { units: [] };
 
 const S = load();
 const dailyGoal = CONTENT.dailyGoalXp || 10;
@@ -18,6 +22,23 @@ if (!S.habits || !S.habits.length) S.habits = CONTENT.habits.slice();
 const els = (id) => document.getElementById(id);
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
+
+/* ===== модуль «Французский» (additive: ядро игры не тронуто) ===== */
+const frenchUI = new FrenchUI(FRW, FRU, S, { toast, persist });
+function updateFrBadge() {
+  const b = els('frNote');
+  if (!b) return;
+  const n = frenchUI.dueCount();
+  b.classList.toggle('hidden', n === 0);
+  b.textContent = t('j.fr.homyak-hochet-povtority') + ' (' + n + ')';
+}
+function updateFrCard() {
+  const badge = els('frDueBadge');
+  if (!badge) return;
+  const n = frenchUI.dueCount();
+  badge.textContent = String(n);
+  badge.classList.toggle('hidden', n === 0);
+}
 
 let toastTimer = null;
 function toast(msg) {
@@ -277,7 +298,7 @@ function renderTopbarSprites() {
 }
 
 /* ============ NAVIGATION ============ */
-const SCREENS = ['audience', 'home', 'stats', 'habits', 'theory', 'game', 'shop', 'support', 'settings'];
+const SCREENS = ['audience', 'home', 'stats', 'habits', 'french', 'theory', 'game', 'shop', 'support', 'settings'];
 const NAV_MAP = { home: 'home', habits: 'habits', theory: 'theory', game: 'game', shop: 'shop', support: 'support', stats: 'stats', settings: 'settings' };
 let currentScreen = null;
 
@@ -300,11 +321,12 @@ function gotoScreen(name) {
   if (name === 'theory') renderTheory();
   if (name === 'game') startGame();
   if (name === 'shop') renderShop();
+  if (name === 'french') frenchUI.renderBrowse();
   if (name === 'support') {
     renderMoodChart(S, els('moodChart'));
     if (!chatUI) initChat();
   }
-  if (name === 'home') { renderPetBubble(); renderPetSprite(); mountDecorSprites(); }
+  if (name === 'home') { renderPetBubble(); renderPetSprite(); mountDecorSprites(); updateFrBadge(); }
 }
 
 $$('[data-goto]').forEach((btn) => {
@@ -507,6 +529,7 @@ function renderHabits() {
     list.appendChild(div);
   });
   mountSprite('todoPet', 'hori_body', 3, hatNow());
+  updateFrCard(); // бейдж «слов к повторению» на карточке модуля FRENCH
 }
 
 els('btnAddHabit').addEventListener('click', () => {
@@ -1126,10 +1149,13 @@ onLangChange(() => {
   }
   if (currentScreen === 'stats') renderStats();
   else if (currentScreen === 'habits') renderHabits();
+  else if (currentScreen === 'french') frenchUI.renderBrowse();
   else if (currentScreen === 'theory' && !lessonUI.active) renderTheory();
   else if (currentScreen === 'shop') renderShop();
   else if (currentScreen === 'home') { renderPetBubble(); updateRoomNote(); }
   else if (currentScreen === 'support') renderMoodChart(S, els('moodChart'));
+  updateFrBadge();
+  updateFrCard();
   persist();
 });
 
@@ -1157,12 +1183,16 @@ function renderNavIcons() {
   mountSprite('navSettingsIcon', 'gear_icon', 2); // единственный вход в настройки — панель; тот же gear_icon
 }
 renderNavIcons();
+initFrSpeech(); // fr-голос для модуля «Французский» (голоса грузятся асинхронно — onvoiceschanged)
+mountSprite('frCardIcon', 'fr_flag_icon', 2); // единый источник иконки модуля — pixel-sprites.js
+mountSprite('frenchTitleIcon', 'fr_flag_icon', 2);
 mountSprite('statsTitleIcon', 'trophy_icon', 2);
 mountSprite('shopTitleIcon', 'shop_icon', 2);
 mountSprite('supportTitleIcon', 'lifebuoy_icon', 2);
 mountSprite('habitsTitleIcon', 'check_badge_icon', 2);
 renderTopbar();
 renderPetBubble();
+updateFrBadge();
 
 if (S.onboarded) {
   gotoScreen('home');
@@ -1174,6 +1204,7 @@ setInterval(() => { tick(S, 1); persist(); }, 4000);
 setInterval(() => { satietyTick(S); persist(); }, 60000); // сытость падает −5/час, HOMяк грустит при <30
 setInterval(renderBuffs, 30000); // обновление остатка баффов у HUD
 setInterval(renderPetBubble, 8000);
+setInterval(updateFrBadge, 60000); // плашка «Хомяк хочет повторить слова!» на главном экране
 setInterval(checkPetNotifications, 60000);
 document.addEventListener('visibilitychange', () => { if (document.hidden) checkPetNotifications(); });
 

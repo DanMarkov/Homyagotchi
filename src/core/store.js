@@ -1,5 +1,5 @@
 const SAVE_KEY = 'khomyagochi_pixel';
-const SAVE_VERSION = 3;
+const SAVE_VERSION = 4;
 
 const DEFAULT_STATE = () => ({
   version: SAVE_VERSION,
@@ -19,7 +19,8 @@ const DEFAULT_STATE = () => ({
   audience: 'student',
   onboarded: false,
   notifications: false,
-  stats: { correct: 0, total: 0 }
+  stats: { correct: 0, total: 0 },
+  fr: { boxes: {}, lessons: {} } // модуль «Французский»: SRS-боксы и пройденные уроки
 });
 
 const MIGRATIONS = {
@@ -39,6 +40,13 @@ const MIGRATIONS = {
       s.owned.push('wall_sky');
       s.equipped.wall = 'wall_sky';
     }
+    return s;
+  },
+  3: (s) => {
+    s.version = 4;
+    if (!s.fr || typeof s.fr !== 'object') s.fr = { boxes: {}, lessons: {} };
+    if (!s.fr.boxes) s.fr.boxes = {};
+    if (!s.fr.lessons) s.fr.lessons = {};
     return s;
   }
 };

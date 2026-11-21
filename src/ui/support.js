@@ -1,5 +1,5 @@
-import { t, tr, getLang, applyStatic } from '../i18n.js?v=42';
-import { moodAvg } from '../core/game.js?v=42';
+import { t, tr, getLang, applyStatic } from '../i18n.js?v=43';
+import { moodAvg } from '../core/game.js?v=43';
 
 /* ===== Генеративные ответы раздела «Помощь» через собственный edge-прокси (Supabase Edge Function,
    open source; альтернативный хост — Cloudflare Worker в worker/). API-ключ и системный промпт

@@ -1097,7 +1097,23 @@ KKKKKKKKKKKKKK..
 
 
 
+/* Флаг Франции для модуля «Французский» — единый источник иконки модуля (карточка в «Задачах», заголовок экрана, плашка на главном) */
+const FR_FLAG_ICON = `
+KKKKKKKKKKKKKKK
+KBBBBWWWWWVVVVK
+KBBBBWWWWWVVVVK
+KBBBBWWWWWVVVVK
+KBBBBWWWWWVVVVK
+KBBBBWWWWWVVVVK
+KBBBBWWWWWVVVVK
+KBBBBWWWWWVVVVK
+KBBBBWWWWWVVVVK
+KBBBBWWWWWVVVVK
+KKKKKKKKKKKKKKK
+`;
+
 export function createPlayIconSprite(scale = 3) { return createPixelSprite(PLAY_ICON, TOOLS, scale, 'sprite-play'); }
+export function createFrFlagIconSprite(scale = 3) { return createPixelSprite(FR_FLAG_ICON, TOOLS, scale, 'sprite-fr-flag'); }
 export function createGearIconSprite(scale = 3) { return createPixelSprite(GEAR_ICON, TOOLS, scale, 'sprite-gear'); }
 export function createBookIconSprite(scale = 3) { return createPixelSprite(BOOK_ICON, TOOLS, scale, 'sprite-book'); }
 export function createChartIconSprite(scale = 3) { return createPixelSprite(CHART_ICON, TOOLS, scale, 'sprite-chart'); }
@@ -1187,7 +1203,8 @@ export const SPRITE_FACTORIES = {
   logout_icon: createLogoutIconSprite,
   plant: createPlantSprite,
   rug: createRugSprite,
-  shop_icon: createShopIconSprite
+  shop_icon: createShopIconSprite,
+  fr_flag_icon: createFrFlagIconSprite
 };
 
 export function createSprite(name, ...args) {

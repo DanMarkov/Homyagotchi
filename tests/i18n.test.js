@@ -7,7 +7,7 @@ import FR_JSON from '../locales/fr.json' with { type: 'json' };
 import RU_JS from '../locales/ru.js';
 import EN_JS from '../locales/en.js';
 import FR_JS from '../locales/fr.js';
-import { t, tr, getLang, setLang, onLangChange, LANGS, LANG_NAMES } from '../src/i18n.js?v=42';
+import { t, tr, getLang, setLang, onLangChange, LANGS, LANG_NAMES } from '../src/i18n.js?v=43';
 import {
   handleRequest, createStore, validate, detectCrisisText, buildUserMessage, sha256hex,
   systemPromptFor, normLang, CRISIS_ANSWER_BY_LANG, LANGS as EDGE_LANGS,

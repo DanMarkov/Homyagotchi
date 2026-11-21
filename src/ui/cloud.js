@@ -1,4 +1,4 @@
-import { t } from '../i18n.js?v=42';
+import { t } from '../i18n.js?v=43';
 import { isCloudConfigured, initAuth, signIn, signUp, signOut, cloudSave, cloudLoad, getSession } from '../core/cloud.js?v=4';
 
 export class CloudUI {
