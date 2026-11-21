@@ -82,10 +82,53 @@ test('CORS: свой домен пропускается, чужой — нет 
 });
 
 test('валидация: битый вход -> 400 без вызова Mistral', async () => {
-  for (const body of [null, {}, { emotion: '', topic: 'x' }, { emotion: '😒' }, { emotion: '😒', topic: 'x', custom: 'a'.repeat(501) }, { emotion: '😒', topic: 5 }]) {
+  // emotion/topic опциональны, но нужен topic ИЛИ custom; custom ≤500
+  for (const body of [null, {}, { emotion: '😒' }, { emotion: '😒', custom: '' }, { emotion: '😒', topic: 'x', custom: 'a'.repeat(501) }, { emotion: '😒', topic: 5 }, { topic: 'x', custom: 5 }, { emotion: 'x'.repeat(31), topic: 't' }]) {
     const r = await ask(body);
     assert.equal(r.status, 400, JSON.stringify(body));
   }
+  assert.equal(mistralCalls, 0);
+});
+
+test('свободный текст (custom без topic) -> 200 генерация, user-сообщение содержит custom', async () => {
+  mistralBehavior = 'varied';
+  const r = await ask({ emotion: '🙂', topic: '', custom: 'готовлюсь к экзамену, всё валится из рук' });
+  assert.equal(r.status, 200);
+  const d = await r.json();
+  assert.ok(d.answer.includes('готовлюсь к экзамену'), 'ответ построен на custom-тексте');
+  assert.equal(d.source, 'mistral');
+  assert.equal(mistralCalls, 1);
+  // формат user-сообщения: части только при наличии
+  assert.equal(buildUserMessage('', '', 'привет'), '[слова пользователя: «привет»}]');
+  assert.equal(buildUserMessage('🙂', '', 'привет'), '[Эмоция: 🙂, слова пользователя: «привет»}]');
+  assert.equal(buildUserMessage('😒', 'учёба', 'не успеваю'), '[Эмоция: 😒, тема: «учёба», слова пользователя: «не успеваю»}]');
+});
+
+test('кэш различает свободные тексты: разные custom -> разные ответы и 2 вызова, повтор -> кэш', async () => {
+  mistralBehavior = 'varied';
+  const d1 = await (await ask({ emotion: '🙂', topic: '', custom: 'готовлюсь к экзамену, всё валится' })).json();
+  const d2 = await (await ask({ emotion: '🙂', topic: '', custom: 'одиноко, все друзья разъехались' })).json();
+  assert.notEqual(d1.answer, d2.answer, 'разные свободные запросы — разные ответы (ключ кэша включает custom)');
+  assert.equal(mistralCalls, 2);
+  const d1b = await (await ask({ emotion: '🙂', topic: '', custom: 'готовлюсь к экзамену, всё валится' })).json();
+  assert.equal(d1b.cached, true);
+  assert.equal(d1b.answer, d1.answer);
+  assert.equal(mistralCalls, 2, 'повтор — из кэша, Mistral не дёргается');
+});
+
+test('кризис в свободном тексте (custom, без topic) -> hotline ОБЯЗАТЕЛЬНО, модель не вызывается', async () => {
+  const r = await ask({ emotion: '😞', topic: '', custom: 'не хочу жить' });
+  assert.equal(r.status, 200);
+  const d = await r.json();
+  assert.ok(d.answer.includes('8-800-2000-122'));
+  assert.equal(d.source, 'crisis');
+  assert.equal(mistralCalls, 0);
+});
+
+test('custom 600 символов -> 400 bad_custom (не 500)', async () => {
+  const r = await ask({ emotion: '🙂', topic: '', custom: 'а'.repeat(600) });
+  assert.equal(r.status, 400);
+  assert.equal((await r.json()).error, 'bad_custom');
   assert.equal(mistralCalls, 0);
 });
 

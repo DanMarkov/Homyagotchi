@@ -1,4 +1,4 @@
-import { moodAvg } from '../core/game.js?v=39';
+import { moodAvg } from '../core/game.js?v=40';
 
 /* ===== Генеративные ответы раздела «Помощь» через собственный edge-прокси (Supabase Edge Function,
    open source; альтернативный хост — Cloudflare Worker в worker/). API-ключ и системный промпт
@@ -187,6 +187,10 @@ function detectTopic(text) {
   return null;
 }
 
+/* Fallback для свободного текста без темы — ТОЛЬКО при недоступности генеративного ответа
+   (сама фраза из основного пути убрана: любой ввод уходит в прокси). */
+const GENERIC_FALLBACK = 'Слышу тебя. Расскажи чуть побольше — что чувствуешь больше всего? Можно простыми словами: тревога, грусть, злость, усталость...';
+
 export class ChatUI {
   constructor(content, state, { onLog, sfx, actions }) {
     this.content = content;
@@ -278,15 +282,16 @@ export class ChatUI {
 
   /* Ответ на выбранную тему: сначала генеративный ответ через прокси,
      при ЛЮБОМ промахе (503/429/сеть/лимит/таймаут) — обычная офлайн-заготовка. */
+  /* Единый путь для ЛЮБОГО ввода (кнопка-категория И свободный текст):
+     сначала генеративный ответ через прокси, при ЛЮБОМ промахе — офлайн-заготовка. */
   async aiAnswer(customText, done) {
-    const topic = this.topic;
-    if (!topic) { if (done) done(); return; }
-    const r = await askHelpAI(lastMoodEmoji, topic.label, customText || '');
-    if (!this.topic || this.topic.id !== topic.id) { if (done) done(); return; } // тему сменили, пока ждали
+    const topic = this.topic; // null при свободном вводе — тогда генерируем по одному custom
+    const r = await askHelpAI(lastMoodEmoji, topic ? topic.label : '', customText || '');
+    if (topic && this.topic && this.topic.id !== topic.id) { if (done) done(); return; } // тему сменили, пока ждали
     if (r.text) {
       this.typeBot(r.text, done);
     } else {
-      this.bot(topic.empath, 400);
+      this.bot(topic ? topic.empath : GENERIC_FALLBACK, 400); // fallback-слой, в основном пути не используется
       if (r.rateLimited) this.bot('Чуть отдохни немного 🙂 Я рядом.', 1000);
       setTimeout(() => { if (done) done(); }, 1200);
     }
@@ -307,10 +312,8 @@ export class ChatUI {
         this.stage = 'dialog';
         this.step = 0;
         this.aiAnswer(text, () => this.bot('Скажи, ' + this.topic.asks[0], 500));
-      } else if (text.includes('?')) {
-        this.bot('Хороший вопрос. Расскажи чуть подробнее, что происходит, чтобы я смог(ла) точнее подсказать.', 400);
       } else {
-        this.bot('Слышу тебя. Расскажи чуть больше — что чувствуешь больше всего? Можно простыми словами: тревога, грусть, злость, усталость...', 400);
+        this.aiAnswer(text); // свободный текст — тот же генеративный путь, что и кнопки-категории
       }
     } else if (this.stage === 'dialog') {
       this.continueDialog(text);

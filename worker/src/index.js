@@ -37,7 +37,11 @@ export function buildUserMessage(emotion, topic, custom) {
   const e = String(emotion || '').trim();
   const tp = String(topic || '').trim();
   const c = String(custom || '').trim().slice(0, 500);
-  return `[Эмоция: ${e}, тема: «${tp}»${c ? `, слова пользователя: «${c}»` : ''}]`;
+  const parts = [];
+  if (e) parts.push('Эмоция: ' + e);
+  if (tp) parts.push('тема: «' + tp + '»');
+  if (c) parts.push('слова пользователя: «' + c + '»');
+  return '[' + parts.join(', ') + '}]'; // напр. [Эмоция: 😒, тема: «учёба», слова пользователя: «...»}] или только [слова пользователя: «...»}]
 }
 
 export async function sha256hex(s) {
@@ -87,9 +91,13 @@ async function checkRateLimit(ip) {
 function validate(body) {
   if (!body || typeof body !== 'object') return 'bad_body';
   const { emotion, topic, custom } = body;
-  if (typeof emotion !== 'string' || !emotion.trim() || emotion.trim().length > 30) return 'bad_emotion';
-  if (typeof topic !== 'string' || !topic.trim() || topic.trim().length > 100) return 'bad_topic';
+  // emotion/topic опциональны; обязателен topic (кнопка-категория) ИЛИ custom (свободный текст)
+  if (emotion !== undefined && emotion !== null && (typeof emotion !== 'string' || emotion.length > 30)) return 'bad_emotion';
+  if (topic !== undefined && topic !== null && (typeof topic !== 'string' || topic.length > 100)) return 'bad_topic';
   if (custom !== undefined && custom !== null && (typeof custom !== 'string' || custom.length > 500)) return 'bad_custom';
+  const hasTopic = typeof topic === 'string' && !!topic.trim();
+  const hasCustom = typeof custom === 'string' && !!custom.trim();
+  if (!hasTopic && !hasCustom) return 'bad_request';
   return null;
 }
 
@@ -156,8 +164,8 @@ export default {
     const err = validate(body);
     if (err) return json({ error: err }, 400, cors); // без вызова API
 
-    const emotion = body.emotion.trim();
-    const topic = body.topic.trim();
+    const emotion = (body.emotion || '').trim();
+    const topic = (body.topic || '').trim();
     const custom = (body.custom || '').trim();
 
     // кризис — детерминированно, без вызова модели

@@ -1,7 +1,7 @@
 import { test, beforeEach } from 'node:test';
 import assert from 'node:assert';
 import { readFileSync } from 'node:fs';
-import { askHelpAI, aiLeft, setLastMoodEmoji } from '../src/ui/support.js?v=39';
+import { askHelpAI, aiLeft, setLastMoodEmoji } from '../src/ui/support.js?v=40';
 
 /* Стабы браузерного окружения: localStorage/sessionStorage/fetch */
 function makeStorage() {
@@ -89,6 +89,19 @@ test('новая сессия (другой sid) сбрасывает лимит
   assert.equal(aiLeft(), 0);
   sessionStorage.setItem('khomyagochi_sid', 'new-session');
   assert.equal(aiLeft(), 3);
+});
+
+test('свободный ввод: topic может быть пустым, custom уходит в теле запроса', async () => {
+  const r = await askHelpAI('🙂', '', 'готовлюсь к экзамену, всё валится из рук');
+  assert.ok(r.text, 'генерация идёт и для свободного текста');
+  assert.equal(fetchCalls[0].body.topic, '');
+  assert.equal(fetchCalls[0].body.custom, 'готовлюсь к экзамену, всё валится из рук');
+  assert.equal(fetchCalls[0].body.emotion, '🙂');
+});
+
+test('custom обрезается до 500 символов на клиенте (без 400/500 от сервера)', async () => {
+  await askHelpAI('🙂', '', 'а'.repeat(600));
+  assert.equal(fetchCalls[0].body.custom.length, 500);
 });
 
 test('setLastMoodEmoji влияет на тело запроса', async () => {
