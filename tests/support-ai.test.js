@@ -1,7 +1,7 @@
 import { test, beforeEach } from 'node:test';
 import assert from 'node:assert';
 import { readFileSync } from 'node:fs';
-import { askHelpAI, aiLeft, setLastMoodEmoji } from '../src/ui/support.js?v=40';
+import { askHelpAI, aiLeft, setLastMoodEmoji, pickFallback } from '../src/ui/support.js?v=41';
 
 /* Стабы браузерного окружения: localStorage/sessionStorage/fetch */
 function makeStorage() {
@@ -49,7 +49,7 @@ test('503 {fallback:true} -> {fallback:true}, лимит НЕ тратится',
   fetchBehavior = 'fallback503';
   const r = await askHelpAI('😒', 'тревога', 'всё плохо');
   assert.deepEqual(r, { fallback: true });
-  assert.equal(aiLeft(), 3);
+  assert.equal(aiLeft(), 15);
 });
 
 test('429 -> {fallback:true, rateLimited:true} (клиент покажет «отдохни немного»)', async () => {
@@ -71,24 +71,24 @@ test('сеть недоступна (fetch бросает) -> {fallback:true}, �
   assert.deepEqual(r, { fallback: true });
 });
 
-test('лимит 3 генеративных ответа за сессию, потом fallback без вызова сети', async () => {
-  assert.equal(aiLeft(), 3);
-  for (let i = 0; i < 3; i++) {
+test('лимит 15 генеративных ответа за сессию, потом noLimit без вызова сети', async () => {
+  assert.equal(aiLeft(), 15);
+  for (let i = 0; i < 15; i++) {
     const r = await askHelpAI('😒', 'учёба', 'запрос ' + i);
     assert.ok(r.text, 'ответ ' + i + ' сгенерирован');
-    assert.equal(aiLeft(), 3 - (i + 1));
+    assert.equal(aiLeft(), 15 - (i + 1));
   }
   const r4 = await askHelpAI('😒', 'учёба', 'четвёртый');
   assert.equal(r4.fallback, true);
   assert.equal(r4.noLimit, true);
-  assert.equal(fetchCalls.length, 3, 'сверх лимита сеть не дёргаем');
+  assert.equal(fetchCalls.length, 15, 'сверх лимита сеть не дёргаем');
 });
 
 test('новая сессия (другой sid) сбрасывает лимит', async () => {
-  for (let i = 0; i < 3; i++) await askHelpAI('😆', 'мне хорошо 👋', 'x' + i);
+  for (let i = 0; i < 15; i++) await askHelpAI('😆', 'мне хорошо 👋', 'x' + i);
   assert.equal(aiLeft(), 0);
   sessionStorage.setItem('khomyagochi_sid', 'new-session');
-  assert.equal(aiLeft(), 3);
+  assert.equal(aiLeft(), 15);
 });
 
 test('свободный ввод: topic может быть пустым, custom уходит в теле запроса', async () => {
@@ -119,4 +119,28 @@ test('в клиентском коде страницы НЕТ api.mistral и MI
     assert.ok(!src.includes('MISTRAL_API_KEY'), f + ' не должен содержать MISTRAL_API_KEY');
     assert.ok(!src.includes('Bearer '), f + ' не должен содержать Bearer');
   }
+});
+
+test('короткий ввод (одно слово / эмодзи) уходит в сеть без гейтов по длине', async () => {
+  const r1 = await askHelpAI('🙂', '', 'да');
+  assert.ok(r1.text, 'ответ на «да» сгенерирован');
+  assert.equal(fetchCalls[0].body.custom, 'да');
+  const r2 = await askHelpAI('😞', '', '😢');
+  assert.ok(r2.text, 'ответ на эмодзи сгенерирован');
+  assert.equal(fetchCalls[1].body.custom, '😢');
+});
+
+test('в клиентском коде НЕТ шаблонной подмены («Слышу тебя…») и гейта по длине ввода', () => {
+  const src = readFileSync(new URL('../src/ui/support.js', import.meta.url), 'utf8');
+  assert.ok(!src.includes('Слышу тебя'), 'шаблон-уточнение удалёно');
+  assert.ok(!src.includes('GENERIC_FALLBACK'), 'константа шаблона удалена');
+  assert.ok(!/(custom|text|value)\.length\s*</.test(src), 'нет гейта по длине ввода пользователя');
+});
+
+test('fallback разный для разных эмоций и для разных тем (pickFallback)', () => {
+  const moods = ['😞', '😕', '😐', '🙂', '😄'];
+  const texts = moods.map((m) => pickFallback(m, ''));
+  assert.equal(new Set(texts).size, 5, '5 разных поддерживающих fallback по эмоциям');
+  assert.ok(pickFallback('🙂', 'тревога').includes('Тревога'), 'fallback по теме = empath темы');
+  assert.notEqual(pickFallback('🙂', 'тревога'), pickFallback('🙂', ''));
 });

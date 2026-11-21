@@ -1,4 +1,4 @@
-import { moodAvg } from '../core/game.js?v=40';
+import { moodAvg } from '../core/game.js?v=41';
 
 /* ===== Генеративные ответы раздела «Помощь» через собственный edge-прокси (Supabase Edge Function,
    open source; альтернативный хост — Cloudflare Worker в worker/). API-ключ и системный промпт
@@ -6,7 +6,7 @@ import { moodAvg } from '../core/game.js?v=40';
    window.__SUPABASE_URL__ (content/config.js): <SUPABASE_URL>/functions/v1/help-ask. ===== */
 const SUPABASE_BASE = (typeof window !== 'undefined' && window.__SUPABASE_URL__ ? String(window.__SUPABASE_URL__) : '').replace(/\/+$/, '');
 const HELP_AI_URL = (SUPABASE_BASE || 'https://YOUR-PROJECT-REF.supabase.co') + '/functions/v1/help-ask';
-const AI_SESSION_LIMIT = 3;   // генеративных ответов за сессию (локальный лимит, пользователь о нём не знает)
+const AI_SESSION_LIMIT = 15;  // генеративных ответов за сессию; при исчерпании — честная плашка паузы, функция НЕ вызывается, ответ НЕ подменяется шаблоном
 const AI_TIMEOUT_MS = 12000;  // таймаут клиента: дальше — офлайн-заготовка, никакого «вечного спиннера»
 const AI_LS_KEY = 'khomyagochi_help_ai';
 const AI_SID_KEY = 'khomyagochi_sid';
@@ -188,8 +188,22 @@ function detectTopic(text) {
 }
 
 /* Fallback для свободного текста без темы — ТОЛЬКО при недоступности генеративного ответа
-   (сама фраза из основного пути убрана: любой ввод уходит в прокси). */
-const GENERIC_FALLBACK = 'Слышу тебя. Расскажи чуть побольше — что чувствуешь больше всего? Можно простыми словами: тревога, грусть, злость, усталость...';
+/* Fallback при РЕАЛЬНОЙ ошибке сети/функции (503/429/таймаут/сеть) — и ТОЛЬКО он:
+   поддерживающая заготовка, своя для каждой темы (topic.empath) и каждой эмоции
+   (MOOD_FALLBACKS). В основном пути статических «ответов ассистента» нет вообще —
+   любой ввод пользователя (длинный, короткий, эмодзи) уходит в генерацию через прокси. */
+const MOOD_FALLBACKS = {
+  '😞': 'Мне очень жаль, что сейчас так. Ты не один — я рядом 🤍',
+  '😕': 'Вижу, что тебе сейчас непросто. Мы разберёмся потихоньку.',
+  '😐': 'Понимаю тебя. Иногда просто «есть» — и это нормально. Я рядом.',
+  '🙂': 'Я слышу тебя и рядом. Что происходило?',
+  '😄': 'Рад тебя видеть! Расскажи, что хорошего сегодня 🌟',
+};
+export function pickFallback(emotion, topicLabel) {
+  const t = TOPICS.find((x) => x.label === topicLabel);
+  if (t) return t.empath;
+  return MOOD_FALLBACKS[emotion] || MOOD_FALLBACKS['🙂'];
+}
 
 export class ChatUI {
   constructor(content, state, { onLog, sfx, actions }) {
@@ -259,6 +273,15 @@ export class ChatUI {
     setTimeout(() => this.addMsg(text, 'bot'), delay);
   }
 
+  /* Системная плашка (не сообщение ассистента): пауза по лимиту сессии, rate-limit и т.п. */
+  note(text) {
+    const div = document.createElement('div');
+    div.className = 'chat-note';
+    div.textContent = text;
+    this.msgsEl.appendChild(div);
+    this.msgsEl.scrollTop = this.msgsEl.scrollHeight;
+  }
+
   /* Псевдо-typewriter: ответ «оживает» (~30 мс/символ, длинные — быстрее). */
   typeBot(text, done) {
     const div = document.createElement('div');
@@ -280,20 +303,27 @@ export class ChatUI {
     }, 30);
   }
 
-  /* Ответ на выбранную тему: сначала генеративный ответ через прокси,
-     при ЛЮБОМ промахе (503/429/сеть/лимит/таймаут) — обычная офлайн-заготовка. */
-  /* Единый путь для ЛЮБОГО ввода (кнопка-категория И свободный текст):
-     сначала генеративный ответ через прокси, при ЛЮБОМ промахе — офлайн-заготовка. */
+  /* Единый путь для ЛЮБОГО ввода (кнопка-категория ИЛИ свободный текст любой длины):
+     всегда генерация через прокси. Статический текст — только при реальном промахе
+     (fallback-заготовка по теме/эмоции) либо плашка-пауза при исчерпанном лимите сессии. */
   async aiAnswer(customText, done) {
-    const topic = this.topic; // null при свободном вводе — тогда генерируем по одному custom
+    const topic = this.topic; // null при свободном вводе — тогда генерируем только по custom
     const r = await askHelpAI(lastMoodEmoji, topic ? topic.label : '', customText || '');
     if (topic && this.topic && this.topic.id !== topic.id) { if (done) done(); return; } // тему сменили, пока ждали
+    if (r.noLimit) {
+      // Лимит сессии исчерпан: функция НЕ вызывается, ответ НЕ подменяется шаблоном — только честная плашка
+      this.note('Давай сделаем паузу, я останусь рядом 💜');
+      if (done) done();
+      return;
+    }
     if (r.text) {
-      this.typeBot(r.text, done);
+      this.typeBot(r.text, () => { if (topic) this.offerTools(); if (done) done(); });
     } else {
-      this.bot(topic ? topic.empath : GENERIC_FALLBACK, 400); // fallback-слой, в основном пути не используется
-      if (r.rateLimited) this.bot('Чуть отдохни немного 🙂 Я рядом.', 1000);
-      setTimeout(() => { if (done) done(); }, 1200);
+      // fallback ТОЛЬКО при реальной ошибке сети/функции (503/429/сеть/таймаут): заготовка по теме или эмоции
+      this.bot(pickFallback(lastMoodEmoji, topic ? topic.label : ''), 400);
+      if (topic) this.bot('Скажи, ' + topic.asks[0], 1000);
+      if (r.rateLimited) this.note('Чуть отдохни немного 🙂 Я рядом.');
+      setTimeout(() => { if (done) done(); }, 1500);
     }
   }
 
@@ -308,32 +338,13 @@ export class ChatUI {
 
     if (this.stage === 'greeting') {
       this.topic = detectTopic(text);
-      if (this.topic) {
-        this.stage = 'dialog';
-        this.step = 0;
-        this.aiAnswer(text, () => this.bot('Скажи, ' + this.topic.asks[0], 500));
-      } else {
-        this.aiAnswer(text); // свободный текст — тот же генеративный путь, что и кнопки-категории
-      }
-    } else if (this.stage === 'dialog') {
-      this.continueDialog(text);
+      if (this.topic) this.stage = 'dialog';
     }
-  }
-
-  continueDialog() {
-    if (this.step === 0) {
-      this.bot('Понимаю. ' + (this.topic.asks[1] ? 'И ещё: ' + this.topic.asks[1] : 'Что бы тебе сейчас помогло чуть-чуть?'), 500);
-      this.step++;
-    } else if (this.step === 1) {
-      const tip = this.topic.tips[Math.floor(Math.random() * this.topic.tips.length)];
-      this.bot('Спасибо, что поделился(лась). Запомни: ' + tip, 500);
-      this.offerTools();
-      this.step++;
-    }
+    // Единый путь: любой ввод (чип-категория, свободный текст любой длины, эмодзи) идёт в генерацию
+    this.aiAnswer(text);
   }
 
   offerTools() {
-    this.bot('Могу предложить что-то прямое сейчас:', 1400);
     const q = this.el.querySelector('#chatQuick');
     q.innerHTML = '';
     this.topic.tools.forEach((tool) => {
@@ -357,12 +368,6 @@ export class ChatUI {
       this.bot('Хорошо. О чём хочешь поговорить?');
     };
     q.appendChild(other);
-  }
-
-  wrapUp() {
-    this.bot('Ты большой молодец, что не держишь это всё в себе. Если захочешь ещё — я тут, всегда. 💜', 400);
-    this.stage = 'greeting';
-    this.renderQuick(['тревога', 'стресс и учёба', 'грустно', 'одиноко', 'злюсь', 'мне хорошо 👋']);
   }
 
   crisis() {

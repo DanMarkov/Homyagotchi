@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>🐹 Хомягочи</title>
 <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="src/render/sprites.css?v=40">
+<link rel="stylesheet" href="src/render/sprites.css?v=41">
 <style>
   :root {
     --bg: #cfe9f9;
@@ -925,6 +925,18 @@
   }
   .chat-msg.bot { align-self: flex-start; background: var(--card); }
   .chat-msg.me { align-self: flex-end; background: var(--blue); color: #fff; border-color: var(--blue-dark); }
+  .chat-note {
+    align-self: center;
+    max-width: 90%;
+    padding: 6px 14px;
+    font-size: .85rem;
+    font-weight: 600;
+    font-style: italic;
+    color: var(--ink-soft);
+    background: transparent;
+    border: 2px dashed var(--line);
+    border-radius: 0;
+  }
   .chat-input-row {
     display: flex;
     gap: 12px;
@@ -1510,10 +1522,10 @@
     </div>
   </div>
 
-  <script src="content/config.js?v=40"></script>
-  <script src="content/content.js?v=40"></script>
-  <script src="content/lessons.js?v=40"></script>
-  <script src="content/shop.js?v=40"></script>
-  <script type="module" src="src/ui/app.js?v=40"></script>
+  <script src="content/config.js?v=41"></script>
+  <script src="content/content.js?v=41"></script>
+  <script src="content/lessons.js?v=41"></script>
+  <script src="content/shop.js?v=41"></script>
+  <script type="module" src="src/ui/app.js?v=41"></script>
 </body>
 </html>
