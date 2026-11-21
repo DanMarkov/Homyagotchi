@@ -9,6 +9,7 @@ test('fresh state has version and defaults', () => {
   assert.deepEqual(s.owned, ['hat_none', 'wall_sky']);
   assert.equal(s.equipped.wall, 'wall_sky');
   assert.equal(s.satiety, 80);
+  assert.deepEqual(s.fr, { boxes: {}, lessons: {} });
 });
 
 test('migrates v1 save (no version) to v3 with new fields', () => {
@@ -45,20 +46,34 @@ test('old v2 save migrates with new default fields filled', () => {
   assert.equal(s.notifications, false);
 });
 
-test('migrates v2 save to v3: satiety init + wall_rose→wall_sky default', () => {
+test('migrates v2 save: satiety init + wall_rose→wall_sky default + fr state (v4)', () => {
   const v2 = { version: 2, health: 50, coins: 10, owned: ['hat_none', 'wall_rose'], equipped: { hat: 'hat_none', wall: 'wall_rose' } };
   const s = migrate(v2);
-  assert.equal(s.version, 3);
+  assert.equal(s.version, SAVE_VERSION);
+  assert.ok(SAVE_VERSION >= 4);
   assert.equal(s.satiety, 80);
   assert.ok(s.satietyAt > 0);
   assert.ok(s.owned.includes('wall_sky'));
   assert.equal(s.equipped.wall, 'wall_sky');
+  assert.deepEqual(s.fr, { boxes: {}, lessons: {} });
   // если wall_sky уже куплены — не дублируем и не трогаем выбор
   const v2b = { version: 2, owned: ['hat_none', 'wall_rose', 'wall_mint'], equipped: { hat: 'hat_cap', wall: 'wall_mint' } };
   const s2 = migrate(v2b);
   assert.equal(s2.equipped.wall, 'wall_mint');
   assert.equal(s2.equipped.hat, 'hat_cap');
   assert.ok(!s2.owned.includes('wall_sky'));
+});
+
+test('migrates v3 save to v4: fr boxes/lessons initialized, old data kept', () => {
+  const v3 = { version: 3, coins: 42, fr: { boxes: { w_bonjour: { box: 2, nextReview: 123 } }, lessons: { l1_salutations: { done: true, mistakes: 1, at: 5 } } } };
+  const s = migrate(v3);
+  assert.equal(s.version, 4);
+  assert.equal(s.coins, 42);
+  assert.deepEqual(s.fr.boxes.w_bonjour, { box: 2, nextReview: 123 });
+  assert.equal(s.fr.lessons.l1_salutations.done, true);
+  const v3b = { version: 3 };
+  const s2 = migrate(v3b);
+  assert.deepEqual(s2.fr, { boxes: {}, lessons: {} });
 });
 
 test('save writes main + backup; load falls back to backup when main is corrupt', () => {

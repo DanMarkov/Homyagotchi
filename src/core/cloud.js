@@ -1,4 +1,4 @@
-import { t } from '../i18n.js?v=42';
+import { t } from '../i18n.js?v=43';
 import { SAVE_VERSION, migrate } from './store.js?v=4';
 
 const KEY_URL = 'SUPABASE_URL';

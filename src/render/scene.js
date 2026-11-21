@@ -1,4 +1,4 @@
-import { t } from '../i18n.js?v=42';
+import { t } from '../i18n.js?v=43';
 import { makeRoomSprites, makeHamsterSprites, makeSkySprites } from './sprites.js?v=4';
 import { petState, PET_STATES } from '../core/pet.js?v=4';
 import { dayPhase, SKIES } from './daynight.js?v=4';

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>🐹 Хомягочи</title>
 <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="src/render/sprites.css?v=42">
+<link rel="stylesheet" href="src/render/sprites.css?v=43">
 <style>
   :root {
     --bg: #cfe9f9;
@@ -1130,6 +1130,81 @@
   @keyframes toastIn { from { opacity: 0; transform: translateX(-50%) translateY(-16px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
   @keyframes toastOut { to { opacity: 0; transform: translateX(-50%) translateY(-16px); } }
 
+  /* ===== FRENCH MODULE (модуль «Французский») ===== */
+  .module-card { display: flex; align-items: center; gap: 12px; background: #fff; border: 3px solid var(--ink); border-radius: 14px; box-shadow: 4px 4px 0 rgba(26,58,92,.18); padding: 12px 14px; margin-bottom: 14px; cursor: pointer; }
+  .module-card:hover { transform: translate(-1px,-1px); box-shadow: 5px 5px 0 rgba(26,58,92,.18); }
+  .module-card .mc-icon { display: flex; align-items: center; flex: 0 0 auto; }
+  .module-card .mc-icon canvas { image-rendering: pixelated; }
+  .module-card .mc-body { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .module-card .mc-title { font-family: 'Press Start 2P', monospace; font-size: .62rem; color: var(--ink); }
+  .module-card .mc-desc { font-size: .85rem; color: var(--ink-soft); overflow-wrap: break-word; }
+  .mc-badge { min-width: 26px; height: 26px; padding: 0 6px; display: inline-flex; align-items: center; justify-content: center; background: var(--ink); color: #fff; border: 2px solid var(--ink); border-radius: 999px; font-weight: 700; font-size: .8rem; }
+  #btnFrReview { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 14px; min-height: 48px; }
+  #btnFrReview.has-due .mc-badge { background: var(--red); border-color: var(--red-dark); }
+  .fr-unit { margin-bottom: 16px; }
+  .fr-unit-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .fr-unit-emoji { font-size: 1.4rem; }
+  .fr-unit-title { font-family: 'Press Start 2P', monospace; font-size: .6rem; flex: 1; overflow-wrap: break-word; }
+  .fr-unit-prog { font-weight: 700; color: var(--ink-soft); font-size: .85rem; }
+  .fr-path { display: flex; flex-direction: column; align-items: center; }
+  .fr-node-line { width: 6px; height: 20px; background: var(--ink); opacity: .25; border-radius: 3px; }
+  .fr-node { display: flex; align-items: center; gap: 10px; width: 100%; max-width: 340px; min-height: 56px; padding: 8px 12px; background: #fff; border: 3px solid var(--ink); border-radius: 14px; cursor: pointer; font-family: inherit; text-align: left; }
+  .fr-node-label { width: 40px; height: 40px; flex: 0 0 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 3px solid var(--ink); background: var(--node-color, #4cc3f7); font-family: 'Press Start 2P', monospace; font-size: .7rem; color: #fff; text-shadow: 1px 1px 0 rgba(0,0,0,.35); }
+  .fr-node-title { font-weight: 600; font-size: .95rem; overflow-wrap: break-word; }
+  .fr-node.done .fr-node-label { background: var(--green); }
+  .fr-node.locked { opacity: .55; cursor: default; }
+  .fr-node.locked .fr-node-label { background: #b8c2cc; }
+  .fr-node.open:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 rgba(26,58,92,.2); }
+  .fr-all-done { text-align: center; font-weight: 600; color: var(--green-dark); }
+  .fr-lesson-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .fr-back { flex: 0 0 auto; }
+  .fr-hearts { display: inline-flex; gap: 2px; }
+  .fr-hearts canvas { image-rendering: pixelated; }
+  .fr-hearts canvas.lost { filter: grayscale(1) opacity(.35); }
+  .fr-review-label { font-weight: 700; color: var(--ink-soft); font-size: .9rem; }
+  .fr-prog { flex: 1; min-width: 0; }
+  .fr-prompt-label { color: var(--ink-soft); font-weight: 600; margin-bottom: 6px; }
+  .fr-prompt { text-align: center; background: #fff; border: 3px solid var(--ink); border-radius: 14px; padding: 16px; margin-bottom: 14px; box-shadow: 4px 4px 0 rgba(26,58,92,.15); }
+  .fr-prompt-word { font-size: 1.6rem; font-weight: 800; overflow-wrap: break-word; }
+  .fr-prompt-emoji { font-size: 2.2rem; margin-top: 6px; }
+  .fr-listen-btn { width: 76px; height: 76px; font-size: 2rem; border-radius: 18px; border: 3px solid var(--ink); background: var(--yellow); box-shadow: 4px 4px 0 rgba(26,58,92,.25); cursor: pointer; margin: 0 auto; display: block; }
+  .fr-listen-btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 rgba(26,58,92,.25); }
+  .fr-listen-hint { font-size: 1.1rem; margin-top: 8px; color: var(--ink-soft); }
+  .fr-option.selected { border-color: var(--blue-dark); background: var(--blue-soft); }
+  .fr-build-hint { font-size: .8rem; color: var(--ink-soft); margin-bottom: 8px; }
+  .fr-build-answer { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; min-height: 58px; padding: 10px; border: 3px dashed var(--ink); border-radius: 12px; background: var(--blue-soft); margin-bottom: 12px; }
+  .fr-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .fr-chip { min-height: 48px; padding: 10px 16px; font-size: 1.05rem; font-weight: 700; background: #fff; border: 3px solid var(--ink); border-radius: 12px; cursor: pointer; box-shadow: 3px 3px 0 rgba(26,58,92,.2); }
+  .fr-chip:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 rgba(26,58,92,.2); }
+  .fr-chip.in-answer { background: var(--yellow); }
+  .fr-chip.correct { background: var(--green-soft); border-color: var(--green-dark); }
+  .fr-chip.wrong { background: var(--red-soft); border-color: var(--red-dark); }
+  .fr-match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .fr-match-col { display: flex; flex-direction: column; gap: 10px; }
+  .fr-match-card { min-height: 56px; font-size: 1.15rem; font-weight: 700; background: #fff; border: 3px solid var(--ink); border-radius: 12px; cursor: pointer; box-shadow: 3px 3px 0 rgba(26,58,92,.2); }
+  .fr-match-card.fr-emoji { font-size: 1.8rem; }
+  .fr-match-card.sel { border-color: var(--blue-dark); background: var(--blue-soft); }
+  .fr-match-card.done { background: var(--green-soft); border-color: var(--green-dark); opacity: .75; cursor: default; }
+  .fr-match-card.shake { animation: frShake .35s; }
+  @keyframes frShake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+  .fr-feedback { margin-top: 14px; }
+  .fr-correct-line { margin-top: 8px; font-weight: 700; }
+  .fr-example-line { margin-top: 4px; color: var(--ink-soft); font-size: .9rem; }
+  .fr-repeat-note { margin-top: 6px; font-size: .85rem; color: var(--red-dark); font-weight: 600; }
+  .fr-node, .fr-chip, .fr-match-card, .fr-listen-btn, .module-card { touch-action: manipulation; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }
+  .fr-note { max-width: 170px; }
+  @media (max-width: 720px) {
+    .fr-prompt-word { font-size: 1.25rem; }
+    .fr-node { max-width: none; }
+    .fr-node-label { width: 36px; height: 36px; flex-basis: 36px; font-size: .6rem; }
+    .fr-match-grid { gap: 8px; }
+    .fr-match-card { min-height: 52px; font-size: 1rem; }
+    .fr-match-card.fr-emoji { font-size: 1.5rem; }
+    .fr-chip { min-height: 46px; font-size: .95rem; padding: 8px 12px; }
+    .module-card .mc-title { font-size: .55rem; }
+    .module-card .mc-desc { font-size: .78rem; }
+  }
+
   /* ===== MOBILE (≤720px): комната — flex-колонка, все ряды кнопок — flex/grid с wrap, ничего не наезжает ===== */
   @media (max-width: 720px) {
     body { font-size: 16px; }
@@ -1338,6 +1413,7 @@
             <span class="rs-icon" id="roomSupportIcon"></span>
           </button>
           <button data-i18n="h.u-vas-otkrylsya-novyy" class="room-note" id="roomNote" data-goto="theory">У вас открылся новый раздел теории</button>
+          <button data-i18n-title="h.fr.povtorenie" class="room-note fr-note hidden" id="frNote" data-goto="french" title=""></button>
         </div>
 
         <div class="room-decor-left" id="roomDecorLeft"></div>
@@ -1389,6 +1465,14 @@
         <span class="t-icon" style="background:var(--green-soft)" id="habitsTitleIcon"></span>
         СПИСОК ДЕЛ
       </div>
+      <div class="module-card" data-goto="french" id="frModuleCard">
+        <span class="mc-icon" id="frCardIcon"></span>
+        <span class="mc-body">
+          <span class="mc-title" data-i18n="h.fr.modul">FRENCH</span>
+          <span class="mc-desc" data-i18n="h.fr.opisanie">Учи французский с Хори: приветствия, числа, «je m'appelle». Слова уходят в повторение!</span>
+        </span>
+        <span class="mc-badge hidden" id="frDueBadge">0</span>
+      </div>
       <div class="todo-layout">
         <div>
           <div class="todo-list" id="todoList"></div>
@@ -1398,6 +1482,24 @@
           </div>
         </div>
         <div class="todo-pet" id="todoPet"></div>
+      </div>
+    </div>
+
+    <!-- ===== FRENCH MODULE ===== -->
+    <div class="screen" id="screen-french">
+      <div class="screen-title">
+        <span class="t-icon" style="background:#dfe9ff" id="frenchTitleIcon"></span>
+        <span data-i18n="h.fr.title">ФРАНЦУЗСКИЙ</span>
+      </div>
+      <div id="frenchBrowse">
+        <button class="btn btn-blue btn-block" id="btnFrReview">
+          <span data-i18n="h.fr.povtorenie">ПОВТОРЕНИЕ</span>
+          <b class="mc-badge" id="frReviewBadge">0</b>
+        </button>
+        <div id="frenchMap"></div>
+      </div>
+      <div id="frenchRunner" class="hidden">
+        <div class="fr-lesson" id="frLesson"></div>
       </div>
     </div>
 
@@ -1557,10 +1659,12 @@
     </div>
   </div>
 
-  <script src="content/config.js?v=42"></script>
-  <script src="content/content.js?v=42"></script>
-  <script src="content/lessons.js?v=42"></script>
-  <script src="content/shop.js?v=42"></script>
-  <script type="module" src="src/ui/app.js?v=42"></script>
+  <script src="content/config.js?v=43"></script>
+  <script src="content/content.js?v=43"></script>
+  <script src="content/lessons.js?v=43"></script>
+  <script src="content/shop.js?v=43"></script>
+  <script src="content/fr/words.js?v=43"></script>
+  <script src="content/fr/units.js?v=43"></script>
+  <script type="module" src="src/ui/app.js?v=43"></script>
 </body>
 </html>

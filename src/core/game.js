@@ -1,4 +1,4 @@
-import { t, tr } from '../i18n.js?v=42';
+import { t, tr } from '../i18n.js?v=43';
 export function todayStr() { return new Date().toDateString(); }
 
 export function gainXP(state, n) {

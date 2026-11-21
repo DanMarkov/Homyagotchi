@@ -1,4 +1,4 @@
-import { t } from '../i18n.js?v=42';
+import { t } from '../i18n.js?v=43';
 import { lessonProgress, saveLessonProgress, courseProgress, totalProgress, lessonKey } from '../core/lessons.js?v=4';
 import { gainXP } from '../core/game.js?v=4';
 
