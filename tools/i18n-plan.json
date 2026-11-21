@@ -1,0 +1,3880 @@
+[
+ {
+  "key": "c.content.events.ev_sms_package.q",
+  "text": "SMS: «Ваша посылка задержана, перейдите по ссылке для оплаты». Что делать?",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_sms_package.q"
+ },
+ {
+  "key": "c.content.events.ev_sms_package.a.0",
+  "text": "Открыть ссылку — посылка дорогая",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_sms_package.a.0"
+ },
+ {
+  "key": "c.content.events.ev_sms_package.a.1",
+  "text": "Игнорировать и проверить в официальном приложении",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_sms_package.a.1"
+ },
+ {
+  "key": "c.content.events.ev_sms_package.a.2",
+  "text": "Переслать другу, пусть посмотрит",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_sms_package.a.2"
+ },
+ {
+  "key": "c.content.events.ev_sms_package.tip",
+  "text": "Это фишинг! Ссылки из SMS о посылках — классическая ловушка мошенников.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_sms_package.tip"
+ },
+ {
+  "key": "c.content.events.ev_mama_new_number.q",
+  "text": "Незнакомец: «Мама, это ты? У меня новый номер, скинь деньги срочно»",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_mama_new_number.q"
+ },
+ {
+  "key": "c.content.events.ev_mama_new_number.a.0",
+  "text": "Сразу перевести — вдруг правда мама",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_mama_new_number.a.0"
+ },
+ {
+  "key": "c.content.events.ev_mama_new_number.a.1",
+  "text": "Позвонить маме на обычный номер и проверить",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_mama_new_number.a.1"
+ },
+ {
+  "key": "c.content.events.ev_mama_new_number.a.2",
+  "text": "Написать «ок» и ждать",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_mama_new_number.a.2"
+ },
+ {
+  "key": "c.content.events.ev_mama_new_number.tip",
+  "text": "Взлом аккаунтов близких — частый сценарий. Проверяй по другому каналу.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_mama_new_number.tip"
+ },
+ {
+  "key": "c.content.events.ev_free_course_card.q",
+  "text": "Сайт даёт «бесплатный» курс, но просит данные карты «для верификации»",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_free_course_card.q"
+ },
+ {
+  "key": "c.content.events.ev_free_course_card.a.0",
+  "text": "Ввести карту — курс же бесплатный",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_free_course_card.a.0"
+ },
+ {
+  "key": "c.content.events.ev_free_course_card.a.1",
+  "text": "Закрыть сайт: честные сервисы так не делают",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_free_course_card.a.1"
+ },
+ {
+  "key": "c.content.events.ev_free_course_card.a.2",
+  "text": "Ввести, но пустую карту",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_free_course_card.a.2"
+ },
+ {
+  "key": "c.content.events.ev_free_course_card.tip",
+  "text": "Запрос карты за «бесплатное» — сигнал мошенничества.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_free_course_card.tip"
+ },
+ {
+  "key": "c.content.events.ev_sms_code_friend.q",
+  "text": "Друг просит твой код из SMS «для верификации его аккаунта»",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_sms_code_friend.q"
+ },
+ {
+  "key": "c.content.events.ev_sms_code_friend.a.0",
+  "text": "Отправить — друг же",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_sms_code_friend.a.0"
+ },
+ {
+  "key": "c.content.events.ev_sms_code_friend.a.1",
+  "text": "Отказать: код открывает ТВОЙ аккаунт",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_sms_code_friend.a.1"
+ },
+ {
+  "key": "c.content.events.ev_sms_code_friend.a.2",
+  "text": "Отправить половину кода",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_sms_code_friend.a.2"
+ },
+ {
+  "key": "c.content.events.ev_sms_code_friend.tip",
+  "text": "Коды из SMS — ключ от твоих аккаунтов. Их нельзя никому отправлять.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_sms_code_friend.tip"
+ },
+ {
+  "key": "c.content.events.ev_public_wifi.q",
+  "text": "Публичный Wi-Fi в кафе просит войти через соцсеть",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_public_wifi.q"
+ },
+ {
+  "key": "c.content.events.ev_public_wifi.a.0",
+  "text": "Войти — так быстрее",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_public_wifi.a.0"
+ },
+ {
+  "key": "c.content.events.ev_public_wifi.a.1",
+  "text": "Использовать мобильный интернет или VPN",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_public_wifi.a.1"
+ },
+ {
+  "key": "c.content.events.ev_public_wifi.a.2",
+  "text": "Ввести логин и пароль дважды",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_public_wifi.a.2"
+ },
+ {
+  "key": "c.content.events.ev_public_wifi.tip",
+  "text": "Публичный Wi-Fi может перехватывать данные. Лучше VPN или мобильный интернет.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_public_wifi.tip"
+ },
+ {
+  "key": "c.content.events.ev_procrastination.q",
+  "text": "Хомяк планировал учиться, но уже час скроллит ленту. Что выбрать?",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_procrastination.q"
+ },
+ {
+  "key": "c.content.events.ev_procrastination.a.0",
+  "text": "Ещё 5 минуточек и начать",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_procrastination.a.0"
+ },
+ {
+  "key": "c.content.events.ev_procrastination.a.1",
+  "text": "Таймер на 15 минут, телефон — в другую комнату",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_procrastination.a.1"
+ },
+ {
+  "key": "c.content.events.ev_procrastination.a.2",
+  "text": "Отложить на завтра",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_procrastination.a.2"
+ },
+ {
+  "key": "c.content.events.ev_procrastination.tip",
+  "text": "Правило 15 минут: маленький кусочек задачи — самый простой способ победить прокрастинацию.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_procrastination.tip"
+ },
+ {
+  "key": "c.content.events.ev_late_sleep.q",
+  "text": "Хомяк лёг в 2 часа ночи: «сериальчик важнее сна». Итог дня?",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_late_sleep.q"
+ },
+ {
+  "key": "c.content.events.ev_late_sleep.a.0",
+  "text": "Такой отдых важнее сна",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_late_sleep.a.0"
+ },
+ {
+  "key": "c.content.events.ev_late_sleep.a.1",
+  "text": "Сон — приоритет: на свежую голову эффективнее",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_late_sleep.a.1"
+ },
+ {
+  "key": "c.content.events.ev_late_sleep.a.2",
+  "text": "Допить сериал и поесть",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_late_sleep.a.2"
+ },
+ {
+  "key": "c.content.events.ev_late_sleep.tip",
+  "text": "Сон — фундамент памяти и концентрации. Привычка «до 23:00» работает лучше мотивации.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_late_sleep.tip"
+ },
+ {
+  "key": "c.content.events.ev_harsh_feedback.q",
+  "text": "Одногруппник резко раскритиковал идею хомяка. Как отреагировать?",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_harsh_feedback.q"
+ },
+ {
+  "key": "c.content.events.ev_harsh_feedback.a.0",
+  "text": "Ответить резко — он первый начал",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_harsh_feedback.a.0"
+ },
+ {
+  "key": "c.content.events.ev_harsh_feedback.a.1",
+  "text": "«Спасибо, что именно стоит улучшить?» — спокойно уточнить",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_harsh_feedback.a.1"
+ },
+ {
+  "key": "c.content.events.ev_harsh_feedback.a.2",
+  "text": "Молча обидеться",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_harsh_feedback.a.2"
+ },
+ {
+  "key": "c.content.events.ev_harsh_feedback.tip",
+  "text": "Конструктивный вопрос превращает конфликт в обратную связь — ключевой софт-скилл.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_harsh_feedback.tip"
+ },
+ {
+  "key": "c.content.events.ev_catastrophizing.q",
+  "text": "Хомяк провалил тест и думает: «я тупой, никогда не получится». Это...",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_catastrophizing.q"
+ },
+ {
+  "key": "c.content.events.ev_catastrophizing.a.0",
+  "text": "Правда, надо смириться",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_catastrophizing.a.0"
+ },
+ {
+  "key": "c.content.events.ev_catastrophizing.a.1",
+  "text": "Искажение мышления: один тест ≠ способности",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_catastrophizing.a.1"
+ },
+ {
+  "key": "c.content.events.ev_catastrophizing.a.2",
+  "text": "Повод забросить учёбу",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_catastrophizing.a.2"
+ },
+ {
+  "key": "c.content.events.ev_catastrophizing.tip",
+  "text": "Это «ярлыки» — когнитивное искажение. Отделяй факт («не сдал») от вывода о себе.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_catastrophizing.tip"
+ },
+ {
+  "key": "c.content.events.ev_exam_anxiety.q",
+  "text": "Перед экзаменом у хомяка трясутся лапки. Лучшая первая помощь?",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_exam_anxiety.q"
+ },
+ {
+  "key": "c.content.events.ev_exam_anxiety.a.0",
+  "text": "Гнать себя учиться без сна",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_exam_anxiety.a.0"
+ },
+ {
+  "key": "c.content.events.ev_exam_anxiety.a.1",
+  "text": "Дыхание 4-4-6 и короткий отдых",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_exam_anxiety.a.1"
+ },
+ {
+  "key": "c.content.events.ev_exam_anxiety.a.2",
+  "text": "Три кофе подряд",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_exam_anxiety.a.2"
+ },
+ {
+  "key": "c.content.events.ev_exam_anxiety.tip",
+  "text": "Медленный выдох активирует парасимпатическую систему — телу становится безопасно.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_exam_anxiety.tip"
+ },
+ {
+  "key": "c.content.events.ev_sad_days.q",
+  "text": "Хомяк третий день грустит без причины. Что правильно?",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_sad_days.q"
+ },
+ {
+  "key": "c.content.events.ev_sad_days.a.0",
+  "text": "«Соберись, всё в твоих лапках»",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_sad_days.a.0"
+ },
+ {
+  "key": "c.content.events.ev_sad_days.a.1",
+  "text": "Не винить себя; рассказать близкому, при затянувшемся — к психологу",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_sad_days.a.1"
+ },
+ {
+  "key": "c.content.events.ev_sad_days.a.2",
+  "text": "Запереться и ждать",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_sad_days.a.2"
+ },
+ {
+  "key": "c.content.events.ev_sad_days.tip",
+  "text": "Затянувшееся подавленное настроение — сигнал обратиться за поддержкой. Это нормально.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.events.ev_sad_days.tip"
+ },
+ {
+  "key": "c.content.habits.h_links.text",
+  "text": "Проверил ссылку перед кликом",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.habits.h_links.text"
+ },
+ {
+  "key": "c.content.habits.h_detox.text",
+  "text": "30 мин без телефона перед сном",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.habits.h_detox.text"
+ },
+ {
+  "key": "c.content.habits.h_water.text",
+  "text": "Выпил 6–8 стаканов воды",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.habits.h_water.text"
+ },
+ {
+  "key": "c.content.habits.h_move.text",
+  "text": "20 минут движения",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.habits.h_move.text"
+ },
+ {
+  "key": "c.content.habits.h_sleep.text",
+  "text": "Лёг спать до 23:00",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.habits.h_sleep.text"
+ },
+ {
+  "key": "c.content.habits.h_kind.text",
+  "text": "Сделал доброе дело",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.habits.h_kind.text"
+ },
+ {
+  "key": "c.content.tips.0",
+  "text": "⚡ Пароль для разных сайтов — разный. Если один утечёт — все не утечут.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.tips.0"
+ },
+ {
+  "key": "c.content.tips.1",
+  "text": "🔗 Перед кликом по ссылке остановись на 3 секунды и подумай: от кого она и куда ведёт?",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.tips.1"
+ },
+ {
+  "key": "c.content.tips.2",
+  "text": "📱 Смс-код из сообщения нельзя никому давать — даже лучшему другу.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.tips.2"
+ },
+ {
+  "key": "c.content.tips.3",
+  "text": "🗂 Любое доброе дело для себя можно начать с 15 минут в день. Маленькие прыжки всегда выигрывают у больших планов.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.tips.3"
+ },
+ {
+  "key": "c.content.tips.4",
+  "text": "🧴 Когда тяжело — не забывай простые вещи: вода, сон и дыхание вдох — пауза — выдох.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.tips.4"
+ },
+ {
+  "key": "c.content.moodMsgs.1",
+  "text": "💙 Мне жаль, что сейчас тяжело. Это нормально — просить помощи. Попробуй дыхание ниже, расскажи близкому. Если состояние держится — обратись к психологу (контакты ниже).",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.moodMsgs.1"
+ },
+ {
+  "key": "c.content.moodMsgs.2",
+  "text": "💙 Бывает — и это пройдёт. Одна маленькая забота сейчас: вода, воздух или дыхание 4-4-6.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.moodMsgs.2"
+ },
+ {
+  "key": "c.content.moodMsgs.3",
+  "text": "👍 Спокойное состояние — хорошая база. Идеальный момент для привычки или сценария безопасности!",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.moodMsgs.3"
+ },
+ {
+  "key": "c.content.moodMsgs.4",
+  "text": "😊 Здорово, что день идёт хорошо! Погладь хомяка — он это заслужил.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.moodMsgs.4"
+ },
+ {
+  "key": "c.content.moodMsgs.5",
+  "text": "🎉 Отличное настроение! Вызови СОБЫТИЕ — на подъёме всё усваивается быстрее.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.moodMsgs.5"
+ },
+ {
+  "key": "c.content.grounding.0.text",
+  "text": "назови 5 ВЕЩЕЙ, которые видишь вокруг",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.grounding.0.text"
+ },
+ {
+  "key": "c.content.grounding.1.text",
+  "text": "назови 4 ЗВУКА, которые слышишь",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.grounding.1.text"
+ },
+ {
+  "key": "c.content.grounding.2.text",
+  "text": "найди 3 ПРЕДМЕТА, которых можно коснуться",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.grounding.2.text"
+ },
+ {
+  "key": "c.content.grounding.3.text",
+  "text": "заметь 2 ЗАПАХА, которые чувствуешь",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.grounding.3.text"
+ },
+ {
+  "key": "c.content.grounding.4.text",
+  "text": "сделай 1 ГЛУБОКИЙ ВЫДОХ и медленно отпусти плечи",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.grounding.4.text"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.title",
+  "text": "🔒 Цифровая безопасность",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.title"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.phishing.title",
+  "text": "Фишинг",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.phishing.title"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.phishing.scenes.0.text",
+  "text": "Фишинг — когда мошенник притворяется «знакомым» сервисом, чтобы украсть твои данные.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.phishing.scenes.0.text"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.phishing.scenes.1.q",
+  "text": "Пришло письмо «из банка»: «Ваша карта заблокирована, введите данные». Что это?",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.phishing.scenes.1.q"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.phishing.scenes.1.a.0",
+  "text": "Банк реально заблокировал карту",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.phishing.scenes.1.a.0"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.phishing.scenes.1.a.1",
+  "text": "Фишинг — банки не просят данные по ссылке",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.phishing.scenes.1.a.1"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.phishing.scenes.1.a.2",
+  "text": "Спам, но безвредный",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.phishing.scenes.1.a.2"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.phishing.scenes.1.tip",
+  "text": "Банки никогда не просят вводить данные карты по ссылке из письма.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.phishing.scenes.1.tip"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.phishing.scenes.2.q",
+  "text": "Как отличить фишинговый сайт от настоящего?",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.phishing.scenes.2.q"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.phishing.scenes.2.a.0",
+  "text": "По яркому дизайну",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.phishing.scenes.2.a.0"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.phishing.scenes.2.a.1",
+  "text": "По адресу в строке браузера и замочку HTTPS",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.phishing.scenes.2.a.1"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.phishing.scenes.2.a.2",
+  "text": "По количеству рекламы",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.phishing.scenes.2.a.2"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.phishing.scenes.2.tip",
+  "text": "Всегда смотри адрес: sber-bank.ru ≠ sberbank.ru.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.phishing.scenes.2.tip"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.phishing.scenes.3.text",
+  "text": "Запомни: услышал «срочно введите данные» — остановись. Срочность — главный инструмент мошенника.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.phishing.scenes.3.text"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.passwords.title",
+  "text": "Пароли",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.passwords.title"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.passwords.scenes.0.text",
+  "text": "Хороший пароль длинный, уникальный и не используется дважды.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.passwords.scenes.0.text"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.passwords.scenes.1.q",
+  "text": "Какой пароль надёжнее?",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.passwords.scenes.1.q"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.passwords.scenes.1.a.1",
+  "text": "МойКот!2005",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.passwords.scenes.1.a.1"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.passwords.scenes.1.a.2",
+  "text": "4 слова через дефис: кот-облако-лампа-поезд",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.passwords.scenes.1.a.2"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.passwords.scenes.1.tip",
+  "text": "Парольная фраза из 4 случайных слов — длинная и запоминающаяся.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.passwords.scenes.1.tip"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.passwords.scenes.2.q",
+  "text": "Зачем нужен менеджер паролей?",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.passwords.scenes.2.q"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.passwords.scenes.2.a.0",
+  "text": "Чтобы не запоминать десятки паролей и не повторять их",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.passwords.scenes.2.a.0"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.passwords.scenes.2.a.1",
+  "text": "Чтобы пароли были короткие",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.passwords.scenes.2.a.1"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.passwords.scenes.2.a.2",
+  "text": "Чтобы делиться паролями с друзьями",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.passwords.scenes.2.a.2"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.passwords.scenes.2.tip",
+  "text": "Менеджер хранит уникальные пароли — тебе нужно помнить один главный.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.passwords.scenes.2.tip"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.passwords.scenes.3.text",
+  "text": "Включи двухфакторную аутентификацию (2FA) на почте — это замок на двери к остальным аккаунтам.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.passwords.scenes.3.text"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.social.title",
+  "text": "Социальная инженерия",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.social.title"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.social.scenes.0.text",
+  "text": "Мошенник не взламывает компьютер — он «взламывает» доверие. Давит на страх и срочность.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.social.scenes.0.text"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.social.scenes.1.q",
+  "text": "«Служба безопасности банка»: ваша карта участвует в преступлении, переведите деньги на безопасный счёт».",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.social.scenes.1.q"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.social.scenes.1.a.0",
+  "text": "Перевести — полиция же",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.social.scenes.1.a.0"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.social.scenes.1.a.1",
+  "text": "Положить трубку: это классика телефонных мошенников",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.social.scenes.1.a.1"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.social.scenes.1.a.2",
+  "text": "Перевести половину",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.social.scenes.1.a.2"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.social.scenes.1.tip",
+  "text": "Никакая настоящая служба безопасности не просит перевести деньги или назвать код.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.social.scenes.1.tip"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.social.scenes.2.q",
+  "text": "Главное правило при подозрительном звонке?",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.social.scenes.2.q"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.social.scenes.2.a.0",
+  "text": "Делать, что говорят, быстро",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.social.scenes.2.a.0"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.social.scenes.2.a.1",
+  "text": "Положить трубку и позвонить в организацию сам",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.social.scenes.2.a.1"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.social.scenes.2.a.2",
+  "text": "Давать коды, но не пароли",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.social.scenes.2.a.2"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.social.scenes.2.tip",
+  "text": "Положить трубку и перезвонить самому по официальному номеру — всегда безопасно.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.social.scenes.2.tip"
+ },
+ {
+  "key": "c.lessons.courses.sec_basics.lessons.social.scenes.3.text",
+  "text": "Правило трёх: остановись. Проверь. Поговори с кем-то доверенным.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.sec_basics.lessons.social.scenes.3.text"
+ },
+ {
+  "key": "c.lessons.courses.soft_skills.title",
+  "text": "🤝 Софт-скиллы",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.soft_skills.title"
+ },
+ {
+  "key": "c.lessons.courses.soft_skills.lessons.feedback.title",
+  "text": "Обратная связь",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.soft_skills.lessons.feedback.title"
+ },
+ {
+  "key": "c.lessons.courses.soft_skills.lessons.feedback.scenes.0.text",
+  "text": "Обратная связь — подарок, даже если упаковка неприятная. Важно отделить критику идеи от критики тебя.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.soft_skills.lessons.feedback.scenes.0.text"
+ },
+ {
+  "key": "c.lessons.courses.soft_skills.lessons.feedback.scenes.1.q",
+  "text": "Тебя резко раскритиковали. Что сказать?",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.soft_skills.lessons.feedback.scenes.1.q"
+ },
+ {
+  "key": "c.lessons.courses.soft_skills.lessons.feedback.scenes.1.a.0",
+  "text": "«Сам ты...»",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.soft_skills.lessons.feedback.scenes.1.a.0"
+ },
+ {
+  "key": "c.lessons.courses.soft_skills.lessons.feedback.scenes.1.a.1",
+  "text": "«Спасибо. Что именно стоит улучшить?»",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.soft_skills.lessons.feedback.scenes.1.a.1"
+ },
+ {
+  "key": "c.lessons.courses.soft_skills.lessons.feedback.scenes.1.a.2",
+  "text": "Молчать и обидеться",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.soft_skills.lessons.feedback.scenes.1.a.2"
+ },
+ {
+  "key": "c.lessons.courses.soft_skills.lessons.feedback.scenes.1.tip",
+  "text": "Уточняющий вопрос переводит эмоции в план действий.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.soft_skills.lessons.feedback.scenes.1.tip"
+ },
+ {
+  "key": "c.lessons.courses.soft_skills.lessons.feedback.scenes.2.q",
+  "text": "Как давать обратную связь самому?",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.soft_skills.lessons.feedback.scenes.2.q"
+ },
+ {
+  "key": "c.lessons.courses.soft_skills.lessons.feedback.scenes.2.a.0",
+  "text": "«Ты всегда всё портишь»",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.soft_skills.lessons.feedback.scenes.2.a.0"
+ },
+ {
+  "key": "c.lessons.courses.soft_skills.lessons.feedback.scenes.2.a.1",
+  "text": "«В этой части было так, вот эффект, предлагаю так»",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.soft_skills.lessons.feedback.scenes.2.a.1"
+ },
+ {
+  "key": "c.lessons.courses.soft_skills.lessons.feedback.scenes.2.a.2",
+  "text": "Промолчать — человек сам поймёт",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.soft_skills.lessons.feedback.scenes.2.a.2"
+ },
+ {
+  "key": "c.lessons.courses.soft_skills.lessons.feedback.scenes.2.tip",
+  "text": "Формула: наблюдение → эффект → просьба. Без ярлыков.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.soft_skills.lessons.feedback.scenes.2.tip"
+ },
+ {
+  "key": "c.lessons.courses.soft_skills.lessons.feedback.scenes.3.text",
+  "text": "Сильные команды спорят об идеях, а не о людях. Практикуй это с первой реплики.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.soft_skills.lessons.feedback.scenes.3.text"
+ },
+ {
+  "key": "c.lessons.courses.soft_skills.lessons.time.title",
+  "text": "Время и фокус",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.soft_skills.lessons.time.title"
+ },
+ {
+  "key": "c.lessons.courses.soft_skills.lessons.time.scenes.0.text",
+  "text": "Секрет продуктивности не в 12 часах работы, а в честных коротких отрезках фокуса.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.soft_skills.lessons.time.scenes.0.text"
+ },
+ {
+  "key": "c.lessons.courses.soft_skills.lessons.time.scenes.1.q",
+  "text": "Что делать, если задача пугает размером?",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.soft_skills.lessons.time.scenes.1.q"
+ },
+ {
+  "key": "c.lessons.courses.soft_skills.lessons.time.scenes.1.a.0",
+  "text": "Ждать вдохновения",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.soft_skills.lessons.time.scenes.1.a.0"
+ },
+ {
+  "key": "c.lessons.courses.soft_skills.lessons.time.scenes.1.a.1",
+  "text": "Разбить на куски по 15–25 минут",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.soft_skills.lessons.time.scenes.1.a.1"
+ },
+ {
+  "key": "c.lessons.courses.soft_skills.lessons.time.scenes.1.a.2",
+  "text": "Взяться за всё сразу ночью",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.soft_skills.lessons.time.scenes.1.a.2"
+ },
+ {
+  "key": "c.lessons.courses.soft_skills.lessons.time.scenes.1.tip",
+  "text": "Мозг боится «огромной задачи», но соглашается на 15 минут.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.soft_skills.lessons.time.scenes.1.tip"
+ },
+ {
+  "key": "c.lessons.courses.soft_skills.lessons.time.scenes.2.q",
+  "text": "Телефон рядом во время учёбы — это...",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.soft_skills.lessons.time.scenes.2.q"
+ },
+ {
+  "key": "c.lessons.courses.soft_skills.lessons.time.scenes.2.a.0",
+  "text": "Нормально, я не отвлекаюсь",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.soft_skills.lessons.time.scenes.2.a.0"
+ },
+ {
+  "key": "c.lessons.courses.soft_skills.lessons.time.scenes.2.a.1",
+  "text": "Замедляет: даже вибрация ломает фокус",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.soft_skills.lessons.time.scenes.2.a.1"
+ },
+ {
+  "key": "c.lessons.courses.soft_skills.lessons.time.scenes.2.a.2",
+  "text": "Помогает учиться",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.soft_skills.lessons.time.scenes.2.a.2"
+ },
+ {
+  "key": "c.lessons.courses.soft_skills.lessons.time.scenes.2.tip",
+  "text": "Уведомление «на секунду» стоит ~20 минут возврата в фокус.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.soft_skills.lessons.time.scenes.2.tip"
+ },
+ {
+  "key": "c.lessons.courses.soft_skills.lessons.time.scenes.3.text",
+  "text": "Попробуй сегодня: один отрезок 25 минут работы без телефона. Отметь это в привычках!",
+  "file": "content",
+  "kind": "content",
+  "path": "c.lessons.courses.soft_skills.lessons.time.scenes.3.text"
+ },
+ {
+  "key": "c.shop.items.item_wifi.name",
+  "text": "Защита Wi-Fi",
+  "file": "content",
+  "kind": "content",
+  "path": "c.shop.items.item_wifi.name"
+ },
+ {
+  "key": "c.shop.items.item_wifi.effect",
+  "text": "24 ч: в сценариях про Wi-Fi провал не снимает ♥ (пометка «подозрительная сеть»)",
+  "file": "content",
+  "kind": "content",
+  "path": "c.shop.items.item_wifi.effect"
+ },
+ {
+  "key": "c.shop.items.item_cold.name",
+  "text": "Холодный разум",
+  "file": "content",
+  "kind": "content",
+  "path": "c.shop.items.item_cold.name"
+ },
+ {
+  "key": "c.shop.items.item_cold.effect",
+  "text": "+10 секунд к таймеру на 3 следующих сценария",
+  "file": "content",
+  "kind": "content",
+  "path": "c.shop.items.item_cold.effect"
+ },
+ {
+  "key": "c.shop.items.item_key.name",
+  "text": "Защитный ключ",
+  "file": "content",
+  "kind": "content",
+  "path": "c.shop.items.item_key.name"
+ },
+ {
+  "key": "c.shop.items.item_key.effect",
+  "text": "1 раз за сессию восстановит 1 ♥, если осталось 0",
+  "file": "content",
+  "kind": "content",
+  "path": "c.shop.items.item_key.effect"
+ },
+ {
+  "key": "c.shop.items.item_hint.name",
+  "text": "Подсказка",
+  "file": "content",
+  "kind": "content",
+  "path": "c.shop.items.item_hint.name"
+ },
+ {
+  "key": "c.shop.items.item_hint.effect",
+  "text": "убирает 1 неверный вариант ответа (не более 1 раза за вопрос)",
+  "file": "content",
+  "kind": "content",
+  "path": "c.shop.items.item_hint.effect"
+ },
+ {
+  "key": "c.shop.hats.hat_none.name",
+  "text": "Без шапки",
+  "file": "content",
+  "kind": "content",
+  "path": "c.shop.hats.hat_none.name"
+ },
+ {
+  "key": "c.shop.hats.hat_cap.name",
+  "text": "Кепка",
+  "file": "content",
+  "kind": "content",
+  "path": "c.shop.hats.hat_cap.name"
+ },
+ {
+  "key": "c.shop.hats.hat_bow.name",
+  "text": "Бантик",
+  "file": "content",
+  "kind": "content",
+  "path": "c.shop.hats.hat_bow.name"
+ },
+ {
+  "key": "c.shop.hats.hat_crown.name",
+  "text": "Корона",
+  "file": "content",
+  "kind": "content",
+  "path": "c.shop.hats.hat_crown.name"
+ },
+ {
+  "key": "c.shop.hats.hat_ph.name",
+  "text": "Наушники",
+  "file": "content",
+  "kind": "content",
+  "path": "c.shop.hats.hat_ph.name"
+ },
+ {
+  "key": "c.shop.walls.wall_rose.name",
+  "text": "Розовые",
+  "file": "content",
+  "kind": "content",
+  "path": "c.shop.walls.wall_rose.name"
+ },
+ {
+  "key": "c.shop.walls.wall_sky.name",
+  "text": "Небесные",
+  "file": "content",
+  "kind": "content",
+  "path": "c.shop.walls.wall_sky.name"
+ },
+ {
+  "key": "c.shop.walls.wall_mint.name",
+  "text": "Мятные",
+  "file": "content",
+  "kind": "content",
+  "path": "c.shop.walls.wall_mint.name"
+ },
+ {
+  "key": "c.shop.walls.wall_star.name",
+  "text": "Звёздные",
+  "file": "content",
+  "kind": "content",
+  "path": "c.shop.walls.wall_star.name"
+ },
+ {
+  "key": "c.shop.food.food_seeds.name",
+  "text": "Семечки",
+  "file": "content",
+  "kind": "content",
+  "path": "c.shop.food.food_seeds.name"
+ },
+ {
+  "key": "c.shop.food.food_seeds.effect",
+  "text": "+15 сытости",
+  "file": "content",
+  "kind": "content",
+  "path": "c.shop.food.food_seeds.effect"
+ },
+ {
+  "key": "c.shop.food.food_cake.name",
+  "text": "Тортик",
+  "file": "content",
+  "kind": "content",
+  "path": "c.shop.food.food_cake.name"
+ },
+ {
+  "key": "c.shop.food.food_cake.effect",
+  "text": "+20 сытости, +10 счастья",
+  "file": "content",
+  "kind": "content",
+  "path": "c.shop.food.food_cake.effect"
+ },
+ {
+  "key": "c.shop.food.food_tea.name",
+  "text": "Чай",
+  "file": "content",
+  "kind": "content",
+  "path": "c.shop.food.food_tea.name"
+ },
+ {
+  "key": "c.shop.food.food_tea.effect",
+  "text": "+8 сытости, +8 счастья",
+  "file": "content",
+  "kind": "content",
+  "path": "c.shop.food.food_tea.effect"
+ },
+ {
+  "key": "c.content.topics.anxiety.label",
+  "text": "тревога",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.anxiety.label"
+ },
+ {
+  "key": "c.content.topics.anxiety.words.0",
+  "text": "тревог",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.anxiety.words.0"
+ },
+ {
+  "key": "c.content.topics.anxiety.words.1",
+  "text": "паник",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.anxiety.words.1"
+ },
+ {
+  "key": "c.content.topics.anxiety.words.2",
+  "text": "боюсь",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.anxiety.words.2"
+ },
+ {
+  "key": "c.content.topics.anxiety.words.3",
+  "text": "страшно",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.anxiety.words.3"
+ },
+ {
+  "key": "c.content.topics.anxiety.words.4",
+  "text": "страха",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.anxiety.words.4"
+ },
+ {
+  "key": "c.content.topics.anxiety.words.5",
+  "text": "нервнича",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.anxiety.words.5"
+ },
+ {
+  "key": "c.content.topics.anxiety.words.6",
+  "text": "волну",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.anxiety.words.6"
+ },
+ {
+  "key": "c.content.topics.anxiety.words.7",
+  "text": "трясет",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.anxiety.words.7"
+ },
+ {
+  "key": "c.content.topics.anxiety.words.8",
+  "text": "паник атак",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.anxiety.words.8"
+ },
+ {
+  "key": "c.content.topics.anxiety.words.9",
+  "text": "паника атак",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.anxiety.words.9"
+ },
+ {
+  "key": "c.content.topics.anxiety.empath",
+  "text": "Тревога — это очень тяжело. Тело как будто говорит тревогу без причины, и это изменяет. Ты не слабый(ая) — тревога так работает.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.anxiety.empath"
+ },
+ {
+  "key": "c.content.topics.anxiety.asks.0",
+  "text": "где ты её чувствуешь больше всего — в теле или в мыслях?",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.anxiety.asks.0"
+ },
+ {
+  "key": "c.content.topics.anxiety.asks.1",
+  "text": "что обычно помогает тебе чуть-чуть отпустить?",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.anxiety.asks.1"
+ },
+ {
+  "key": "c.content.topics.anxiety.tools.0.label",
+  "text": "🛏️ отдохнуть с хомяком в домике",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.anxiety.tools.0.label"
+ },
+ {
+  "key": "c.content.topics.anxiety.tools.1.label",
+  "text": "💪 отметить привычку — забота о себе",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.anxiety.tools.1.label"
+ },
+ {
+  "key": "c.content.topics.anxiety.tips.0",
+  "text": "Медленный выдох длиннее вдоха — сигнал мозгу «мы в безопасности».",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.anxiety.tips.0"
+ },
+ {
+  "key": "c.content.topics.anxiety.tips.1",
+  "text": "Тревога — не факт о будущем, а эмоция в настоящем.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.anxiety.tips.1"
+ },
+ {
+  "key": "c.content.topics.stress.label",
+  "text": "стресс и учёба",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.stress.label"
+ },
+ {
+  "key": "c.content.topics.stress.words.0",
+  "text": "стресс",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.stress.words.0"
+ },
+ {
+  "key": "c.content.topics.stress.words.1",
+  "text": "устал",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.stress.words.1"
+ },
+ {
+  "key": "c.content.topics.stress.words.2",
+  "text": "выгор",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.stress.words.2"
+ },
+ {
+  "key": "c.content.topics.stress.words.3",
+  "text": "перегруз",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.stress.words.3"
+ },
+ {
+  "key": "c.content.topics.stress.words.4",
+  "text": "не успева",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.stress.words.4"
+ },
+ {
+  "key": "c.content.topics.stress.words.5",
+  "text": "завал",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.stress.words.5"
+ },
+ {
+  "key": "c.content.topics.stress.words.6",
+  "text": "дедлайн",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.stress.words.6"
+ },
+ {
+  "key": "c.content.topics.stress.words.7",
+  "text": "сесси",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.stress.words.7"
+ },
+ {
+  "key": "c.content.topics.stress.words.8",
+  "text": "экзамен",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.stress.words.8"
+ },
+ {
+  "key": "c.content.topics.stress.words.9",
+  "text": "контрольн",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.stress.words.9"
+ },
+ {
+  "key": "c.content.topics.stress.empath",
+  "text": "Похоже, на тебя сейчас давит много всего сразу. Когда всё срочно — легко забыть, что ты живой человек, а не машина для задач.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.stress.empath"
+ },
+ {
+  "key": "c.content.topics.stress.asks.0",
+  "text": "если бы можно было отложить одну вещь — какую?",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.stress.asks.0"
+ },
+ {
+  "key": "c.content.topics.stress.asks.1",
+  "text": "когда ты последний раз пил(а) воду?",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.stress.asks.1"
+ },
+ {
+  "key": "c.content.topics.stress.tools.0.label",
+  "text": "📝 отметить привычку",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.stress.tools.0.label"
+ },
+ {
+  "key": "c.content.topics.stress.tools.1.label",
+  "text": "🏠 посидеть с хомяком",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.stress.tools.1.label"
+ },
+ {
+  "key": "c.content.topics.stress.tips.0",
+  "text": "Правило 15 минут: мозг боится «всего», но справляется с маленьким кусочком.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.stress.tips.0"
+ },
+ {
+  "key": "c.content.topics.stress.tips.1",
+  "text": "Отдых — не награда за работу, а условие.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.stress.tips.1"
+ },
+ {
+  "key": "c.content.topics.sad.label",
+  "text": "грустно",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.sad.label"
+ },
+ {
+  "key": "c.content.topics.sad.words.0",
+  "text": "груст",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.sad.words.0"
+ },
+ {
+  "key": "c.content.topics.sad.words.1",
+  "text": "тоск",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.sad.words.1"
+ },
+ {
+  "key": "c.content.topics.sad.words.2",
+  "text": "печаль",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.sad.words.2"
+ },
+ {
+  "key": "c.content.topics.sad.words.3",
+  "text": "плохо на душе",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.sad.words.3"
+ },
+ {
+  "key": "c.content.topics.sad.words.4",
+  "text": "депресс",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.sad.words.4"
+ },
+ {
+  "key": "c.content.topics.sad.words.5",
+  "text": "плак",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.sad.words.5"
+ },
+ {
+  "key": "c.content.topics.sad.words.6",
+  "text": "пусто внутри",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.sad.words.6"
+ },
+ {
+  "key": "c.content.topics.sad.empath",
+  "text": "Мне жаль, что сейчас так. Грусть — не слабость, а знак, что тебе не безразлично то, что происходит. Хомяк рядом, ты не один(одна).",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.sad.empath"
+ },
+ {
+  "key": "c.content.topics.sad.asks.0",
+  "text": "как давно ты так себя чувствуешь?",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.sad.asks.0"
+ },
+ {
+  "key": "c.content.topics.sad.asks.1",
+  "text": "есть ли кто-то, кому ты можешь об этом сказать?",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.sad.asks.1"
+ },
+ {
+  "key": "c.content.topics.sad.tools.0.label",
+  "text": "💬 поговорить с хомяком в домике",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.sad.tools.0.label"
+ },
+ {
+  "key": "c.content.topics.sad.tools.1.label",
+  "text": "🧠 заземление 5-4-3-2-1",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.sad.tools.1.label"
+ },
+ {
+  "key": "c.content.topics.sad.tips.0",
+  "text": "Если тоска держится дольше двух недель — это повод поговорить со специалистом. Это нормальная забота о себе.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.sad.tips.0"
+ },
+ {
+  "key": "c.content.topics.sad.tips.1",
+  "text": "Не нужно быть «сильным(ой)» постоянно. Просить помощи — это навык.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.sad.tips.1"
+ },
+ {
+  "key": "c.content.topics.anger.label",
+  "text": "злюсь",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.anger.label"
+ },
+ {
+  "key": "c.content.topics.anger.words.0",
+  "text": "злюсь",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.anger.words.0"
+ },
+ {
+  "key": "c.content.topics.anger.words.1",
+  "text": "бесит",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.anger.words.1"
+ },
+ {
+  "key": "c.content.topics.anger.words.2",
+  "text": "злость",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.anger.words.2"
+ },
+ {
+  "key": "c.content.topics.anger.words.3",
+  "text": "ненавиж",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.anger.words.3"
+ },
+ {
+  "key": "c.content.topics.anger.words.4",
+  "text": "раздража",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.anger.words.4"
+ },
+ {
+  "key": "c.content.topics.anger.words.5",
+  "text": "ярост",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.anger.words.5"
+ },
+ {
+  "key": "c.content.topics.anger.empath",
+  "text": "Злость часто — сигнал, что твои границы нарушили. Он не «плохая», она — причина что-то важное для тебя.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.anger.empath"
+ },
+ {
+  "key": "c.content.topics.anger.asks.0",
+  "text": "что именно задело больше всего?",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.anger.asks.0"
+ },
+ {
+  "key": "c.content.topics.anger.asks.1",
+  "text": "если бы злость могла говорить — что бы она сказала?",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.anger.asks.1"
+ },
+ {
+  "key": "c.content.topics.anger.tools.0.label",
+  "text": "🏠 пойти погладить хомяка",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.anger.tools.0.label"
+ },
+ {
+  "key": "c.content.topics.anger.tips.0",
+  "text": "Злость — вторичная эмоция: под ней часто обида или усталость.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.anger.tips.0"
+ },
+ {
+  "key": "c.content.topics.anger.tips.1",
+  "text": "Физическая разрядка (пройтись, сжать-разжать кулаки) помогает сбросить напряжение.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.anger.tips.1"
+ },
+ {
+  "key": "c.content.topics.lonely.label",
+  "text": "одиноко",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.lonely.label"
+ },
+ {
+  "key": "c.content.topics.lonely.words.0",
+  "text": "одинок",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.lonely.words.0"
+ },
+ {
+  "key": "c.content.topics.lonely.words.1",
+  "text": "никто не поним",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.lonely.words.1"
+ },
+ {
+  "key": "c.content.topics.lonely.words.2",
+  "text": "нет друзей",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.lonely.words.2"
+ },
+ {
+  "key": "c.content.topics.lonely.words.3",
+  "text": "не с кем",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.lonely.words.3"
+ },
+ {
+  "key": "c.content.topics.lonely.words.4",
+  "text": "изолиров",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.lonely.words.4"
+ },
+ {
+  "key": "c.content.topics.lonely.empath",
+  "text": "Одиночество — одна из самых человеческих болей. Особенно когда вокруг люди, а ощущение — «некому».",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.lonely.empath"
+ },
+ {
+  "key": "c.content.topics.lonely.asks.0",
+  "text": "в каком моменте тебе особенно одиноко?",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.lonely.asks.0"
+ },
+ {
+  "key": "c.content.topics.lonely.asks.1",
+  "text": "был ли человек, с которым было легко?",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.lonely.asks.1"
+ },
+ {
+  "key": "c.content.topics.lonely.tools.0.label",
+  "text": "💜 чек-ин настроения",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.lonely.tools.0.label"
+ },
+ {
+  "key": "c.content.topics.lonely.tips.0",
+  "text": "Одиночество — сигнал о потребности в близости, а не «не со мной что-то не так».",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.lonely.tips.0"
+ },
+ {
+  "key": "c.content.topics.lonely.tips.1",
+  "text": "Один честный «мне сейчас одиноко» сокращает дистанцию больше, чем «нормально».",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.lonely.tips.1"
+ },
+ {
+  "key": "c.content.topics.study.label",
+  "text": "учёба",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.study.label"
+ },
+ {
+  "key": "c.content.topics.study.words.0",
+  "text": "учеб",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.study.words.0"
+ },
+ {
+  "key": "c.content.topics.study.words.1",
+  "text": "универ",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.study.words.1"
+ },
+ {
+  "key": "c.content.topics.study.words.2",
+  "text": "школ",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.study.words.2"
+ },
+ {
+  "key": "c.content.topics.study.words.3",
+  "text": "провал",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.study.words.3"
+ },
+ {
+  "key": "c.content.topics.study.words.4",
+  "text": "оценк",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.study.words.4"
+ },
+ {
+  "key": "c.content.topics.study.words.5",
+  "text": "не получ",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.study.words.5"
+ },
+ {
+  "key": "c.content.topics.study.words.6",
+  "text": "не поним",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.study.words.6"
+ },
+ {
+  "key": "c.content.topics.study.words.7",
+  "text": "отчисл",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.study.words.7"
+ },
+ {
+  "key": "c.content.topics.study.words.8",
+  "text": "тест",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.study.words.8"
+ },
+ {
+  "key": "c.content.topics.study.empath",
+  "text": "Учёба давит, когда кажется, что оценка = твоя ценность. Но это не так. Один тест — не приговор твоим способностям.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.study.empath"
+ },
+ {
+  "key": "c.content.topics.study.asks.0",
+  "text": "какая часть учёбы даётся сильнее всего?",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.study.asks.0"
+ },
+ {
+  "key": "c.content.topics.study.asks.1",
+  "text": "что для тебя в учёбе важно — оценки или знания?",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.study.asks.1"
+ },
+ {
+  "key": "c.content.topics.study.tools.0.label",
+  "text": "🎓 закрыть — урок",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.study.tools.0.label"
+ },
+ {
+  "key": "c.content.topics.study.tips.0",
+  "text": "«Я ярлык» («я тупой») — когнитивное искажение. Факт «не сдал» ≠ вывод о себе.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.study.tips.0"
+ },
+ {
+  "key": "c.content.topics.study.tips.1",
+  "text": "Сон и конспекты важнее зубрёжки.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.study.tips.1"
+ },
+ {
+  "key": "c.content.topics.sleep.label",
+  "text": "сон",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.sleep.label"
+ },
+ {
+  "key": "c.content.topics.sleep.words.0",
+  "text": "не сплю",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.sleep.words.0"
+ },
+ {
+  "key": "c.content.topics.sleep.words.1",
+  "text": "бессонн",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.sleep.words.1"
+ },
+ {
+  "key": "c.content.topics.sleep.words.2",
+  "text": "не могу уснуть",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.sleep.words.2"
+ },
+ {
+  "key": "c.content.topics.sleep.words.3",
+  "text": "не высыпа",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.sleep.words.3"
+ },
+ {
+  "key": "c.content.topics.sleep.words.4",
+  "text": "сон",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.sleep.words.4"
+ },
+ {
+  "key": "c.content.topics.sleep.words.5",
+  "text": "ночн кошмар",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.sleep.words.5"
+ },
+ {
+  "key": "c.content.topics.sleep.empath",
+  "text": "Без сна всё кажется тяжелее — это не лень, тело реально восстанавливается ночью. Хомяк спец по сну, он знает.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.sleep.empath"
+ },
+ {
+  "key": "c.content.topics.sleep.asks.0",
+  "text": "что мешает уснуть — мысли или тело?",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.sleep.asks.0"
+ },
+ {
+  "key": "c.content.topics.sleep.asks.1",
+  "text": "сколько ты спишь в обычную ночь?",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.sleep.asks.1"
+ },
+ {
+  "key": "c.content.topics.sleep.tools.0.label",
+  "text": "📵 привычка «без телефона перед сном»",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.sleep.tools.0.label"
+ },
+ {
+  "key": "c.content.topics.sleep.tips.0",
+  "text": "Экран за 30 минут до сна — главный вор сна у студентов.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.sleep.tips.0"
+ },
+ {
+  "key": "c.content.topics.sleep.tips.1",
+  "text": "Один и тот же время отхода ко сну важнее, чем «доспать» в выходные.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.sleep.tips.1"
+ },
+ {
+  "key": "c.content.topics.good.label",
+  "text": "мне хорошо 👋",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.good.label"
+ },
+ {
+  "key": "c.content.topics.good.words.0",
+  "text": "хорошо",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.good.words.0"
+ },
+ {
+  "key": "c.content.topics.good.words.1",
+  "text": "отлично",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.good.words.1"
+ },
+ {
+  "key": "c.content.topics.good.words.2",
+  "text": "рад",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.good.words.2"
+ },
+ {
+  "key": "c.content.topics.good.words.3",
+  "text": "счастлив",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.good.words.3"
+ },
+ {
+  "key": "c.content.topics.good.words.4",
+  "text": "круто",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.good.words.4"
+ },
+ {
+  "key": "c.content.topics.good.words.5",
+  "text": "получилось",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.good.words.5"
+ },
+ {
+  "key": "c.content.topics.good.words.6",
+  "text": "горж",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.good.words.6"
+ },
+ {
+  "key": "c.content.topics.good.empath",
+  "text": "Здорово! Хорошее важно замечать так же, как и тяжёлое. Хомяк шепчет лапкой и радуется с тобой! 🎉",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.good.empath"
+ },
+ {
+  "key": "c.content.topics.good.asks.0",
+  "text": "что случилось хорошего?",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.good.asks.0"
+ },
+ {
+  "key": "c.content.topics.good.asks.1",
+  "text": "чем ты можешь это отметить?",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.good.asks.1"
+ },
+ {
+  "key": "c.content.topics.good.tools.0.label",
+  "text": "🎓 закрепить — урок",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.good.tools.0.label"
+ },
+ {
+  "key": "c.content.topics.good.tips.0",
+  "text": "Фиксация хорошего укрепляет ресурс.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.good.tips.0"
+ },
+ {
+  "key": "c.content.topics.good.tips.1",
+  "text": "Поделись радостью — она станет больше.",
+  "file": "content",
+  "kind": "content",
+  "path": "c.content.topics.good.tips.1"
+ },
+ {
+  "key": "j.cloud.ne-udalos-zaregistrirovatsya-2",
+  "text": "Не удалось зарегистрироваться",
+  "file": "src/core/cloud.js",
+  "line": 59,
+  "kind": "js"
+ },
+ {
+  "key": "j.cloud.nevernyy-email-ili-parol-2",
+  "text": "Неверный email или пароль",
+  "file": "src/core/cloud.js",
+  "line": 46,
+  "kind": "js"
+ },
+ {
+  "key": "j.game.24ch-2",
+  "text": "24ч",
+  "file": "src/core/game.js",
+  "line": 179,
+  "kind": "js"
+ },
+ {
+  "key": "j.game.m-2",
+  "text": "м",
+  "file": "src/core/game.js",
+  "line": 179,
+  "kind": "js"
+ },
+ {
+  "key": "j.game.ch-2",
+  "text": "ч",
+  "file": "src/core/game.js",
+  "line": 179,
+  "kind": "js"
+ },
+ {
+  "key": "j.game.otmet-privychki-i-zaglyani-2",
+  "text": "Отметь привычки и загляни в «Помощь» — он будет рад!",
+  "file": "src/core/game.js",
+  "line": 136,
+  "kind": "js"
+ },
+ {
+  "key": "j.game.hori-skuchaet-2",
+  "text": "Хори скучает... 💜",
+  "file": "src/core/game.js",
+  "line": 136,
+  "kind": "js"
+ },
+ {
+  "key": "j.game.nizkiy-uroven-bezopasnosti-proydi-2",
+  "text": "Низкий уровень безопасности: пройди задание против мошенников в «Игре».",
+  "file": "src/core/game.js",
+  "line": 133,
+  "kind": "js"
+ },
+ {
+  "key": "j.game.hori-v-opasnosti-2",
+  "text": "Хори в опасности! ⚠️",
+  "file": "src/core/game.js",
+  "line": 133,
+  "kind": "js"
+ },
+ {
+  "key": "j.game.zdorove-na-ishode-poigray-2",
+  "text": "Здоровье на исходе — поиграй с ним в разделе «Играть» и пройди урок!",
+  "file": "src/core/game.js",
+  "line": 130,
+  "kind": "js"
+ },
+ {
+  "key": "j.game.hori-ploho-sebya-chuvstvuet-2",
+  "text": "Хори плохо себя чувствует! 🤒",
+  "file": "src/core/game.js",
+  "line": 130,
+  "kind": "js"
+ },
+ {
+  "key": "j.game.master-kiberzaschity-2",
+  "text": "Мастер киберзащиты",
+  "file": "src/core/game.js",
+  "line": 94,
+  "kind": "js"
+ },
+ {
+  "key": "j.game.ekspert-2",
+  "text": "Эксперт",
+  "file": "src/core/game.js",
+  "line": 93,
+  "kind": "js"
+ },
+ {
+  "key": "j.game.znatok-2",
+  "text": "Знаток",
+  "file": "src/core/game.js",
+  "line": 92,
+  "kind": "js"
+ },
+ {
+  "key": "j.game.lyubitel-2",
+  "text": "Любитель",
+  "file": "src/core/game.js",
+  "line": 91,
+  "kind": "js"
+ },
+ {
+  "key": "j.game.novichok-2",
+  "text": "Новичок",
+  "file": "src/core/game.js",
+  "line": 90,
+  "kind": "js"
+ },
+ {
+  "key": "j.game.serii-2",
+  "text": " серии!",
+  "file": "src/core/game.js",
+  "line": 22,
+  "kind": "js"
+ },
+ {
+  "key": "j.game.den-2",
+  "text": "📅 день ",
+  "file": "src/core/game.js",
+  "line": 22,
+  "kind": "js"
+ },
+ {
+  "key": "j.scene.pogladit-2",
+  "text": "🐹 погладить",
+  "file": "src/render/scene.js",
+  "line": 13,
+  "kind": "js"
+ },
+ {
+  "key": "j.scene.koleso-igrat-2",
+  "text": "🎡 колесо — играть!",
+  "file": "src/render/scene.js",
+  "line": 12,
+  "kind": "js"
+ },
+ {
+  "key": "j.scene.lezhanka-spat-2",
+  "text": "💤 лежанка — спать",
+  "file": "src/render/scene.js",
+  "line": 11,
+  "kind": "js"
+ },
+ {
+  "key": "j.scene.tsvetok-zabota-2",
+  "text": "🌱 цветок — забота",
+  "file": "src/render/scene.js",
+  "line": 10,
+  "kind": "js"
+ },
+ {
+  "key": "j.scene.okno-privet-2",
+  "text": "🪟 окно — привет",
+  "file": "src/render/scene.js",
+  "line": 9,
+  "kind": "js"
+ },
+ {
+  "key": "j.scene.plakat-sovet-2",
+  "text": "🛡 плакат — совет",
+  "file": "src/render/scene.js",
+  "line": 8,
+  "kind": "js"
+ },
+ {
+  "key": "j.scene.miska-pokormit-2",
+  "text": "🥣 миска — покормить",
+  "file": "src/render/scene.js",
+  "line": 7,
+  "kind": "js"
+ },
+ {
+  "key": "j.scene.dnevnik-statistika-2",
+  "text": "📖 дневник — статистика",
+  "file": "src/render/scene.js",
+  "line": 6,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.razreshenie-na-uvedomleniya-ne-2",
+  "text": "Разрешение на уведомления не дано",
+  "file": "src/ui/app.js",
+  "line": 1048,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.uvedomleniya-vklyucheny-2",
+  "text": "Уведомления включены 🔔",
+  "file": "src/ui/app.js",
+  "line": 1046,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.zahodi-pitomets-soskuchilsya-po-2",
+  "text": "Заходи — питомец соскучился по урокам кибербезопасности.",
+  "file": "src/ui/app.js",
+  "line": 1045,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.hori-zhdet-tebya-2",
+  "text": "Хори ждёт тебя! 🐹",
+  "file": "src/ui/app.js",
+  "line": 1045,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.uvedomleniya-vyklyucheny-2",
+  "text": "Уведомления выключены",
+  "file": "src/ui/app.js",
+  "line": 1037,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.etot-brauzer-ne-podderzhivaet-2",
+  "text": "Этот браузер не поддерживает уведомления",
+  "file": "src/ui/app.js",
+  "line": 1032,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.ne-podderzhivaetsya-brauzerom-2",
+  "text": " (не поддерживается браузером)",
+  "file": "src/ui/app.js",
+  "line": 1028,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.vykl-2",
+  "text": "выкл",
+  "file": "src/ui/app.js",
+  "line": 1028,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.vkl-2",
+  "text": "вкл",
+  "file": "src/ui/app.js",
+  "line": 1028,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.uvedomleniya-o-hori-2",
+  "text": "🔔 Уведомления о Хори: ",
+  "file": "src/ui/app.js",
+  "line": 1028,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.tochno-sbrosit-ves-progress-2",
+  "text": "Точно сбросить весь прогресс?",
+  "file": "src/ui/app.js",
+  "line": 1019,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.vykl-4",
+  "text": "выкл",
+  "file": "src/ui/app.js",
+  "line": 1015,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.vkl-4",
+  "text": "вкл",
+  "file": "src/ui/app.js",
+  "line": 1015,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.zvuk-2",
+  "text": "🔊 Звук: ",
+  "file": "src/ui/app.js",
+  "line": 1015,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.vykl-6",
+  "text": "выкл",
+  "file": "src/ui/app.js",
+  "line": 1008,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.vkl-6",
+  "text": "вкл",
+  "file": "src/ui/app.js",
+  "line": 1008,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.zvuk-4",
+  "text": "🔊 Звук: ",
+  "file": "src/ui/app.js",
+  "line": 1008,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.chek-in-zapisan-2",
+  "text": "💜 Чек-ин записан",
+  "file": "src/ui/app.js",
+  "line": 999,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.kupleno-2",
+  "text": "Куплено: ",
+  "file": "src/ui/app.js",
+  "line": 950,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.ne-hvataet-monet-2",
+  "text": "Не хватает монет!",
+  "file": "src/ui/app.js",
+  "line": 949,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.kupit-2",
+  "text": "КУПИТЬ",
+  "file": "src/ui/app.js",
+  "line": 945,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.v-nalichii-2",
+  "text": " • в наличии: ",
+  "file": "src/ui/app.js",
+  "line": 942,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.balans-2",
+  "text": "Баланс: ",
+  "file": "src/ui/app.js",
+  "line": 942,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.monet-2",
+  "text": " МОНЕТ",
+  "file": "src/ui/app.js",
+  "line": 939,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.nadeto-2",
+  "text": "Надето: ",
+  "file": "src/ui/app.js",
+  "line": 899,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.kupleno-i-nadeto-2",
+  "text": "Куплено и надето: ",
+  "file": "src/ui/app.js",
+  "line": 899,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.ne-hvataet-monet-4",
+  "text": "Не хватает монет!",
+  "file": "src/ui/app.js",
+  "line": 897,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.schastya-2",
+  "text": " счастья",
+  "file": "src/ui/app.js",
+  "line": 889,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.sytosti-2",
+  "text": " сытости",
+  "file": "src/ui/app.js",
+  "line": 889,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.homyak-dovolen-2",
+  "text": "Хомяк доволен! +",
+  "file": "src/ui/app.js",
+  "line": 889,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.ne-hvataet-monet-6",
+  "text": "Не хватает монет!",
+  "file": "src/ui/app.js",
+  "line": 886,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.homyak-syt-2",
+  "text": "Хомяк сыт!",
+  "file": "src/ui/app.js",
+  "line": 884,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.monet-4",
+  "text": " МОНЕТ",
+  "file": "src/ui/app.js",
+  "line": 877,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.kupit-4",
+  "text": "КУПИТЬ",
+  "file": "src/ui/app.js",
+  "line": 875,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.kupleno-4",
+  "text": "КУПЛЕНО",
+  "file": "src/ui/app.js",
+  "line": 873,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.nadet-2",
+  "text": "НАДЕТЬ",
+  "file": "src/ui/app.js",
+  "line": 871,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.vybrano-2",
+  "text": "ВЫБРАНО ✓",
+  "file": "src/ui/app.js",
+  "line": 866,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.monet-6",
+  "text": " МОНЕТ",
+  "file": "src/ui/app.js",
+  "line": 861,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.kupit-6",
+  "text": "КУПИТЬ",
+  "file": "src/ui/app.js",
+  "line": 859,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.homyak-syt-4",
+  "text": "ХОМЯК СЫТ!",
+  "file": "src/ui/app.js",
+  "line": 854,
+  "kind": "js"
+ },
+ {
+  "key": "h.sleduyuschee-zadanie",
+  "text": "СЛЕДУЮЩЕЕ ЗАДАНИЕ →",
+  "file": "src/ui/app.js",
+  "line": 796,
+  "kind": "js-html-text"
+ },
+ {
+  "key": "h.zaschitnyy-klyuch-vosstanovil-1",
+  "text": "Защитный ключ восстановил 1 сердце!",
+  "file": "src/ui/app.js",
+  "line": 794,
+  "kind": "js-html-text"
+ },
+ {
+  "key": "h.set-podozritelnaya-serdtse-sohraneno",
+  "text": "Сеть «подозрительная»: сердце сохранено, KP не начислен.",
+  "file": "src/ui/app.js",
+  "line": 793,
+  "kind": "js-html-text"
+ },
+ {
+  "key": "h.stop-dyshi-prover",
+  "text": "Стоп. Дыши. Проверь.",
+  "file": "src/ui/app.js",
+  "line": 792,
+  "kind": "js-html-text"
+ },
+ {
+  "key": "j.app.mimo-minus-serdechko-2",
+  "text": "Мимо! Минус сердечко. ",
+  "file": "src/ui/app.js",
+  "line": 790,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.vremya-vyshlo-otvet-zaschitan-2",
+  "text": "Время вышло — ответ засчитан как неверный. Минус сердечко. ",
+  "file": "src/ui/app.js",
+  "line": 790,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.verno-10-monet-2",
+  "text": "Верно! +10 монет, +",
+  "file": "src/ui/app.js",
+  "line": 789,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.10-xp-10-monet-2",
+  "text": "+10 XP +10 монет",
+  "file": "src/ui/app.js",
+  "line": 782,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.urok-proyden-10-xp-2",
+  "text": "🎓 Урок пройден! +10 XP",
+  "file": "src/ui/app.js",
+  "line": 643,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.dalee-2",
+  "text": "ДАЛЕЕ →",
+  "file": "src/ui/app.js",
+  "line": 621,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.oy-2",
+  "text": "❌ Ой! ",
+  "file": "src/ui/app.js",
+  "line": 615,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.verno-2",
+  "text": "✅ Верно! ",
+  "file": "src/ui/app.js",
+  "line": 615,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.dalee-4",
+  "text": "ДАЛЕЕ →",
+  "file": "src/ui/app.js",
+  "line": 592,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.stsena-2",
+  "text": " — сцена ",
+  "file": "src/ui/app.js",
+  "line": 583,
+  "kind": "js"
+ },
+ {
+  "key": "h.proyti-urok",
+  "text": "▶ Пройти урок",
+  "file": "src/ui/app.js",
+  "line": 546,
+  "kind": "js-html-text"
+ },
+ {
+  "key": "h.proyti-urok-2",
+  "text": "▶ Пройти урок",
+  "file": "src/ui/app.js",
+  "line": 536,
+  "kind": "js-html-text"
+ },
+ {
+  "key": "j.app.dns-zaprosy-i-webrtc-2",
+  "text": "DNS-запросы и WebRTC могут раскрывать твой реальный IP даже при использовании VPN. Отключи WebRTC в настройках браузера и используй надёжные DNS-серверы с шифрованием (DoH).",
+  "file": "src/ui/app.js",
+  "line": 519,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.dns-i-webrtc-2",
+  "text": "DNS и WebRTC",
+  "file": "src/ui/app.js",
+  "line": 519,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.eksployty-eto-ispolzovanie-uyazvimostey-2",
+  "text": "Эксплойты — это использование уязвимостей в программах для взлома. Регулярно обновляй ОС, браузер и приложения — большинство атак нацелены на известные, уже исправленные дыры.",
+  "file": "src/ui/app.js",
+  "line": 518,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.eksployty-2",
+  "text": "Эксплойты",
+  "file": "src/ui/app.js",
+  "line": 518,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.vredonosnye-skripty-mogut-krast-2",
+  "text": "Вредоносные скрипты могут красть пароли, майнить криптовалюту на твоём устройстве или перенаправлять на фишинговые сайты. Устанавливай расширения только из официальных магазинов и держи браузер обновлённым.",
+  "file": "src/ui/app.js",
+  "line": 517,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.vredonosnye-skripty-2",
+  "text": "Вредоносные скрипты",
+  "file": "src/ui/app.js",
+  "line": 517,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.fishing-kogda-moshenniki-pritvoryayutsya-2",
+  "text": "Фишинг — когда мошенники притворяются известным сервисом, чтобы украсть твои данные. Проверяй адрес сайта, не переходи по подозрительным ссылкам из писем и SMS. Банки никогда не просят коды из SMS.",
+  "file": "src/ui/app.js",
+  "line": 516,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.fishing-i-moshennichestvo-2",
+  "text": "Фишинг и мошенничество",
+  "file": "src/ui/app.js",
+  "line": 516,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.sayty-sobirayut-unikalnye-dannye-2",
+  "text": "Сайты собирают уникальные данные о твоём браузере: версию, разрешение экрана, шрифты, плагины. Эта комбинация — как отпечаток пальца — позволяет идентифицировать и отслеживать тебя в интернете, даже без cookies. Используй режим инкогнито и ограничивай доступ к данным.",
+  "file": "src/ui/app.js",
+  "line": 515,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.tsifrovoy-otpechatok-2",
+  "text": "Цифровой отпечаток",
+  "file": "src/ui/app.js",
+  "line": 515,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.2-xp-3-monety-2",
+  "text": "+2 XP +3 монеты",
+  "file": "src/ui/app.js",
+  "line": 485,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.p-p-2",
+  "text": " п.п.",
+  "file": "src/ui/app.js",
+  "line": 454,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.vernyh-ostalos-2",
+  "text": "% верных): осталось ",
+  "file": "src/ui/app.js",
+  "line": 454,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.do-zvaniya-2",
+  "text": "До звания «",
+  "file": "src/ui/app.js",
+  "line": 454,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.maksimalnoe-zvanie-2",
+  "text": "Максимальное звание! 👑",
+  "file": "src/ui/app.js",
+  "line": 454,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.otvet-na-zadaniya-v-2",
+  "text": "Ответь на задания в «Игре», чтобы получить рейтинг (метрика MVP: рост верных ответов 60→90%)",
+  "file": "src/ui/app.js",
+  "line": 453,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.dney-2",
+  "text": " ДНЕЙ",
+  "file": "src/ui/app.js",
+  "line": 448,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.master-bezopasnosti-2",
+  "text": "Мастер безопасности",
+  "file": "src/ui/app.js",
+  "line": 405,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.zaschiti-wi-fi-2",
+  "text": "Защити Wi-Fi",
+  "file": "src/ui/app.js",
+  "line": 404,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.5-zapisey-nastroeniya-2",
+  "text": "5+ записей настроения",
+  "file": "src/ui/app.js",
+  "line": 403,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.100-monet-2",
+  "text": "100 монет",
+  "file": "src/ui/app.js",
+  "line": 402,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.10-privychek-vypolneno-2",
+  "text": "10 привычек выполнено",
+  "file": "src/ui/app.js",
+  "line": 401,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.5-uroven-2",
+  "text": "5 уровень",
+  "file": "src/ui/app.js",
+  "line": 400,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.3-dnya-podryad-2",
+  "text": "3 дня подряд",
+  "file": "src/ui/app.js",
+  "line": 399,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.pervyy-urok-2",
+  "text": "Первый урок",
+  "file": "src/ui/app.js",
+  "line": 398,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.luchshiy-den-2",
+  "text": "Лучший день! ✨",
+  "file": "src/ui/app.js",
+  "line": 385,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.ya-schastliv-2",
+  "text": "Я счастлив! 😍",
+  "file": "src/ui/app.js",
+  "line": 385,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.pokormi-menya-pozhaluysta-2",
+  "text": "Покорми меня, пожалуйста!",
+  "file": "src/ui/app.js",
+  "line": 384,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.mne-ploho-2",
+  "text": "Мне плохо... 🤒",
+  "file": "src/ui/app.js",
+  "line": 384,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.hrrr-ne-budi-2",
+  "text": "Хррр... не буди 😴",
+  "file": "src/ui/app.js",
+  "line": 383,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.sladkih-snov-2",
+  "text": "Сладких снов... 💤",
+  "file": "src/ui/app.js",
+  "line": 383,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.esche-esche-2",
+  "text": "Ещё! Ещё! 🚀",
+  "file": "src/ui/app.js",
+  "line": 382,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.ura-veselo-2",
+  "text": "Ура! Весело! 🎉",
+  "file": "src/ui/app.js",
+  "line": 382,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.spasibo-za-zabotu-2",
+  "text": "Спасибо за заботу! ❤️",
+  "file": "src/ui/app.js",
+  "line": 381,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.nyam-nyam-vkusno-2",
+  "text": "Ням-ням! Вкусно! 😋",
+  "file": "src/ui/app.js",
+  "line": 381,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.ne-zabud-pro-privychki-2",
+  "text": "Не забудь про привычки! ✅",
+  "file": "src/ui/app.js",
+  "line": 380,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.gotov-k-novym-urokam-2",
+  "text": "Готов к новым урокам? 📚",
+  "file": "src/ui/app.js",
+  "line": 380,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.privet-davay-uchitsya-2",
+  "text": "Привет! Давай учиться! 👋",
+  "file": "src/ui/app.js",
+  "line": 380,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.dobro-pozhalovat-homya-2",
+  "text": "Добро пожаловать, Хомя! 🐹",
+  "file": "src/ui/app.js",
+  "line": 368,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.zaschitnyy-klyuch-v-karmane-2",
+  "text": "Защитный ключ в кармане: спасёт 1 сердце!",
+  "file": "src/ui/app.js",
+  "line": 215,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.holodnyy-razum-10-sek-2",
+  "text": "Холодный разум: +10 сек на 3 следующих сценария",
+  "file": "src/ui/app.js",
+  "line": 212,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.zaschita-wi-fi-aktivna-2",
+  "text": "Защита Wi-Fi активна на 24 часа!",
+  "file": "src/ui/app.js",
+  "line": 207,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.net-v-inventare-kupi-2",
+  "text": "Нет в инвентаре — купи в «Магазине»!",
+  "file": "src/ui/app.js",
+  "line": 204,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.podskazka-odin-nevernyy-variant-2",
+  "text": "Подсказка: один неверный вариант убран!",
+  "file": "src/ui/app.js",
+  "line": 199,
+  "kind": "js"
+ },
+ {
+  "key": "j.app.podskazka-2",
+  "text": "ПОДСКАЗКА",
+  "file": "src/ui/app.js",
+  "line": 183,
+  "kind": "js"
+ },
+ {
+  "key": "j.cloud.vyhod-vypolnen-2",
+  "text": "☁️ выход выполнен",
+  "file": "src/ui/cloud.js",
+  "line": 120,
+  "kind": "js"
+ },
+ {
+  "key": "j.cloud.oblachnaya-oshibka-2",
+  "text": "⚠ облачная ошибка: ",
+  "file": "src/ui/cloud.js",
+  "line": 113,
+  "kind": "js"
+ },
+ {
+  "key": "h.zagruzheno-iz-oblaka",
+  "text": "✅ Загружено из облака",
+  "file": "src/ui/cloud.js",
+  "line": 110,
+  "kind": "js-html-text"
+ },
+ {
+  "key": "j.cloud.progress-zagruzhen-iz-oblaka-2",
+  "text": "☁️ прогресс загружен из облака",
+  "file": "src/ui/cloud.js",
+  "line": 109,
+  "kind": "js"
+ },
+ {
+  "key": "j.cloud.v-oblake-pusto-otprav-2",
+  "text": "☁️ в облаке пусто — отправь прогресс сначала",
+  "file": "src/ui/cloud.js",
+  "line": 105,
+  "kind": "js"
+ },
+ {
+  "key": "j.cloud.oblachnaya-oshibka-4",
+  "text": "⚠ облачная ошибка: ",
+  "file": "src/ui/cloud.js",
+  "line": 98,
+  "kind": "js"
+ },
+ {
+  "key": "h.sohraneno-v-oblake",
+  "text": "✅ Сохранено в облаке",
+  "file": "src/ui/cloud.js",
+  "line": 95,
+  "kind": "js-html-text"
+ },
+ {
+  "key": "j.cloud.progress-otpravlen-v-oblako-2",
+  "text": "☁️ прогресс отправлен в облако",
+  "file": "src/ui/cloud.js",
+  "line": 94,
+  "kind": "js"
+ },
+ {
+  "key": "j.cloud.akkaunt-sozdan-2",
+  "text": "☁️ аккаунт создан: ",
+  "file": "src/ui/cloud.js",
+  "line": 82,
+  "kind": "js"
+ },
+ {
+  "key": "j.cloud.vhod-vypolnen-2",
+  "text": "☁️ вход выполнен: ",
+  "file": "src/ui/cloud.js",
+  "line": 68,
+  "kind": "js"
+ },
+ {
+  "key": "h.sinhronizatsiya",
+  "text": "☁️ СИНХРОНИЗАЦИЯ",
+  "file": "src/ui/cloud.js",
+  "line": 36,
+  "kind": "js-html-text"
+ },
+ {
+  "key": "h.vy-voshli-kak",
+  "text": "Вы вошли как",
+  "file": "src/ui/cloud.js",
+  "line": 36,
+  "kind": "js-html-text"
+ },
+ {
+  "key": "h.otpravit-v-oblako",
+  "text": "⬆ ОТПРАВИТЬ В ОБЛАКО",
+  "file": "src/ui/cloud.js",
+  "line": 36,
+  "kind": "js-html-text"
+ },
+ {
+  "key": "h.zagruzit-iz-oblaka",
+  "text": "⬇ ЗАГРУЗИТЬ ИЗ ОБЛАКА",
+  "file": "src/ui/cloud.js",
+  "line": 36,
+  "kind": "js-html-text"
+ },
+ {
+  "key": "h.vyyti",
+  "text": "ВЫЙТИ",
+  "file": "src/ui/cloud.js",
+  "line": 36,
+  "kind": "js-html-text"
+ },
+ {
+  "key": "j.cloud.igrok-2",
+  "text": "игрок",
+  "file": "src/ui/cloud.js",
+  "line": 35,
+  "kind": "js"
+ },
+ {
+  "key": "h.sinhronizatsiya-2",
+  "text": "☁️ СИНХРОНИЗАЦИЯ",
+  "file": "src/ui/cloud.js",
+  "line": 23,
+  "kind": "js-html-text"
+ },
+ {
+  "key": "h.voydi-chtoby-sohranyat-progress",
+  "text": "Войди, чтобы сохранять прогресс в облаке — играй с любого устройства!",
+  "file": "src/ui/cloud.js",
+  "line": 23,
+  "kind": "js-html-text"
+ },
+ {
+  "key": "h.voyti",
+  "text": "ВОЙТИ",
+  "file": "src/ui/cloud.js",
+  "line": 23,
+  "kind": "js-html-text"
+ },
+ {
+  "key": "h.registratsiya",
+  "text": "РЕГИСТРАЦИЯ",
+  "file": "src/ui/cloud.js",
+  "line": 23,
+  "kind": "js-html-text"
+ },
+ {
+  "key": "h.parol",
+  "text": "пароль",
+  "file": "src/ui/cloud.js",
+  "line": 23,
+  "kind": "js-html-placeholder"
+ },
+ {
+  "key": "j.lessons.kurs-prodvinulsya-dalshe-2",
+  "text": "🎓 курс продвинулся дальше!",
+  "file": "src/ui/lessons.js",
+  "line": 121,
+  "kind": "js"
+ },
+ {
+  "key": "j.lessons.proyden-2",
+  "text": "» пройден! +",
+  "file": "src/ui/lessons.js",
+  "line": 109,
+  "kind": "js"
+ },
+ {
+  "key": "j.lessons.urok-2",
+  "text": "🎓 урок «",
+  "file": "src/ui/lessons.js",
+  "line": 109,
+  "kind": "js"
+ },
+ {
+  "key": "j.lessons.dalee-2",
+  "text": "ДАЛЕЕ →",
+  "file": "src/ui/lessons.js",
+  "line": 91,
+  "kind": "js"
+ },
+ {
+  "key": "j.lessons.oy-2",
+  "text": "❌ ОЙ! ",
+  "file": "src/ui/lessons.js",
+  "line": 87,
+  "kind": "js"
+ },
+ {
+  "key": "j.lessons.verno-2",
+  "text": "✅ ВЕРНО! ",
+  "file": "src/ui/lessons.js",
+  "line": 87,
+  "kind": "js"
+ },
+ {
+  "key": "j.lessons.dalee-4",
+  "text": "ДАЛЕЕ →",
+  "file": "src/ui/lessons.js",
+  "line": 67,
+  "kind": "js"
+ },
+ {
+  "key": "j.lessons.stsena-2",
+  "text": " — сцена ",
+  "file": "src/ui/lessons.js",
+  "line": 58,
+  "kind": "js"
+ },
+ {
+  "key": "j.lessons.proydi-uroki-2",
+  "text": "Пройди уроки: ",
+  "file": "src/ui/lessons.js",
+  "line": 19,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.vizhu-chto-nedelya-v-2",
+  "text": "Вижу, что неделя в целом была хорошей — радуюсь вместе с тобой! ✨",
+  "file": "src/ui/support.js",
+  "line": 344,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.kstati-ya-smotryu-tvoy-2",
+  "text": "Кстати, я смотрю твой график недели: настроение было невысоким несколько дней. Если так держится — это повод поговорить со специалистом. Хочешь об этом?",
+  "file": "src/ui/support.js",
+  "line": 340,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.homyak-napravil-k-pomoschi-2",
+  "text": "💜 хомяк направил к помощи",
+  "file": "src/ui/support.js",
+  "line": 331,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.ostatsya-v-chate-rasskazyvay-2",
+  "text": "💬 остаться в чате — рассказывай дальше",
+  "file": "src/ui/support.js",
+  "line": 328,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.pozvoni-razgovor-s-zhivym-2",
+  "text": "Позвони. Разговор с живым человеком в такой момент — не слабость, а забота о себе. Хомяк верит в тебя. 💜",
+  "file": "src/ui/support.js",
+  "line": 323,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.8-800-100-49-2",
+  "text": "📞 8-800-100-49-94 — психологическая помощь взрослым",
+  "file": "src/ui/support.js",
+  "line": 322,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.8-800-2000-122-2",
+  "text": "📞 8-800-2000-122 — телефон доверия, круглосуточно, бесплатно, анонимно",
+  "file": "src/ui/support.js",
+  "line": 321,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.112-ekstrennye-sluzhby-2",
+  "text": "📞 112 — экстренные службы",
+  "file": "src/ui/support.js",
+  "line": 320,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.pozhaluysta-svyazhis-seychas-s-2",
+  "text": "Пожалуйста, свяжись сейчас с кем-то, кто может помочь:",
+  "file": "src/ui/support.js",
+  "line": 319,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.stop-to-chto-ty-2",
+  "text": "Стоп. То, что ты описываешь, — очень серьёзно. Ты не должен(а) проходить это в одиночку.",
+  "file": "src/ui/support.js",
+  "line": 318,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.horosho-o-chem-hochesh-2",
+  "text": "Хорошо. О чём хочешь поговорить?",
+  "file": "src/ui/support.js",
+  "line": 312,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.mne-horosho-2",
+  "text": "мне хорошо 👋",
+  "file": "src/ui/support.js",
+  "line": 311,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.zlyus-2",
+  "text": "злюсь",
+  "file": "src/ui/support.js",
+  "line": 311,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.odinoko-2",
+  "text": "одиноко",
+  "file": "src/ui/support.js",
+  "line": 311,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.grustno-2",
+  "text": "грустно",
+  "file": "src/ui/support.js",
+  "line": 311,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.stress-i-ucheba-2",
+  "text": "стресс и учёба",
+  "file": "src/ui/support.js",
+  "line": 311,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.trevoga-2",
+  "text": "тревога",
+  "file": "src/ui/support.js",
+  "line": 311,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.pogovorit-o-drugom-2",
+  "text": "поговорить о другом",
+  "file": "src/ui/support.js",
+  "line": 308,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.esche-odin-variant-2",
+  "text": "🔄 ещё один вариант",
+  "file": "src/ui/support.js",
+  "line": 303,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.chut-otdohni-nemnogo-ya-2",
+  "text": "Чуть отдохни немного 🙂 Я рядом.",
+  "file": "src/ui/support.js",
+  "line": 269,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.skazhi-2",
+  "text": "Скажи, ",
+  "file": "src/ui/support.js",
+  "line": 268,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.davay-sdelaem-pauzu-ya-2",
+  "text": "Давай сделаем паузу, я останусь рядом 💜",
+  "file": "src/ui/support.js",
+  "line": 259,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.privet-ya-homyak-psiholog-2",
+  "text": "Привет! Я хомяк-психолог. Здесь можно писать как есть — без цензуры и осуждения. С чего начнём?",
+  "file": "src/ui/support.js",
+  "line": 188,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.mne-horosho-4",
+  "text": "мне хорошо 👋",
+  "file": "src/ui/support.js",
+  "line": 187,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.zlyus-4",
+  "text": "злюсь",
+  "file": "src/ui/support.js",
+  "line": 187,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.odinoko-4",
+  "text": "одиноко",
+  "file": "src/ui/support.js",
+  "line": 187,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.grustno-4",
+  "text": "грустно",
+  "file": "src/ui/support.js",
+  "line": 187,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.stress-i-ucheba-4",
+  "text": "стресс и учёба",
+  "file": "src/ui/support.js",
+  "line": 187,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.trevoga-4",
+  "text": "тревога",
+  "file": "src/ui/support.js",
+  "line": 187,
+  "kind": "js"
+ },
+ {
+  "key": "h.homya-psiholog",
+  "text": "Хомя-психолог",
+  "file": "src/ui/support.js",
+  "line": 168,
+  "kind": "js-html-text"
+ },
+ {
+  "key": "h.na-svyazi-anonimno",
+  "text": "● на связи • анонимно",
+  "file": "src/ui/support.js",
+  "line": 168,
+  "kind": "js-html-text"
+ },
+ {
+  "key": "h.rasskazhi-chto-chuvstvuesh",
+  "text": "расскажи, что чувствуешь...",
+  "file": "src/ui/support.js",
+  "line": 168,
+  "kind": "js-html-placeholder"
+ },
+ {
+  "key": "j.support.rad-tebya-videt-rasskazhi-2",
+  "text": "Рад тебя видеть! Расскажи, что хорошего сегодня 🌟",
+  "file": "src/ui/support.js",
+  "line": 144,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.ya-slyshu-tebya-i-2",
+  "text": "Я слышу тебя и рядом. Что происходило?",
+  "file": "src/ui/support.js",
+  "line": 143,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.ponimayu-tebya-inogda-prosto-2",
+  "text": "Понимаю тебя. Иногда просто «есть» — и это нормально. Я рядом.",
+  "file": "src/ui/support.js",
+  "line": 142,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.vizhu-chto-tebe-seychas-2",
+  "text": "Вижу, что тебе сейчас непросто. Мы разберёмся потихоньку.",
+  "file": "src/ui/support.js",
+  "line": 141,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.mne-ochen-zhal-chto-2",
+  "text": "Мне очень жаль, что сейчас так. Ты не один — я рядом 🤍",
+  "file": "src/ui/support.js",
+  "line": 140,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.vse-nadoelo-navsegda-2",
+  "text": "всё надоело навсегда",
+  "file": "src/ui/support.js",
+  "line": 116,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.sdelat-s-soboy-2",
+  "text": "сделать с собой",
+  "file": "src/ui/support.js",
+  "line": 116,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.pokonchit-s-soboy-2",
+  "text": "покончить с собой",
+  "file": "src/ui/support.js",
+  "line": 116,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.umeret-2",
+  "text": "умереть",
+  "file": "src/ui/support.js",
+  "line": 116,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.ne-hochu-zhit-2",
+  "text": "не хочу жить",
+  "file": "src/ui/support.js",
+  "line": 116,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.ubit-sebya-2",
+  "text": "убить себя",
+  "file": "src/ui/support.js",
+  "line": 116,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.pokonchit-2",
+  "text": "покончить",
+  "file": "src/ui/support.js",
+  "line": 116,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.suitsid-2",
+  "text": "суицид",
+  "file": "src/ui/support.js",
+  "line": 116,
+  "kind": "js"
+ },
+ {
+  "key": "j.support.srednee-za-nedelyu-2",
+  "text": "Среднее за неделю: ",
+  "file": "src/ui/support.js",
+  "line": 112,
+  "kind": "js"
+ },
+ {
+  "key": "h.otmechay-nastroenie-poyavitsya-grafik",
+  "text": "Отмечай настроение — появится график недели ❤️",
+  "file": "src/ui/support.js",
+  "line": 88,
+  "kind": "js-html-text"
+ },
+ {
+  "key": "h.zdorove-hori",
+  "text": "здоровье Хори",
+  "file": "index.html",
+  "line": 1249,
+  "kind": "html-title"
+ },
+ {
+  "key": "h.sytost-homyaka",
+  "text": "сытость Хомяка",
+  "file": "index.html",
+  "line": 1250,
+  "kind": "html-title"
+ },
+ {
+  "key": "h.monety",
+  "text": "монеты",
+  "file": "index.html",
+  "line": 1251,
+  "kind": "html-title"
+ },
+ {
+  "key": "h.uroven",
+  "text": "уровень",
+  "file": "index.html",
+  "line": 1253,
+  "kind": "html-title"
+ },
+ {
+  "key": "h.aktivnye-effekty",
+  "text": "активные эффекты",
+  "file": "index.html",
+  "line": 1254,
+  "kind": "html-title"
+ },
+ {
+  "key": "h.zvuk",
+  "text": "звук",
+  "file": "index.html",
+  "line": 1255,
+  "kind": "html-title"
+ },
+ {
+  "key": "h.hori",
+  "text": "Хори",
+  "file": "index.html",
+  "line": 1295,
+  "kind": "html-title"
+ },
+ {
+  "key": "h.zadachi",
+  "text": "Задачи",
+  "file": "index.html",
+  "line": 1304,
+  "kind": "html-title"
+ },
+ {
+  "key": "h.magazin",
+  "text": "Магазин",
+  "file": "index.html",
+  "line": 1307,
+  "kind": "html-title"
+ },
+ {
+  "key": "h.pomosch",
+  "text": "Помощь",
+  "file": "index.html",
+  "line": 1310,
+  "kind": "html-title"
+ },
+ {
+  "key": "h.novaya-privychka",
+  "text": "Новая привычка...",
+  "file": "index.html",
+  "line": 1369,
+  "kind": "html-placeholder"
+ },
+ {
+  "key": "h.vremya-na-otvet",
+  "text": "время на ответ",
+  "file": "index.html",
+  "line": 1405,
+  "kind": "html-title"
+ },
+ {
+  "key": "h.monety-2",
+  "text": "монеты",
+  "file": "index.html",
+  "line": 1406,
+  "kind": "html-title"
+ },
+ {
+  "key": "h.zhizni",
+  "text": "жизни",
+  "file": "index.html",
+  "line": 1407,
+  "kind": "html-title"
+ },
+ {
+  "key": "h.aktivnye-effekty-2",
+  "text": "активные эффекты",
+  "file": "index.html",
+  "line": 1408,
+  "kind": "html-title"
+ },
+ {
+  "key": "h.ochki-kp",
+  "text": "очки KP",
+  "file": "index.html",
+  "line": 1410,
+  "kind": "html-title"
+ },
+ {
+  "key": "h.vyberi-uroven",
+  "text": "ВЫБЕРИ УРОВЕНЬ",
+  "file": "index.html",
+  "line": 1263,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.nastroy-igru-pod-sebya",
+  "text": "Настрой игру под себя",
+  "file": "index.html",
+  "line": 1264,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.shkolnik",
+  "text": "ШКОЛЬНИК",
+  "file": "index.html",
+  "line": 1268,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.prostye-uroki-i-privychki",
+  "text": "Простые уроки и привычки для учёбы",
+  "file": "index.html",
+  "line": 1269,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.student",
+  "text": "СТУДЕНТ",
+  "file": "index.html",
+  "line": 1273,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.ucheba-soft-skilly-i",
+  "text": "Учёба, софт-скиллы и безопасность",
+  "file": "index.html",
+  "line": 1274,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.rabotnik",
+  "text": "РАБОТНИК",
+  "file": "index.html",
+  "line": 1278,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.fokus-produktivnost-i-zaschita",
+  "text": "Фокус, продуктивность и защита",
+  "file": "index.html",
+  "line": 1279,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.nachat-igru",
+  "text": "НАЧАТЬ ИГРУ ▶",
+  "file": "index.html",
+  "line": 1282,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.igrat",
+  "text": "ИГРАТЬ",
+  "file": "index.html",
+  "line": 1293,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.hori-2",
+  "text": "ХОРИ",
+  "file": "index.html",
+  "line": 1296,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.statistika",
+  "text": "СТАТИСТИКА",
+  "file": "index.html",
+  "line": 1299,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.u-vas-otkrylsya-novyy",
+  "text": "У вас открылся новый раздел теории",
+  "file": "index.html",
+  "line": 1313,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.teoriya",
+  "text": "ТЕОРИЯ",
+  "file": "index.html",
+  "line": 1324,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.statistika-2",
+  "text": "СТАТИСТИКА",
+  "file": "index.html",
+  "line": 1332,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.reyting-kiberbezopasnosti",
+  "text": "🎖️ РЕЙТИНГ КИБЕРБЕЗОПАСНОСТИ",
+  "file": "index.html",
+  "line": 1338,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.dostizheniya",
+  "text": "🏅 ДОСТИЖЕНИЯ",
+  "file": "index.html",
+  "line": 1342,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.predmety",
+  "text": "🎒 ПРЕДМЕТЫ",
+  "file": "index.html",
+  "line": 1346,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.progress",
+  "text": "📈 ПРОГРЕСС",
+  "file": "index.html",
+  "line": 1350,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.0-dney",
+  "text": "🔥 0 ДНЕЙ",
+  "file": "index.html",
+  "line": 1352,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.spisok-del",
+  "text": "СПИСОК ДЕЛ",
+  "file": "index.html",
+  "line": 1362,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.teoriya-bezopasnost-brauzerov",
+  "text": "ТЕОРИЯ: БЕЗОПАСНОСТЬ БРАУЗЕРОВ",
+  "file": "index.html",
+  "line": 1381,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.razdely",
+  "text": "📋 РАЗДЕЛЫ",
+  "file": "index.html",
+  "line": 1386,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.vyberi-razdel-sleva-chtoby",
+  "text": "Выбери раздел слева, чтобы начать обучение.",
+  "file": "index.html",
+  "line": 1390,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.vnimanie",
+  "text": "ВНИМАНИЕ!",
+  "file": "index.html",
+  "line": 1415,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.podozritelnaya-set",
+  "text": "подозрительная сеть",
+  "file": "index.html",
+  "line": 1415,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.homyak-poluchil-pismo-ot",
+  "text": "Хомяк получил письмо от «Сбербанка» с просьбой ввести код из СМС. Что делать?",
+  "file": "index.html",
+  "line": 1416,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.magazin-homyaka",
+  "text": "МАГАЗИН ХОМЯКА",
+  "file": "index.html",
+  "line": 1430,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.zarabatyvay-monetki-v-urokah",
+  "text": "Зарабатывай монетки в уроках, одевай хомяка и обустраивай домик!",
+  "file": "index.html",
+  "line": 1434,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.aytemy-dlya-igry",
+  "text": "— АЙТЕМЫ (для игры) —",
+  "file": "index.html",
+  "line": 1435,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.shapki",
+  "text": "— ШАПКИ —",
+  "file": "index.html",
+  "line": 1437,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.oboi",
+  "text": "— ОБОИ —",
+  "file": "index.html",
+  "line": 1439,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.eda",
+  "text": "— ЕДА —",
+  "file": "index.html",
+  "line": 1441,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.homya-psiholog-24-7",
+  "text": "ХОМЯ-ПСИХОЛОГ 24/7",
+  "file": "index.html",
+  "line": 1448,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.anonimno-bez-osuzhdeniya-v",
+  "text": "Анонимно, без осуждения, в любимом моменте. Хомяк выслушает, поймёт и подскажет.",
+  "file": "index.html",
+  "line": 1451,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.kak-ty-sebya-chuvstvuesh",
+  "text": "💜 КАК ТЫ СЕБЯ ЧУВСТВУЕШЬ?",
+  "file": "index.html",
+  "line": 1454,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.tvoya-nedelya",
+  "text": "📈 ТВОЯ НЕДЕЛЯ",
+  "file": "index.html",
+  "line": 1463,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.nastroyki",
+  "text": "НАСТРОЙКИ",
+  "file": "index.html",
+  "line": 1471,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.smenit-uroven-auditoriyu",
+  "text": "🎯 Сменить уровень (аудиторию)",
+  "file": "index.html",
+  "line": 1476,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.zvuk-vkl",
+  "text": "🔊 Звук: вкл",
+  "file": "index.html",
+  "line": 1477,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.uvedomleniya-o-hori-vykl",
+  "text": "🔔 Уведомления о Хори: выкл",
+  "file": "index.html",
+  "line": 1478,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.sbrosit-progress",
+  "text": "🗑 Сбросить прогресс",
+  "file": "index.html",
+  "line": 1479,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.dom",
+  "text": "ДОМ",
+  "file": "index.html",
+  "line": 1491,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.zadachi-2",
+  "text": "ЗАДАЧИ",
+  "file": "index.html",
+  "line": 1495,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.teoriya-2",
+  "text": "ТЕОРИЯ",
+  "file": "index.html",
+  "line": 1499,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.igra",
+  "text": "ИГРА",
+  "file": "index.html",
+  "line": 1503,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.pomosch-2",
+  "text": "ПОМОЩЬ",
+  "file": "index.html",
+  "line": 1507,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.nastr",
+  "text": "НАСТР.",
+  "file": "index.html",
+  "line": 1511,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.sobytie",
+  "text": "⚠ СОБЫТИЕ!",
+  "file": "index.html",
+  "line": 1518,
+  "kind": "html-text"
+ },
+ {
+  "key": "h.title",
+  "text": "🐹 Хомягочи",
+  "file": "index.html",
+  "line": 1,
+  "kind": "html-title"
+ }
+]

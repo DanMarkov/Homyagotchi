@@ -1,3 +1,4 @@
+import { t } from '../i18n.js?v=42';
 import { lessonProgress, saveLessonProgress, courseProgress, totalProgress, lessonKey } from '../core/lessons.js?v=4';
 import { gainXP } from '../core/game.js?v=4';
 
@@ -16,7 +17,7 @@ export class LessonUI {
     const tp = totalProgress(this.state, this.courses);
     const head = document.createElement('p');
     head.className = 'section-sub';
-    head.textContent = 'Пройди уроки: ' + tp.done + '/' + tp.total + ' (' + tp.pct + '%)';
+    head.textContent = t("j.lessons.proydi-uroki-2") + tp.done + '/' + tp.total + ' (' + tp.pct + '%)';
     el.appendChild(head);
     this.courses.forEach((c) => {
       const p = courseProgress(this.state, c);
@@ -55,7 +56,7 @@ export class LessonUI {
     const box = document.createElement('div');
     box.className = 'lesson-scene';
     const title = document.createElement('h4');
-    title.textContent = course.emoji + ' ' + lesson.title + ' — сцена ' + (idx + 1) + '/' + lesson.scenes.length;
+    title.textContent = course.emoji + ' ' + lesson.title + t("j.lessons.stsena-2") + (idx + 1) + '/' + lesson.scenes.length;
     box.appendChild(title);
     if (sc.text) {
       const p = document.createElement('p');
@@ -64,7 +65,7 @@ export class LessonUI {
       box.appendChild(p);
       const next = document.createElement('button');
       next.className = 'act primary';
-      next.textContent = 'ДАЛЕЕ →';
+      next.textContent = t("j.lessons.dalee-4");
       next.onclick = () => this.advance();
       box.appendChild(next);
     } else if (sc.q) {
@@ -84,11 +85,11 @@ export class LessonUI {
           });
           const fb = document.createElement('p');
           fb.className = 'lesson-tip';
-          fb.textContent = (i === sc.ok ? '✅ ВЕРНО! ' : '❌ ОЙ! ') + (sc.tip || '');
+          fb.textContent = (i === sc.ok ? t("j.lessons.verno-2") : t("j.lessons.oy-2")) + (sc.tip || '');
           box.appendChild(fb);
           const next = document.createElement('button');
           next.className = 'act primary';
-          next.textContent = 'ДАЛЕЕ →';
+          next.textContent = t("j.lessons.dalee-2");
           next.onclick = () => this.advance();
           box.appendChild(next);
         };
@@ -106,7 +107,7 @@ export class LessonUI {
     if (sc.xp) {
       const r = saveLessonProgress(this.state, lessonKey(course.id, lesson.id), idx, lesson.scenes.length, sc.xp, gainXP);
       if (r.completed && r.firstTime) {
-        this.onLog && this.onLog('🎓 урок «' + lesson.title + '» пройден! +' + sc.xp + ' XP');
+        this.onLog && this.onLog(t("j.lessons.urok-2") + lesson.title + t("j.lessons.proyden-2") + sc.xp + ' XP');
         this.onPuff && this.onPuff('★', '#ffd166');
       } else if (sc.xp) {
         gainXP(this.state, sc.xp);
@@ -118,7 +119,7 @@ export class LessonUI {
   }
 
   finish() {
-    this.onLog && this.onLog('🎓 курс продвинулся дальше!');
+    this.onLog && this.onLog(t("j.lessons.kurs-prodvinulsya-dalshe-2"));
     this.renderList(this.active.container);
     this.active = null;
   }

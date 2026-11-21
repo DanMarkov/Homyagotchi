@@ -1,13 +1,15 @@
-import { load, save, wipe } from '../core/store.js?v=41';
-import { tick, petState } from '../core/pet.js?v=41';
-import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert, useItem, isWifiEvent, itemCount, wifiBuffActive, coldBuffLeft, activeBuffs, satietyTick, applyFood } from '../core/game.js?v=41';
-import { sfx } from './audio.js?v=41';
-import { renderMoodChart, ChatUI, setLastMoodEmoji } from './support.js?v=41';
-import { createSprite } from '../render/pixel-sprites.js?v=41';
+import { initI18n, t, tr, getLang, setLang, onLangChange, applyStatic, LANG_NAMES } from '../i18n.js?v=42';
+import { load, save, wipe } from '../core/store.js?v=42';
+import { tick, petState } from '../core/pet.js?v=42';
+import { gainXP, dayCheck, owns, buy, habitDone, toggleHabit, logMood, answerEvent, moodAvg, eventsForAudience, securityRank, petAlert, useItem, isWifiEvent, itemCount, wifiBuffActive, coldBuffLeft, activeBuffs, satietyTick, applyFood } from '../core/game.js?v=42';
+import { sfx } from './audio.js?v=42';
+import { renderMoodChart, ChatUI, setLastMoodEmoji } from './support.js?v=42';
+import { createSprite } from '../render/pixel-sprites.js?v=42';
 
-const CONTENT = window.__CONTENT__;
-const LESSONS = window.__LESSONS__;
-const SHOP = window.__SHOP__;
+initI18n();
+let CONTENT = tr(window.__CONTENT__, 'c.content');
+let LESSONS = tr(window.__LESSONS__, 'c.lessons');
+let SHOP = tr(window.__SHOP__, 'c.shop');
 
 const S = load();
 const dailyGoal = CONTENT.dailyGoalXp || 10;
@@ -180,7 +182,12 @@ function updateRoomNote() {
 }
 
 const TOOL_BG = { wifi: 'var(--blue-soft)', cold: '#d4f0fa', key: 'var(--yellow)', hint: 'var(--purple)' };
-const TOOL_LABEL = { wifi: 'ЗАЩИТА<br>WI-FI', cold: 'ХОЛОДНЫЙ<br>РАЗУМ', key: 'ЗАЩИТНЫЙ<br>КЛЮЧ', hint: 'ПОДСКАЗКА' };
+const TOOL_LABEL = {
+  get wifi() { return t("j.app.tool-wifi"); },
+  get cold() { return t("j.app.tool-cold"); },
+  get key() { return t("j.app.tool-key"); },
+  get hint() { return t("j.app.podskazka-2"); }
+};
 
 function syncNetTag() {
   const t = els('gameNetTag');
@@ -196,23 +203,23 @@ function applyHint() {
   b.classList.add('hint-removed');
   b.disabled = true;
   hintUsed = true;
-  toast('Подсказка: один неверный вариант убран!');
+  toast(t("j.app.podskazka-odin-nevernyy-variant-2"));
 }
 
 function useTool(key) {
   const r = useItem(S, key);
-  if (!r.ok) { toast('Нет в инвентаре — купи в «Магазине»!'); return; }
+  if (!r.ok) { toast(t("j.app.net-v-inventare-kupi-2")); return; }
   sfx.click();
   if (key === 'wifi') {
-    toast('Защита Wi-Fi активна на 24 часа!');
+    toast(t("j.app.zaschita-wi-fi-aktivna-2"));
     netSuspect = wifiBuffActive(S) && !!currentEvent && isWifiEvent(currentEvent);
     syncNetTag();
   }
   if (key === 'cold') {
-    toast('Холодный разум: +10 сек на 3 следующих сценария');
+    toast(t("j.app.holodnyy-razum-10-sek-2"));
     if (currentEvent) { gameTimeLeft += 10; els('gameTimer').textContent = gameTimeLeft; coldApplied = true; }
   }
-  if (key === 'key') toast('Защитный ключ в кармане: спасёт 1 сердце!');
+  if (key === 'key') toast(t("j.app.zaschitnyy-klyuch-v-karmane-2"));
   if (key === 'hint') applyHint();
   persist();
   renderGameTools();
@@ -272,8 +279,10 @@ function renderTopbarSprites() {
 /* ============ NAVIGATION ============ */
 const SCREENS = ['audience', 'home', 'stats', 'habits', 'theory', 'game', 'shop', 'support', 'settings'];
 const NAV_MAP = { home: 'home', habits: 'habits', theory: 'theory', game: 'game', shop: 'shop', support: 'support', stats: 'stats', settings: 'settings' };
+let currentScreen = null;
 
 function gotoScreen(name) {
+  currentScreen = name;
   applyWallpaper();
   if (name === 'audience') return showAudience();
   document.body.classList.toggle('on-home', name === 'home');
@@ -365,7 +374,7 @@ els('btnStartGame').addEventListener('click', () => {
   S.onboarded = true;
   sfx.correct();
   persist();
-  toast('Добро пожаловать, Хомя! 🐹');
+  toast(t("j.app.dobro-pozhalovat-homya-2"));
   gotoScreen('home');
 });
 
@@ -377,12 +386,12 @@ els('btnChangeAudience').addEventListener('click', () => {
 function petBubbleText() {
   const ps = petState(S);
   const msgs = {
-    idle: ['Привет! Давай учиться! 👋', 'Готов к новым урокам? 📚', 'Не забудь про привычки! ✅'],
-    eating: ['Ням-ням! Вкусно! 😋', 'Спасибо за заботу! ❤️'],
-    jumping: ['Ура! Весело! 🎉', 'Ещё! Ещё! 🚀'],
-    sleeping: ['Сладких снов... 💤', 'Хррр... не буди 😴'],
-    sick: ['Мне плохо... 🤒', 'Покорми меня, пожалуйста!'],
-    happy: ['Я счастлив! 😍', 'Лучший день! ✨']
+    idle: [t("j.app.privet-davay-uchitsya-2"), t("j.app.gotov-k-novym-urokam-2"), t("j.app.ne-zabud-pro-privychki-2")],
+    eating: [t("j.app.nyam-nyam-vkusno-2"), t("j.app.spasibo-za-zabotu-2")],
+    jumping: [t("j.app.ura-veselo-2"), t("j.app.esche-esche-2")],
+    sleeping: [t("j.app.sladkih-snov-2"), t("j.app.hrrr-ne-budi-2")],
+    sick: [t("j.app.mne-ploho-2"), t("j.app.pokormi-menya-pozhaluysta-2")],
+    happy: [t("j.app.ya-schastliv-2"), t("j.app.luchshiy-den-2")]
   };
   const arr = msgs[ps] || msgs.idle;
   return arr[Math.floor(Math.random() * arr.length)];
@@ -395,14 +404,14 @@ function renderPetBubble() {
 
 /* ============ STATS ============ */
 const ACHIEVEMENTS = [
-  { id: 'first_lesson', icon: '🎓', name: 'Первый урок', check: (s) => Object.keys(s.lessons || {}).length > 0 },
-  { id: 'streak3', icon: '🔥', name: '3 дня подряд', check: (s) => s.streak >= 3 },
-  { id: 'lvl5', icon: '⭐', name: '5 уровень', check: (s) => s.lvl >= 5 },
-  { id: 'habits10', icon: '✅', name: '10 привычек выполнено', check: (s) => Object.values(s.habitState || {}).reduce((a, h) => a + (h.streak || 0), 0) >= 10 },
-  { id: 'coins100', icon: '🪙', name: '100 монет', check: (s) => s.coins >= 100 },
-  { id: 'mood5', icon: '💜', name: '5+ записей настроения', check: (s) => (s.moodLog || []).length >= 5 },
-  { id: 'wifi', icon: '🛡️', name: 'Защити Wi-Fi', check: (s) => s.sec >= 80 },
-  { id: 'master', icon: '👑', name: 'Мастер безопасности', check: (s) => s.sec >= 100 && s.lvl >= 3 }
+  { id: 'first_lesson', icon: '🎓', get name() { return t("j.app.pervyy-urok-2"); }, check: (s) => Object.keys(s.lessons || {}).length > 0 },
+  { id: 'streak3', icon: '🔥', get name() { return t("j.app.3-dnya-podryad-2"); }, check: (s) => s.streak >= 3 },
+  { id: 'lvl5', icon: '⭐', get name() { return t("j.app.5-uroven-2"); }, check: (s) => s.lvl >= 5 },
+  { id: 'habits10', icon: '✅', get name() { return t("j.app.10-privychek-vypolneno-2"); }, check: (s) => Object.values(s.habitState || {}).reduce((a, h) => a + (h.streak || 0), 0) >= 10 },
+  { id: 'coins100', icon: '🪙', get name() { return t("j.app.100-monet-2"); }, check: (s) => s.coins >= 100 },
+  { id: 'mood5', icon: '💜', get name() { return t("j.app.5-zapisey-nastroeniya-2"); }, check: (s) => (s.moodLog || []).length >= 5 },
+  { id: 'wifi', icon: '🛡️', get name() { return t("j.app.zaschiti-wi-fi-2"); }, check: (s) => s.sec >= 80 },
+  { id: 'master', icon: '👑', get name() { return t("j.app.master-bezopasnosti-2"); }, check: (s) => s.sec >= 100 && s.lvl >= 3 }
 ];
 
 function renderStats() {
@@ -445,13 +454,13 @@ function renderStats() {
   const pct = Math.min(100, totalKp);
   els('statsProgress').style.width = pct + '%';
   els('statsProgressText').textContent = totalKp + '/100 KP';
-  els('statsStreak').textContent = '🔥 ' + (S.streak || 0) + ' ДНЕЙ';
+  els('statsStreak').textContent = t("j.app.streak-days", { n: S.streak || 0 });
   const r = securityRank(S);
   const rb = els('ratingBlock');
   if (rb) {
     const nextTxt = r.pct === null
-      ? 'Ответь на задания в «Игре», чтобы получить рейтинг (метрика MVP: рост верных ответов 60→90%)'
-      : (r.next === null ? 'Максимальное звание! 👑' : 'До звания «' + r.nextTitle + '» (' + r.next + '% верных): осталось ' + (r.next - r.pct) + ' п.п.');
+      ? t("j.app.otvet-na-zadaniya-v-2")
+      : (r.next === null ? t("j.app.maksimalnoe-zvanie-2") : t("j.app.do-zvaniya", { title: r.nextTitle, next: r.next, left: r.next - r.pct }));
     rb.innerHTML =
       '<div class="rank-head"><span class="rank-icon">' + r.icon + '</span>' +
       '<span class="rank-title">' + r.title + '</span>' +
@@ -482,7 +491,7 @@ function renderHabits() {
     cb.textContent = done ? '✓' : '';
     cb.addEventListener('click', () => {
       toggleHabit(S, h.id, !done);
-      if (!done) { sfx.correct(); toast('+2 XP +3 монеты'); }
+      if (!done) { sfx.correct(); toast(t("j.app.2-xp-3-monety-2")); }
       renderHabits();
       persist();
     });
@@ -512,11 +521,11 @@ els('btnAddHabit').addEventListener('click', () => {
 
 /* ============ THEORY ============ */
 const THEORY_TOPICS = [
-  { id: 'fingerprint', icon: '🔍', name: 'Цифровой отпечаток', danger: false, text: 'Сайты собирают уникальные данные о твоём браузере: версию, разрешение экрана, шрифты, плагины. Эта комбинация — как отпечаток пальца — позволяет идентифицировать и отслеживать тебя в интернете, даже без cookies. Используй режим инкогнито и ограничивай доступ к данным.' },
-  { id: 'phishing', icon: '🛡️', name: 'Фишинг и мошенничество', danger: false, text: 'Фишинг — когда мошенники притворяются известным сервисом, чтобы украсть твои данные. Проверяй адрес сайта, не переходи по подозрительным ссылкам из писем и SMS. Банки никогда не просят коды из SMS.' },
-  { id: 'scripts', icon: '⚠️', name: 'Вредоносные скрипты', danger: true, text: 'Вредоносные скрипты могут красть пароли, майнить криптовалюту на твоём устройстве или перенаправлять на фишинговые сайты. Устанавливай расширения только из официальных магазинов и держи браузер обновлённым.' },
-  { id: 'exploits', icon: '➕', name: 'Эксплойты', danger: false, text: 'Эксплойты — это использование уязвимостей в программах для взлома. Регулярно обновляй ОС, браузер и приложения — большинство атак нацелены на известные, уже исправленные дыры.' },
-  { id: 'dns', icon: '🌐', name: 'DNS и WebRTC', danger: false, text: 'DNS-запросы и WebRTC могут раскрывать твой реальный IP даже при использовании VPN. Отключи WebRTC в настройках браузера и используй надёжные DNS-серверы с шифрованием (DoH).' }
+  { id: 'fingerprint', icon: '🔍', get name() { return t("j.app.tsifrovoy-otpechatok-2"); }, danger: false, get text() { return t("j.app.sayty-sobirayut-unikalnye-dannye-2"); } },
+  { id: 'phishing', icon: '🛡️', get name() { return t("j.app.fishing-i-moshennichestvo-2"); }, danger: false, get text() { return t("j.app.fishing-kogda-moshenniki-pritvoryayutsya-2"); } },
+  { id: 'scripts', icon: '⚠️', get name() { return t("j.app.vredonosnye-skripty-2"); }, danger: true, get text() { return t("j.app.vredonosnye-skripty-mogut-krast-2"); } },
+  { id: 'exploits', icon: '➕', get name() { return t("j.app.eksployty-2"); }, danger: false, get text() { return t("j.app.eksployty-eto-ispolzovanie-uyazvimostey-2"); } },
+  { id: 'dns', icon: '🌐', get name() { return t("j.app.dns-i-webrtc-2"); }, danger: false, get text() { return t("j.app.dns-zaprosy-i-webrtc-2"); } }
 ];
 
 function renderTheory() {
@@ -533,7 +542,7 @@ function renderTheory() {
       div.classList.add('active');
       const content = els('theoryContent');
       content.innerHTML = '<h3>' + t.icon + ' ' + t.name + '</h3><p>' + t.text + '</p>' +
-        '<button class="btn btn-blue" style="margin-top:8px" data-start-lesson="' + t.id + '">▶ Пройти урок</button>';
+        '<button class="btn btn-blue" style="margin-top:8px" data-start-lesson="' + t.id + `">${t("h.proyti-urok-2")}</button>`;
       const btn = content.querySelector('[data-start-lesson]');
       btn.addEventListener('click', () => startLessonByTopic(t.id));
     });
@@ -543,7 +552,7 @@ function renderTheory() {
     topics.firstChild && topics.firstChild.classList.add('active');
     const t = THEORY_TOPICS[0];
     els('theoryContent').innerHTML = '<h3>' + t.icon + ' ' + t.name + '</h3><p>' + t.text + '</p>' +
-      '<button class="btn btn-blue" style="margin-top:8px" data-start-lesson="' + t.id + '">▶ Пройти урок</button>';
+      '<button class="btn btn-blue" style="margin-top:8px" data-start-lesson="' + t.id + `">${t("h.proyti-urok")}</button>`;
     els('theoryContent').querySelector('[data-start-lesson]').addEventListener('click', () => startLessonByTopic(t.id));
   }
   mountSprite('theoryPet', 'hori_body', 3, hatNow());
@@ -580,7 +589,7 @@ class LessonRunnerUI {
     const sc = lesson.scenes[idx];
     container.innerHTML = '';
     const head = document.createElement('h4');
-    head.textContent = course.emoji + ' ' + lesson.title + ' — сцена ' + (idx + 1) + '/' + lesson.scenes.length;
+    head.textContent = course.emoji + ' ' + lesson.title + t("j.app.stsena", { i: idx + 1, n: lesson.scenes.length });
     container.appendChild(head);
     if (sc.text) {
       const p = document.createElement('p');
@@ -589,7 +598,7 @@ class LessonRunnerUI {
       container.appendChild(p);
       const next = document.createElement('button');
       next.className = 'btn btn-blue btn-block';
-      next.textContent = 'ДАЛЕЕ →';
+      next.textContent = t("j.app.dalee-4");
       next.onclick = () => this.advance();
       container.appendChild(next);
     } else if (sc.q) {
@@ -612,13 +621,13 @@ class LessonRunnerUI {
           });
           const fb = document.createElement('div');
           fb.className = 'lesson-feedback ' + (i === sc.ok ? 'ok' : 'bad');
-          fb.textContent = (i === sc.ok ? '✅ Верно! ' : '❌ Ой! ') + (sc.tip || '');
+          fb.textContent = (i === sc.ok ? t("j.app.verno-2") : t("j.app.oy-2")) + (sc.tip || '');
           container.appendChild(fb);
           if (i === sc.ok) { sfx.correct(); this.onToast('+5 XP'); }
           else sfx.wrong();
           const next = document.createElement('button');
           next.className = 'btn btn-green btn-block';
-          next.textContent = 'ДАЛЕЕ →';
+          next.textContent = t("j.app.dalee-2");
           next.onclick = () => this.advance();
           container.appendChild(next);
         };
@@ -640,7 +649,7 @@ class LessonRunnerUI {
   }
 
   finish() {
-    this.onToast('🎓 Урок пройден! +10 XP');
+    this.onToast(t("j.app.urok-proyden-10-xp-2"));
     els('theoryRunner').classList.add('hidden');
     els('theoryBrowse').classList.remove('hidden');
     renderTheory();
@@ -779,21 +788,21 @@ function answerGame(idx, timeout = false) {
     flyReward('+10', 'gameCoinsIcon');
     flyReward('+' + (currentEvent.xp || 5) + ' KP', 'gameKpIcon');
     sfx.correct();
-    toast('+10 XP +10 монет');
+    toast(t("j.app.10-xp-10-monet-2"));
   } else {
     if (pet) { pet.classList.add('sad'); setTimeout(() => pet.classList.remove('sad'), 1000); }
     sfx.wrong();
   }
   const fb = els('gameFeedback');
   const head = ok
-    ? 'Верно! +10 монет, +' + (currentEvent.xp || 5) + ' KP. '
-    : (timeout ? 'Время вышло — ответ засчитан как неверный. Минус сердечко. ' : 'Мимо! Минус сердечко. ');
+    ? t("j.app.verno", { xp: currentEvent.xp || 5 })
+    : (timeout ? t("j.app.vremya-vyshlo-otvet-zaschitan-2") : t("j.app.mimo-minus-serdechko-2"));
   let extra = '';
-  if (wasCold) extra += '<div class="cold-phrase">Стоп. Дыши. Проверь.</div>';
-  if (!ok && netSuspect) extra += '<div class="cold-phrase" style="color:var(--red-dark)">Сеть «подозрительная»: сердце сохранено, KP не начислен.</div>';
-  if (keySaved) extra += '<div class="cold-phrase" style="color:var(--green-dark)">Защитный ключ восстановил 1 сердце!</div>';
+  if (wasCold) extra += `<div class="cold-phrase">${t("h.stop-dyshi-prover")}</div>`;
+  if (!ok && netSuspect) extra += `<div class="cold-phrase" style="color:var(--red-dark)">${t("h.set-podozritelnaya-serdtse-sohraneno")}</div>`;
+  if (keySaved) extra += `<div class="cold-phrase" style="color:var(--green-dark)">${t("h.zaschitnyy-klyuch-vosstanovil-1")}</div>`;
   fb.innerHTML = '<div class="lesson-feedback ' + (ok ? 'ok' : 'bad') + '">' + head + currentEvent.tip + '</div>' + extra +
-    '<button class="btn btn-green btn-block" id="btnNextEvent" style="margin-top:12px">СЛЕДУЮЩЕЕ ЗАДАНИЕ →</button>';
+    `<button class="btn btn-green btn-block" id="btnNextEvent" style="margin-top:12px">${t("h.sleduyuschee-zadanie")}</button>`;
   els('btnNextEvent').onclick = () => {
     currentEvent = null;
     persist();
@@ -851,42 +860,42 @@ function renderShop() {
     const full = (S.satiety || 0) >= 100;
     if (type === 'food') {
       if (full) {
-        btn.textContent = 'ХОМЯК СЫТ!';
+        btn.textContent = t("j.app.homyak-syt-4");
         btn.className += ' btn-green';
         btn.disabled = true;
         price.textContent = '—';
       } else {
-        btn.textContent = 'КУПИТЬ';
+        btn.textContent = t("j.app.kupit-6");
         btn.className += ' btn-orange';
-        price.textContent = item.price + ' МОНЕТ';
+        price.textContent = t("j.app.price", { n: item.price });
         if (S.coins < item.price) btn.disabled = true;
       }
     } else if (equipped) {
       // Надетый предмет — ВЕЗДЕ зелёная «ВЫБРАНО ✓» (и шапки, и обои); снять можно кнопкой «НАДЕТЬ» на карточке по умолчанию («Без шапки» / «Небесные»)
-      btn.textContent = 'ВЫБРАНО ✓';
+      btn.textContent = t("j.app.vybrano-2");
       btn.className += ' btn-green';
       btn.disabled = true;
       price.textContent = '—';
     } else if (owns(S, item.id)) {
-      btn.textContent = 'НАДЕТЬ';
+      btn.textContent = t("j.app.nadet-2");
       btn.className += ' btn-blue';
-      price.textContent = 'КУПЛЕНО';
+      price.textContent = t("j.app.kupleno-4");
     } else {
-      btn.textContent = 'КУПИТЬ';
+      btn.textContent = t("j.app.kupit-4");
       btn.className += ' btn-orange';
-      price.textContent = item.price + ' МОНЕТ';
+      price.textContent = t("j.app.price", { n: item.price });
       if (S.coins < item.price) btn.disabled = true;
     }
     div.appendChild(price);
     div.appendChild(btn);
     btn.onclick = () => {
       if (type === 'food') {
-        if ((S.satiety || 0) >= 100) { toast('Хомяк сыт!'); return; }
+        if ((S.satiety || 0) >= 100) { toast(t("j.app.homyak-syt-2")); return; }
         const r = buy(S, item, 'food');
-        if (!r.ok) { toast('Не хватает монет!'); return; }
+        if (!r.ok) { toast(t("j.app.ne-hvataet-monet-6")); return; }
         const res = applyFood(S, item); // реальный эффект: +сытость/+счастье + флаг поедания
         sfx.correct();
-        toast('Хомяк доволен! +' + res.ds + ' сытости' + (res.dm ? ', +' + res.dm + ' счастья' : ''));
+        toast(t("j.app.homyak-dovolen", { ds: res.ds }) + (res.dm ? t("j.app.plus-schastye", { dm: res.dm }) : ''));
         playEat(item, res); // анимация: еда у Хори → +N к сытости в HUD
         persist();
         renderShop();
@@ -894,9 +903,9 @@ function renderShop() {
       }
       if (equipped) return; // зелёная «ВЫБРАНО ✓» не кликабельна; снятие — через «НАДЕТЬ» на карточке по умолчанию
       const r = buy(S, item, type); // buy сам надевает купленное/купленное (action buy/equip)
-      if (!r.ok) { toast('Не хватает монет!'); return; }
+      if (!r.ok) { toast(t("j.app.ne-hvataet-monet-4")); return; }
       sfx.correct();
-      toast((r.action === 'buy' ? 'Куплено и надето: ' : 'Надето: ') + item.name + '!');
+      toast((r.action === 'buy' ? t("j.app.kupleno-i-nadeto-2") : t("j.app.nadeto-2")) + item.name + '!');
       flyTo(visiblePetEl(), item.icon || '✓', btn); // предмет «летит» к HOMyakу
       renderAllPets();   // шляпа видна на всех экранах
       applyWallpaper();  // обои применены к комнате
@@ -936,18 +945,18 @@ function fillItems() {
     effect.textContent = it.effect;
     const price = document.createElement('span');
     price.className = 's-price';
-    price.textContent = it.price + ' МОНЕТ';
+    price.textContent = t("j.app.price", { n: it.price });
     const bal = document.createElement('span');
     bal.className = 's-balance';
-    bal.textContent = 'Баланс: ' + S.coins + ' • в наличии: ' + itemCount(S, it.key);
+    bal.textContent = t("j.app.balans", { coins: S.coins, count: itemCount(S, it.key) });
     const btn = document.createElement('button');
     btn.className = 'btn btn-orange';
-    btn.textContent = 'КУПИТЬ';
+    btn.textContent = t("j.app.kupit-2");
     if (S.coins < it.price) btn.disabled = true;
     btn.onclick = () => {
       const r = buy(S, it, 'item');
-      if (!r.ok) { toast('Не хватает монет!'); return; }
-      toast('Куплено: ' + it.name + '!');
+      if (!r.ok) { toast(t("j.app.ne-hvataet-monet-2")); return; }
+      toast(t("j.app.kupleno", { name: it.name }));
       sfx.correct();
       persist();
       renderShop();
@@ -996,7 +1005,7 @@ $$('#moodScale button').forEach((b) => {
     if (m >= 4) { S.mood = Math.min(100, S.mood + 6); sfx.heart(); }
     else S.mood = Math.min(100, S.mood + 3);
     gainXP(S, 1);
-    toast('💜 Чек-ин записан');
+    toast(t("j.app.chek-in-zapisan-2"));
     persist();
     renderMoodChart(S, els('moodChart'));
   });
@@ -1005,36 +1014,50 @@ $$('#moodScale button').forEach((b) => {
 /* ============ SETTINGS ============ */
 els('btnToggleSound').addEventListener('click', () => {
   const on = sfx.toggle();
-  els('btnToggleSound').textContent = '🔊 Звук: ' + (on ? 'вкл' : 'выкл');
+  els('btnToggleSound').textContent = t("j.app.zvuk", { state: on ? t("j.app.vkl") : t("j.app.vykl") });
   els('btnSound').textContent = on ? '🔊' : '🔇';
 });
 
 els('btnSound').addEventListener('click', () => {
   const on = sfx.toggle();
   els('btnSound').textContent = on ? '🔊' : '🔇';
-  els('btnToggleSound').textContent = '🔊 Звук: ' + (on ? 'вкл' : 'выкл');
+  els('btnToggleSound').textContent = t("j.app.zvuk", { state: on ? t("j.app.vkl") : t("j.app.vykl") });
 });
 
 els('btnReset').addEventListener('click', () => {
-  if (!confirm('Точно сбросить весь прогресс?')) return;
+  if (!confirm(t("j.app.tochno-sbrosit-ves-progress-2"))) return;
   wipe(); // снимает и основной ключ, и бэкап
   location.reload();
 });
+
+/* ===== LANGUAGE SWITCHER (RU/EN/FR) ===== */
+function renderLangButtons() {
+  $$('.lang-btn').forEach((b) => b.classList.toggle('active', b.dataset.lang === getLang()));
+}
+$$('.lang-btn').forEach((b) => {
+  b.addEventListener('click', () => {
+    if (b.dataset.lang === getLang()) return;
+    sfx.click();
+    setLang(b.dataset.lang);
+    toast(t('j.app.yazyk-izmenen', { lang: LANG_NAMES[getLang()] }));
+  });
+});
+renderLangButtons();
 
 /* Push-уведомления о состоянии питомца (по статье: pet gets push о состоянии) */
 function renderNotifyBtn() {
   const supported = 'Notification' in window;
   const on = !!S.notifications && supported && Notification.permission === 'granted';
-  els('btnToggleNotify').textContent = '🔔 Уведомления о Хори: ' + (on ? 'вкл' : 'выкл') + (supported ? '' : ' (не поддерживается браузером)');
+  els('btnToggleNotify').textContent = t("j.app.uvedomleniya-o-hori-2") + (on ? t("j.app.vkl-2") : t("j.app.vykl-2")) + (supported ? '' : t("j.app.ne-podderzhivaetsya-brauzerom-2"));
 }
 
 els('btnToggleNotify').addEventListener('click', () => {
-  if (!('Notification' in window)) { toast('Этот браузер не поддерживает уведомления'); return; }
+  if (!('Notification' in window)) { toast(t("j.app.etot-brauzer-ne-podderzhivaet-2")); return; }
   if (S.notifications && Notification.permission === 'granted') {
     S.notifications = false;
     persist();
     renderNotifyBtn();
-    toast('Уведомления выключены');
+    toast(t("j.app.uvedomleniya-vyklyucheny-2"));
     return;
   }
   Notification.requestPermission().then((p) => {
@@ -1042,10 +1065,10 @@ els('btnToggleNotify').addEventListener('click', () => {
     persist();
     renderNotifyBtn();
     if (p === 'granted') {
-      new Notification('Хори ждёт тебя! 🐹', { body: 'Заходи — питомец соскучился по урокам кибербезопасности.' });
-      toast('Уведомления включены 🔔');
+      new Notification(t("j.app.hori-zhdet-tebya-2"), { body: t("j.app.zahodi-pitomets-soskuchilsya-po-2") });
+      toast(t("j.app.uvedomleniya-vklyucheny-2"));
     } else {
-      toast('Разрешение на уведомления не дано');
+      toast(t("j.app.razreshenie-na-uvedomleniya-ne-2"));
     }
   });
 });
@@ -1063,6 +1086,48 @@ function checkPetNotifications() {
     new Notification(a.title, { body: a.body });
   }
 }
+
+/* ===== ON LANGUAGE CHANGE: re-translate content + re-render current screen ===== */
+onLangChange(() => {
+  CONTENT = tr(window.__CONTENT__, 'c.content');
+  LESSONS = tr(window.__LESSONS__, 'c.lessons');
+  SHOP = tr(window.__SHOP__, 'c.shop');
+  if (Array.isArray(S.habits)) {
+    S.habits = S.habits.map((h) => {
+      const src = (CONTENT.habits || []).find((x) => x.id === h.id);
+      return src ? { ...h, text: src.text } : h; // custom habits keep user text
+    });
+  }
+  applyStatic();
+  renderLangButtons();
+  renderNotifyBtn();
+  els('btnToggleSound').textContent = t('j.app.zvuk', { state: sfx.enabled ? t('j.app.vkl') : t('j.app.vykl') });
+  renderTopbar();
+  renderGameTools();
+  lessonUI.courses = LESSONS.courses;
+  if (lessonUI.active) {
+    const c2 = (LESSONS.courses || []).find((c) => c.id === lessonUI.active.course.id);
+    const l2 = c2 && (c2.lessons || []).find((l) => l.id === lessonUI.active.lesson.id);
+    if (c2 && l2) { lessonUI.active.course = c2; lessonUI.active.lesson = l2; lessonUI.showScene(); }
+  }
+  if (chatUI) { chatUI.content = CONTENT; chatUI.relocalize(); }
+  if (currentEvent) { // re-localize current question in place, no state reset
+    els('gameQuestion').textContent = currentEvent.q;
+    $$('.game-answer').forEach((b) => {
+      const span = b.querySelector('span:last-child');
+      if (span) span.textContent = currentEvent.a[Number(b.dataset.orig)];
+    });
+    syncNetTag();
+    renderGameHearts();
+  }
+  if (currentScreen === 'stats') renderStats();
+  else if (currentScreen === 'habits') renderHabits();
+  else if (currentScreen === 'theory' && !lessonUI.active) renderTheory();
+  else if (currentScreen === 'shop') renderShop();
+  else if (currentScreen === 'home') { renderPetBubble(); updateRoomNote(); }
+  else if (currentScreen === 'support') renderMoodChart(S, els('moodChart'));
+  persist();
+});
 
 /* ============ INIT ============ */
 dayCheck(S, toast);

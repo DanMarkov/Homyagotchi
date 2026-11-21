@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>🐹 Хомягочи</title>
 <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="src/render/sprites.css?v=41">
+<link rel="stylesheet" href="src/render/sprites.css?v=42">
 <style>
   :root {
     --bg: #cfe9f9;
@@ -177,6 +177,21 @@
     box-shadow: 3px 3px 0 rgba(26,58,92,.15);
     flex-shrink: 0;
   }
+
+  /* ===== LANGUAGE SWITCHER ===== */
+  .lang-row-title { font-family: 'Comfortaa', 'Nunito', sans-serif; font-weight: 800; font-size: .95rem; color: var(--ink); margin-bottom: 10px; }
+  .lang-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .lang-btn {
+    flex: 1 1 64px; min-height: 44px; padding: 10px 8px;
+    font-family: 'Comfortaa', 'Nunito', sans-serif; font-weight: 800; font-size: .95rem;
+    color: var(--ink); background: var(--card);
+    border: 3px solid var(--line); border-radius: 12px;
+    box-shadow: 3px 3px 0 rgba(26,58,92,.2);
+    cursor: pointer; transition: transform .05s, box-shadow .05s;
+    overflow-wrap: break-word;
+  }
+  .lang-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 rgba(26,58,92,.2); }
+  .lang-btn.active { background: var(--green); color: #fff; border-color: var(--green-dark); box-shadow: 3px 3px 0 var(--green-dark); }
 
   /* ===== BUTTONS ===== */
   .btn {
@@ -1176,7 +1191,19 @@
     .mood-scale button { flex: 1 1 30%; min-width: 56px; min-height: 56px; font-size: 1.9rem; padding: 8px; }
     .chat-chip { min-height: 44px; } /* карточки-категории уже во flex-wrap, теперь и тап ≥44px */
     .chat-msgs { height: 240px; }
-    .screen-title, #screen-support p, .card h3 { overflow-wrap: break-word; } /* заголовки переносятся, без обрезки */
+    .screen-title, #screen-support p, .card h3 { overflow-wrap: break-word; }
+    /* i18n: FR/EN длиннее RU — все подписи переносятся, ничего не обрезается и не вылезает за экран */
+    .btn, .ni-label, .room-action-btn, .room-side-btn, .room-btn-theory, .room-btn-settings, .ra-text,
+    .chat-chip, .shop-item .btn, .shop-item .s-name, .shop-item .s-effect, .game-answer, .lesson-answer,
+    .todo-text, .theory-topic, .gb-title, .stat-chip, .buff-chip b, .lang-btn, .audience-card {
+      overflow-wrap: break-word; word-break: normal; white-space: normal; max-width: 100%;
+    }
+    .btn { font-size: .85rem; padding: 12px 14px; }
+    .game-answer, .lesson-answer { font-size: .9rem; }
+    .screen-title { font-size: 1.15rem; }
+    .bottom-nav .nav-item .ni-label { font-size: .3rem; letter-spacing: 0; }
+    .room-action-btn { font-size: .6rem; }
+    .audience-card { font-size: .9rem; } /* заголовки переносятся, без обрезки */
 
     /* тосты/модалки в границах экрана */
     .toast { white-space: normal; max-width: calc(100vw - 24px); text-align: center; top: 84px; font-size: .9rem; }
@@ -1246,13 +1273,13 @@
   <!-- ===== COMPACT HUD (правый верхний угол) ===== -->
   <div class="topbar hud-only">
     <div class="topbar-stats hud-corner">
-      <span class="stat-chip hearts" title="здоровье Хори"><span class="hearts-row" id="topHearts"></span></span>
-      <span class="stat-chip satiety" title="сытость Хомяка"><span id="topSatietyIcon"></span> <b id="topSatiety">80</b></span>
-      <span class="stat-chip coins" title="монеты"><span id="topCoinsIcon"></span> <b id="topCoins">0</b></span>
+      <span data-i18n-title="h.zdorove-hori" class="stat-chip hearts" title=""><span class="hearts-row" id="topHearts"></span></span>
+      <span data-i18n-title="h.sytost-homyaka" class="stat-chip satiety" title=""><span id="topSatietyIcon"></span> <b id="topSatiety">80</b></span>
+      <span data-i18n-title="h.monety" class="stat-chip coins" title=""><span id="topCoinsIcon"></span> <b id="topCoins">0</b></span>
       <span class="stat-chip kp" title="KP"><span id="topKpIcon"></span> <b id="topKp">0</b></span>
-      <span class="stat-chip lvl" title="уровень"><span id="topLvlIcon"></span> <b id="topLvl">1</b></span>
-      <span class="stat-chip buffs buffs-empty" id="buffsRow" title="активные эффекты"></span>
-      <button class="btn-icon" id="btnSound" title="звук">🔊</button>
+      <span data-i18n-title="h.uroven" class="stat-chip lvl" title=""><span id="topLvlIcon"></span> <b id="topLvl">1</b></span>
+      <span data-i18n-title="h.aktivnye-effekty" class="stat-chip buffs buffs-empty" id="buffsRow" title=""></span>
+      <button data-i18n-title="h.zvuk" class="btn-icon" id="btnSound" title="">🔊</button>
     </div>
   </div>
 
@@ -1260,26 +1287,26 @@
 
     <!-- ===== AUDIENCE SELECT ===== -->
     <div class="screen" id="screen-audience">
-      <h1 class="big-title">ВЫБЕРИ УРОВЕНЬ</h1>
-      <p class="subtitle">Настрой игру под себя</p>
+      <h1 data-i18n="h.vyberi-uroven" class="big-title">ВЫБЕРИ УРОВЕНЬ</h1>
+      <p data-i18n="h.nastroy-igru-pod-sebya" class="subtitle">Настрой игру под себя</p>
       <div class="audience-grid">
         <div class="audience-card" data-audience="school">
           <span class="a-emoji">🎒</span>
-          <div class="a-name">ШКОЛЬНИК</div>
-          <div class="a-desc">Простые уроки и привычки для учёбы</div>
+          <div data-i18n="h.shkolnik" class="a-name">ШКОЛЬНИК</div>
+          <div data-i18n="h.prostye-uroki-i-privychki" class="a-desc">Простые уроки и привычки для учёбы</div>
         </div>
         <div class="audience-card selected" data-audience="student">
           <span class="a-emoji">🎓</span>
-          <div class="a-name">СТУДЕНТ</div>
-          <div class="a-desc">Учёба, софт-скиллы и безопасность</div>
+          <div data-i18n="h.student" class="a-name">СТУДЕНТ</div>
+          <div data-i18n="h.ucheba-soft-skilly-i" class="a-desc">Учёба, софт-скиллы и безопасность</div>
         </div>
         <div class="audience-card" data-audience="worker">
           <span class="a-emoji">💼</span>
-          <div class="a-name">РАБОТНИК</div>
-          <div class="a-desc">Фокус, продуктивность и защита</div>
+          <div data-i18n="h.rabotnik" class="a-name">РАБОТНИК</div>
+          <div data-i18n="h.fokus-produktivnost-i-zaschita" class="a-desc">Фокус, продуктивность и защита</div>
         </div>
       </div>
-      <button class="btn btn-green btn-block" id="btnStartGame" style="max-width:320px;margin:0 auto;font-size:.7rem;padding:18px">НАЧАТЬ ИГРУ ▶</button>
+      <button data-i18n="h.nachat-igru" class="btn btn-green btn-block" id="btnStartGame" style="max-width:320px;margin:0 auto;font-size:.7rem;padding:18px">НАЧАТЬ ИГРУ ▶</button>
     </div>
 
     <!-- ===== HOME / ROOM ===== -->
@@ -1290,27 +1317,27 @@
 
         <div class="room-actions-top">
           <button class="room-action-btn play" data-goto="game">
-            <span class="ra-icon" id="roomPlayIcon"></span><span class="ra-text">ИГРАТЬ</span>
+            <span class="ra-icon" id="roomPlayIcon"></span><span data-i18n="h.igrat" class="ra-text">ИГРАТЬ</span>
           </button>
-          <button class="room-action-btn hori" data-goto="home" title="Хори">
-            <span class="np-pet" id="namePlatePet"></span><span class="ra-text">ХОРИ</span><span class="np-heart">❤</span>
+          <button data-i18n-title="h.hori" class="room-action-btn hori" data-goto="home" title="">
+            <span class="np-pet" id="namePlatePet"></span><span data-i18n="h.hori-2" class="ra-text">ХОРИ</span><span class="np-heart">❤</span>
           </button>
           <button class="room-action-btn stats" data-goto="stats">
-            <span class="ra-icon" id="roomStatsIcon"></span><span class="ra-text">СТАТИСТИКА</span>
+            <span class="ra-icon" id="roomStatsIcon"></span><span data-i18n="h.statistika" class="ra-text">СТАТИСТИКА</span>
           </button>
         </div>
 
         <div class="room-side-left">
-          <button class="room-side-btn habits" data-goto="habits" title="Задачи">
+          <button data-i18n-title="h.zadachi" class="room-side-btn habits" data-goto="habits" title="">
             <span class="rs-icon" id="roomHabitsIcon"></span>
           </button>
-          <button class="room-side-btn shop" data-goto="shop" title="Магазин">
+          <button data-i18n-title="h.magazin" class="room-side-btn shop" data-goto="shop" title="">
             <span class="rs-icon" id="roomShopIcon"></span>
           </button>
-          <button class="room-side-btn support" data-goto="support" title="Помощь">
+          <button data-i18n-title="h.pomosch" class="room-side-btn support" data-goto="support" title="">
             <span class="rs-icon" id="roomSupportIcon"></span>
           </button>
-          <button class="room-note" id="roomNote" data-goto="theory">У вас открылся новый раздел теории</button>
+          <button data-i18n="h.u-vas-otkrylsya-novyy" class="room-note" id="roomNote" data-goto="theory">У вас открылся новый раздел теории</button>
         </div>
 
         <div class="room-decor-left" id="roomDecorLeft"></div>
@@ -1321,35 +1348,35 @@
         </div>
 
         <div class="room-actions-bottom">
-          <button class="btn room-btn-theory" data-goto="theory"><span class="rb-icon" id="roomTheoryIcon"></span>ТЕОРИЯ</button>
+          <button data-i18n="h.teoriya" class="btn room-btn-theory" data-goto="theory"><span class="rb-icon" id="roomTheoryIcon"></span>ТЕОРИЯ</button>
         </div>
       </div>
     </div>
 
     <!-- ===== STATS ===== -->
     <div class="screen" id="screen-stats">
-      <div class="screen-title">
+      <div data-i18n="h.statistika-2" class="screen-title">
         <span class="t-icon" style="background:var(--yellow)" id="statsTitleIcon"></span>
         СТАТИСТИКА
       </div>
       <div class="stats-grid">
         <div>
           <div class="stats-section">
-            <h3>🎖️ РЕЙТИНГ КИБЕРБЕЗОПАСНОСТИ</h3>
+            <h3 data-i18n="h.reyting-kiberbezopasnosti">🎖️ РЕЙТИНГ КИБЕРБЕЗОПАСНОСТИ</h3>
             <div id="ratingBlock"></div>
           </div>
           <div class="stats-section">
-            <h3>🏅 ДОСТИЖЕНИЯ</h3>
+            <h3 data-i18n="h.dostizheniya">🏅 ДОСТИЖЕНИЯ</h3>
             <div id="achievementList"></div>
           </div>
           <div class="stats-section">
-            <h3>🎒 ПРЕДМЕТЫ</h3>
+            <h3 data-i18n="h.predmety">🎒 ПРЕДМЕТЫ</h3>
             <div class="items-row" id="itemsRow"></div>
           </div>
           <div class="stats-section">
-            <h3>📈 ПРОГРЕСС</h3>
+            <h3 data-i18n="h.progress">📈 ПРОГРЕСС</h3>
             <div class="progress-bar"><div class="progress-fill" id="statsProgress" style="width:0%"></div></div>
-            <div class="progress-label"><span id="statsProgressText">0/100 KP</span><span id="statsStreak">🔥 0 ДНЕЙ</span></div>
+            <div class="progress-label"><span id="statsProgressText">0/100 KP</span><span data-i18n="h.0-dney" id="statsStreak">🔥 0 ДНЕЙ</span></div>
           </div>
         </div>
         <div class="stats-pet" id="statsPet"></div>
@@ -1358,7 +1385,7 @@
 
     <!-- ===== HABITS / TODO ===== -->
     <div class="screen" id="screen-habits">
-      <div class="screen-title">
+      <div data-i18n="h.spisok-del" class="screen-title">
         <span class="t-icon" style="background:var(--green-soft)" id="habitsTitleIcon"></span>
         СПИСОК ДЕЛ
       </div>
@@ -1366,7 +1393,7 @@
         <div>
           <div class="todo-list" id="todoList"></div>
           <div class="todo-add">
-            <input id="newHabitInput" placeholder="Новая привычка..." maxlength="60">
+            <input data-i18n-ph="h.novaya-privychka" id="newHabitInput" placeholder="" maxlength="60">
             <button class="btn btn-green" id="btnAddHabit">+</button>
           </div>
         </div>
@@ -1378,16 +1405,16 @@
     <div class="screen" id="screen-theory">
       <div class="screen-title">
         <span class="t-icon" style="background:var(--blue-soft)">📚</span>
-        <span id="theoryTitle">ТЕОРИЯ: БЕЗОПАСНОСТЬ БРАУЗЕРОВ</span>
+        <span data-i18n="h.teoriya-bezopasnost-brauzerov" id="theoryTitle">ТЕОРИЯ: БЕЗОПАСНОСТЬ БРАУЗЕРОВ</span>
       </div>
       <div id="theoryBrowse">
         <div class="theory-layout">
           <div class="theory-sidebar">
-            <h4>📋 РАЗДЕЛЫ</h4>
+            <h4 data-i18n="h.razdely">📋 РАЗДЕЛЫ</h4>
             <div id="theoryTopics"></div>
           </div>
           <div class="theory-content" id="theoryContent">
-            <p>Выбери раздел слева, чтобы начать обучение.</p>
+            <p data-i18n="h.vyberi-razdel-sleva-chtoby">Выбери раздел слева, чтобы начать обучение.</p>
           </div>
           <div class="theory-pet" id="theoryPet"></div>
         </div>
@@ -1402,18 +1429,18 @@
       <div class="game-wrap">
         <div class="game-topbar">
           <div class="game-hud-left">
-            <span class="hud-item game-timer" title="время на ответ"><span id="gameClockIcon"></span> <b id="gameTimer">25</b></span>
-            <span class="hud-item game-coins" title="монеты"><span id="gameCoinsIcon"></span> <b id="gameCoins">0</b></span>
-            <span class="hud-item game-hearts" id="gameHearts" title="жизни"></span>
-            <span class="hud-item game-buffs" id="gameBuffs" title="активные эффекты"></span>
+            <span data-i18n-title="h.vremya-na-otvet" class="hud-item game-timer" title=""><span id="gameClockIcon"></span> <b id="gameTimer">25</b></span>
+            <span data-i18n-title="h.monety-2" class="hud-item game-coins" title=""><span id="gameCoinsIcon"></span> <b id="gameCoins">0</b></span>
+            <span data-i18n-title="h.zhizni" class="hud-item game-hearts" id="gameHearts" title=""></span>
+            <span data-i18n-title="h.aktivnye-effekty-2" class="hud-item game-buffs" id="gameBuffs" title=""></span>
           </div>
-          <span class="hud-item game-kp" title="очки KP"><span id="gameKpIcon"></span> <b id="gameKp">0</b> KP</span>
+          <span data-i18n-title="h.ochki-kp" class="hud-item game-kp" title=""><span id="gameKpIcon"></span> <b id="gameKp">0</b> KP</span>
         </div>
         <div class="game-scene">
           <div class="game-left">
             <div class="game-card">
-              <div class="gb-head"><span class="gb-warn" id="gameWarnIcon"></span><span class="gb-title">ВНИМАНИЕ!</span><span class="gb-net hidden" id="gameNetTag">подозрительная сеть</span></div>
-              <div class="gb-text" id="gameQuestion">Хомяк получил письмо от «Сбербанка» с просьбой ввести код из СМС. Что делать?</div>
+              <div class="gb-head"><span class="gb-warn" id="gameWarnIcon"></span><span data-i18n="h.vnimanie" class="gb-title">ВНИМАНИЕ!</span><span data-i18n="h.podozritelnaya-set" class="gb-net hidden" id="gameNetTag">подозрительная сеть</span></div>
+              <div data-i18n="h.homyak-poluchil-pismo-ot" class="gb-text" id="gameQuestion">Хомяк получил письмо от «Сбербанка» с просьбой ввести код из СМС. Что делать?</div>
             </div>
             <div class="game-answers" id="gameAnswers"></div>
             <div id="gameFeedback"></div>
@@ -1426,32 +1453,32 @@
 
     <!-- ===== SHOP ===== -->
     <div class="screen" id="screen-shop">
-      <div class="screen-title">
+      <div data-i18n="h.magazin-homyaka" class="screen-title">
         <span class="t-icon" style="background:#fff3e0" id="shopTitleIcon"></span>
         МАГАЗИН ХОМЯКА
         <span class="shop-pet" id="shopPetWrap"></span>
       </div>
-      <p style="color:var(--ink-soft);font-size:1.1rem;margin-bottom:10px;font-weight:500">Зарабатывай монетки в уроках, одевай хомяка и обустраивай домик!</p>
-      <div class="shop-section-title">— АЙТЕМЫ (для игры) —</div>
+      <p data-i18n="h.zarabatyvay-monetki-v-urokah" style="color:var(--ink-soft);font-size:1.1rem;margin-bottom:10px;font-weight:500">Зарабатывай монетки в уроках, одевай хомяка и обустраивай домик!</p>
+      <div data-i18n="h.aytemy-dlya-igry" class="shop-section-title">— АЙТЕМЫ (для игры) —</div>
       <div class="shop-grid" id="shopItems"></div>
-      <div class="shop-section-title">— ШАПКИ —</div>
+      <div data-i18n="h.shapki" class="shop-section-title">— ШАПКИ —</div>
       <div class="shop-grid" id="shopHats"></div>
-      <div class="shop-section-title">— ОБОИ —</div>
+      <div data-i18n="h.oboi" class="shop-section-title">— ОБОИ —</div>
       <div class="shop-grid" id="shopWalls"></div>
-      <div class="shop-section-title">— ЕДА —</div>
+      <div data-i18n="h.eda" class="shop-section-title">— ЕДА —</div>
       <div class="shop-grid" id="shopFood"></div>
     </div>
 
     <!-- ===== SUPPORT ===== -->
     <div class="screen" id="screen-support">
-      <div class="screen-title">
+      <div data-i18n="h.homya-psiholog-24-7" class="screen-title">
         <span class="t-icon" style="background:var(--purple);color:#fff" id="supportTitleIcon"></span>
         ХОМЯ-ПСИХОЛОГ 24/7
       </div>
-      <p style="color:var(--ink-soft);font-size:1.1rem;margin-bottom:14px;font-weight:500">Анонимно, без осуждения, в любимом моменте. Хомяк выслушает, поймёт и подскажет.</p>
+      <p data-i18n="h.anonimno-bez-osuzhdeniya-v" style="color:var(--ink-soft);font-size:1.1rem;margin-bottom:14px;font-weight:500">Анонимно, без осуждения, в любимом моменте. Хомяк выслушает, поймёт и подскажет.</p>
       <div class="chat-box" id="chatBox"></div>
       <div class="card" style="margin-top:16px">
-        <h3 style="font-family: 'Comfortaa', 'Nunito', sans-serif;font-size:.55rem;margin-bottom:12px">💜 КАК ТЫ СЕБЯ ЧУВСТВУЕШЬ?</h3>
+        <h3 data-i18n="h.kak-ty-sebya-chuvstvuesh" style="font-family: 'Comfortaa', 'Nunito', sans-serif;font-size:.55rem;margin-bottom:12px">💜 КАК ТЫ СЕБЯ ЧУВСТВУЕШЬ?</h3>
         <div class="mood-scale" id="moodScale">
           <button data-mood="1">😞</button>
           <button data-mood="2">😕</button>
@@ -1460,23 +1487,31 @@
           <button data-mood="5">😄</button>
         </div>
         <div class="support-msg hidden" id="moodMsg"></div>
-        <h3 style="font-family: 'Comfortaa', 'Nunito', sans-serif;font-size:.55rem;margin:16px 0 10px">📈 ТВОЯ НЕДЕЛЯ</h3>
+        <h3 data-i18n="h.tvoya-nedelya" style="font-family: 'Comfortaa', 'Nunito', sans-serif;font-size:.55rem;margin:16px 0 10px">📈 ТВОЯ НЕДЕЛЯ</h3>
         <div id="moodChart"></div>
       </div>
     </div>
 
     <!-- ===== SETTINGS ===== -->
     <div class="screen" id="screen-settings">
-      <div class="screen-title">
+      <div data-i18n="h.nastroyki" class="screen-title">
         <span class="t-icon" style="background:#e8eef5">⚙️</span>
         НАСТРОЙКИ
       </div>
       <div class="card">
+        <div class="lang-row-title" data-i18n="h.yazyk"></div>
+        <div class="lang-row">
+          <button class="lang-btn" data-lang="ru">🇷🇺 RU</button>
+          <button class="lang-btn" data-lang="en">🇬🇧 EN</button>
+          <button class="lang-btn" data-lang="fr">🇫🇷 FR</button>
+        </div>
+      </div>
+      <div class="card">
         <div style="display:flex;flex-direction:column;gap:14px">
-          <button class="btn btn-ghost btn-block" id="btnChangeAudience" style="justify-content:flex-start">🎯 Сменить уровень (аудиторию)</button>
-          <button class="btn btn-ghost btn-block" id="btnToggleSound" style="justify-content:flex-start">🔊 Звук: вкл</button>
-          <button class="btn btn-ghost btn-block" id="btnToggleNotify" style="justify-content:flex-start">🔔 Уведомления о Хори: выкл</button>
-          <button class="btn btn-ghost btn-block" id="btnReset" style="justify-content:flex-start;color:var(--red-dark)">🗑 Сбросить прогресс</button>
+          <button data-i18n="h.smenit-uroven-auditoriyu" class="btn btn-ghost btn-block" id="btnChangeAudience" style="justify-content:flex-start">🎯 Сменить уровень (аудиторию)</button>
+          <button data-i18n="h.zvuk-vkl" class="btn btn-ghost btn-block" id="btnToggleSound" style="justify-content:flex-start">🔊 Звук: вкл</button>
+          <button data-i18n="h.uvedomleniya-o-hori-vykl" class="btn btn-ghost btn-block" id="btnToggleNotify" style="justify-content:flex-start">🔔 Уведомления о Хори: выкл</button>
+          <button data-i18n="h.sbrosit-progress" class="btn btn-ghost btn-block" id="btnReset" style="justify-content:flex-start;color:var(--red-dark)">🗑 Сбросить прогресс</button>
         </div>
       </div>
     </div>
@@ -1488,44 +1523,44 @@
   <nav class="bottom-nav">
     <button class="nav-item active" data-goto="home">
       <span class="ni-icon" id="navHomeIcon"></span>
-      <span class="ni-label">ДОМ</span>
+      <span data-i18n="h.dom" class="ni-label">ДОМ</span>
     </button>
     <button class="nav-item" data-goto="habits">
       <span class="ni-icon" id="navHabitsIcon"></span>
-      <span class="ni-label">ЗАДАЧИ</span>
+      <span data-i18n="h.zadachi-2" class="ni-label">ЗАДАЧИ</span>
     </button>
     <button class="nav-item" data-goto="theory">
       <span class="ni-icon" id="navTheoryIcon"></span>
-      <span class="ni-label">ТЕОРИЯ</span>
+      <span data-i18n="h.teoriya-2" class="ni-label">ТЕОРИЯ</span>
     </button>
     <button class="nav-item" data-goto="game">
       <span class="ni-icon" id="navGameIcon"></span>
-      <span class="ni-label">ИГРА</span>
+      <span data-i18n="h.igra" class="ni-label">ИГРА</span>
     </button>
     <button class="nav-item" data-goto="support">
       <span class="ni-icon" id="navSupportIcon"></span>
-      <span class="ni-label">ПОМОЩЬ</span>
+      <span data-i18n="h.pomosch-2" class="ni-label">ПОМОЩЬ</span>
     </button>
     <button class="nav-item" data-goto="settings">
       <span class="ni-icon" id="navSettingsIcon"></span>
-      <span class="ni-label">НАСТР.</span>
+      <span data-i18n="h.nastr" class="ni-label">НАСТР.</span>
     </button>
   </nav>
 
   <!-- ===== MODAL ===== -->
   <div class="modal-bg hidden" id="modalBg">
     <div class="modal">
-      <h3 id="mTitle">⚠ СОБЫТИЕ!</h3>
+      <h3 data-i18n="h.sobytie" id="mTitle">⚠ СОБЫТИЕ!</h3>
       <p class="m-question" id="mQuestion"></p>
       <div class="m-btns" id="mBtns"></div>
       <div class="hidden" id="mResult"></div>
     </div>
   </div>
 
-  <script src="content/config.js?v=41"></script>
-  <script src="content/content.js?v=41"></script>
-  <script src="content/lessons.js?v=41"></script>
-  <script src="content/shop.js?v=41"></script>
-  <script type="module" src="src/ui/app.js?v=41"></script>
+  <script src="content/config.js?v=42"></script>
+  <script src="content/content.js?v=42"></script>
+  <script src="content/lessons.js?v=42"></script>
+  <script src="content/shop.js?v=42"></script>
+  <script type="module" src="src/ui/app.js?v=42"></script>
 </body>
 </html>

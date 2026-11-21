@@ -1,3 +1,4 @@
+import { t } from '../i18n.js?v=42';
 import { SAVE_VERSION, migrate } from './store.js?v=4';
 
 const KEY_URL = 'SUPABASE_URL';
@@ -43,7 +44,7 @@ export async function signIn(email, password) {
     headers: headers(window.__SUPABASE_ANON_KEY__),
     body: JSON.stringify({ email, password })
   });
-  if (!res.ok) throw new Error('Неверный email или пароль');
+  if (!res.ok) throw new Error(t("j.cloud.nevernyy-email-ili-parol-2"));
   session = await res.json();
   return session;
 }
@@ -56,7 +57,7 @@ export async function signUp(email, password) {
   });
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
-    throw new Error(body.msg || 'Не удалось зарегистрироваться');
+    throw new Error(body.msg || t("j.cloud.ne-udalos-zaregistrirovatsya-2"));
   }
   session = await res.json();
   return session;

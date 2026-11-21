@@ -28,19 +28,57 @@ const SYSTEM_PROMPT = `Ты — заботливый компаньон хомя
 const CRISIS_WORDS = ['суицид', 'покончить', 'убить себя', 'не хочу жить', 'умереть', 'покончить с собой', 'сделать с собой', 'всё безнадёжно', 'всё бессмысленно', 'самоубийство', 'режу себя', 'порезы', 'самоубийц', 'травля', 'издеваются', 'бьют меня', 'насилие'];
 const CRISIS_ANSWER = 'Мне очень жаль, что тебе сейчас так тяжело. Ты не один(а) — пожалуйста, поговори с кем-то из взрослых, которым доверяешь, или позвони на телефон доверия: 8-800-2000-122 (бесплатно, анонимно, для детей и подростков). Там тебя выслушают и помогут. 💜';
 
-export function detectCrisisText(text) {
+/* ===== i18n (RU/EN/FR): клиент передаёт lang в теле запроса; по умолчанию ru ===== */
+export const LANGS = ['ru', 'en', 'fr'];
+export function normLang(l) {
+  const s = String(l || '').slice(0, 2).toLowerCase();
+  return LANGS.includes(s) ? s : 'ru';
+}
+const LANG_LINE = {
+  ru: 'на русском, ровно 2–4 предложения.',
+  en: 'in English, exactly 2–4 sentences.',
+  fr: 'en français, exactement 2 à 4 phrases.',
+};
+export function systemPromptFor(lang) {
+  const l = normLang(lang);
+  if (l === 'ru') return SYSTEM_PROMPT;
+  const base = SYSTEM_PROMPT.replace(LANG_LINE.ru, LANG_LINE[l]);
+  const extra = l === 'en'
+    ? "\nIMPORTANT: the user's interface language is English (lang=en) — your reply MUST be in English, never switch to another language."
+    : "\nIMPORTANT : la langue de l'interface de l'utilisateur est le français (lang=fr) — ta réponse DOIT être en français, ne passe jamais à une autre langue.";
+  return base + extra;
+}
+export const CRISIS_WORDS_BY_LANG = {
+  ru: CRISIS_WORDS,
+  en: ['suicide', 'kill myself', 'end my life', "i don't want to live", 'want to die', 'self-harm', 'self harm', 'hurt myself', 'no reason to live', 'everything is over', 'better off dead', 'suicidal'],
+  fr: ['suicide', 'me suicider', 'mettre fin à mes jours', 'je ne veux pas vivre', 'envie de mourir', 'me faire du mal', 'automutilation', 'plus envie de vivre', 'tout est fini pour toujours', 'suicidaire', 'pensées suicidaires'],
+};
+export const CRISIS_ANSWER_BY_LANG = {
+  ru: CRISIS_ANSWER,
+  en: "I'm really glad you told me this. You are not alone — please talk to an adult you trust, or call a helpline: 8-800-2000-122 (Russia, free, anonymous, for kids and teens) or 988 Suicide & Crisis Lifeline (24/7). I'm right here with you. 💜",
+  fr: "Merci beaucoup de me l'avoir dit. Tu n'es pas seul(e) — parle à un adulte de confiance, ou appelle un numéro d'écoute : 8-800-2000-122 (Russie, gratuit, anonyme, pour enfants et ados) ou le 3114, numéro national de prévention du suicide (24h/24, gratuit). Je reste avec toi. 💜",
+};
+const MSG_LABELS = {
+  ru: { emotion: 'Эмоция', topic: 'тема', custom: 'слова пользователя' },
+  en: { emotion: 'Emotion', topic: 'topic', custom: "user's words" },
+  fr: { emotion: 'Émotion', topic: 'sujet', custom: "mots de l'utilisateur" },
+};
+
+export function detectCrisisText(text, lang = 'ru') {
   const t = String(text || '').toLowerCase();
-  return CRISIS_WORDS.some((w) => t.includes(w));
+  const words = CRISIS_WORDS_BY_LANG[normLang(lang)] || CRISIS_WORDS;
+  return words.some((w) => t.includes(w));
 }
 
-export function buildUserMessage(emotion, topic, custom) {
+export function buildUserMessage(emotion, topic, custom, lang = 'ru') {
+  const L = MSG_LABELS[normLang(lang)] || MSG_LABELS.ru;
   const e = String(emotion || '').trim();
   const tp = String(topic || '').trim();
   const c = String(custom || '').trim().slice(0, 500);
   const parts = [];
-  if (e) parts.push('Эмоция: ' + e);
-  if (tp) parts.push('тема: «' + tp + '»');
-  if (c) parts.push('слова пользователя: «' + c + '»');
+  if (e) parts.push(L.emotion + ': ' + e);
+  if (tp) parts.push(L.topic + ': «' + tp + '»');
+  if (c) parts.push(L.custom + ': «' + c + '»');
   return '[' + parts.join(', ') + '}]'; // напр. [Эмоция: 😒, тема: «учёба», слова пользователя: «...»}] или только [слова пользователя: «...»}]
 }
 
@@ -95,13 +133,14 @@ function validate(body) {
   if (emotion !== undefined && emotion !== null && (typeof emotion !== 'string' || emotion.length > 30)) return 'bad_emotion';
   if (topic !== undefined && topic !== null && (typeof topic !== 'string' || topic.length > 100)) return 'bad_topic';
   if (custom !== undefined && custom !== null && (typeof custom !== 'string' || custom.length > 500)) return 'bad_custom';
+  if (body.lang !== undefined && body.lang !== null && (typeof body.lang !== 'string' || body.lang.length > 5)) return 'bad_lang';
   const hasTopic = typeof topic === 'string' && !!topic.trim();
   const hasCustom = typeof custom === 'string' && !!custom.trim();
   if (!hasTopic && !hasCustom) return 'bad_request';
   return null;
 }
 
-async function callMistral(env, userMsg, timeoutMs) {
+async function callMistral(env, userMsg, timeoutMs, lang = 'ru') {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), timeoutMs);
   try {
@@ -114,7 +153,7 @@ async function callMistral(env, userMsg, timeoutMs) {
       body: JSON.stringify({
         model: MODEL,
         messages: [
-          { role: 'system', content: SYSTEM_PROMPT },
+          { role: 'system', content: systemPromptFor(lang) },
           { role: 'user', content: userMsg },
         ],
         temperature: 0.7,
@@ -167,10 +206,11 @@ export default {
     const emotion = (body.emotion || '').trim();
     const topic = (body.topic || '').trim();
     const custom = (body.custom || '').trim();
+    const lang = normLang(body.lang);
 
     // кризис — детерминированно, без вызова модели
-    if (detectCrisisText(custom) || detectCrisisText(topic)) {
-      return json({ answer: CRISIS_ANSWER, cached: false, source: 'crisis' }, 200, cors);
+    if (detectCrisisText(custom, lang) || detectCrisisText(topic, lang)) {
+      return json({ answer: CRISIS_ANSWER_BY_LANG[lang] || CRISIS_ANSWER, cached: false, source: 'crisis' }, 200, cors);
     }
 
     if (!env.MISTRAL_API_KEY) {
@@ -178,7 +218,7 @@ export default {
     }
 
     // слой 1: кэш по sha256(emotion|topic|lower(custom)), сутки
-    const hash = await sha256hex(emotion + '|' + topic + '|' + custom.toLowerCase());
+    const hash = await sha256hex(lang + '|' + emotion + '|' + topic + '|' + custom.toLowerCase()); // lang в ключе: ru/en/fr не смешиваем
     const cache = caches.default;
     const cacheKey = new Request('https://cache.local/ask/' + hash);
     const cached = await cache.match(cacheKey);
@@ -196,9 +236,9 @@ export default {
     }
 
     // слой 3: Mistral API, таймаут 10с
-    const userMsg = buildUserMessage(emotion, topic, custom);
+    const userMsg = buildUserMessage(emotion, topic, custom, lang);
     const timeoutMs = Number(env.MISTRAL_TIMEOUT_MS) > 0 ? Number(env.MISTRAL_TIMEOUT_MS) : DEFAULT_MISTRAL_TIMEOUT_MS;
-    const answer = await callMistral(env, userMsg, timeoutMs);
+    const answer = await callMistral(env, userMsg, timeoutMs, lang);
     if (!answer) {
       return json({ fallback: true }, 503, cors);
     }

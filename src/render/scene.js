@@ -1,16 +1,17 @@
+import { t } from '../i18n.js?v=42';
 import { makeRoomSprites, makeHamsterSprites, makeSkySprites } from './sprites.js?v=4';
 import { petState, PET_STATES } from '../core/pet.js?v=4';
 import { dayPhase, SKIES } from './daynight.js?v=4';
 
 export const ROOM_POINTS = [
-  { id: 'book', x: 136, y: 130, r: 34, label: '📖 дневник — статистика' },
-  { id: 'bowl', x: 226, y: 222, r: 20, label: '🥣 миска — покормить' },
-  { id: 'poster', x: 163, y: 46, r: 30, label: '🛡 плакат — совет' },
-  { id: 'window', x: 49, y: 50, r: 34, label: '🪟 окно — привет' },
-  { id: 'flower', x: 301, y: 195, r: 22, label: '🌱 цветок — забота' },
-  { id: 'bed', x: 128, y: 230, r: 30, label: '💤 лежанка — спать' },
-  { id: 'wheel', x: 58, y: 200, r: 28, label: '🎡 колесо — играть!' },
-  { id: 'ham', x: 160, y: 196, r: 32, label: '🐹 погладить' }
+  { id: 'book', x: 136, y: 130, r: 34, get label() { return t("j.scene.dnevnik-statistika-2"); } },
+  { id: 'bowl', x: 226, y: 222, r: 20, get label() { return t("j.scene.miska-pokormit-2"); } },
+  { id: 'poster', x: 163, y: 46, r: 30, get label() { return t("j.scene.plakat-sovet-2"); } },
+  { id: 'window', x: 49, y: 50, r: 34, get label() { return t("j.scene.okno-privet-2"); } },
+  { id: 'flower', x: 301, y: 195, r: 22, get label() { return t("j.scene.tsvetok-zabota-2"); } },
+  { id: 'bed', x: 128, y: 230, r: 30, get label() { return t("j.scene.lezhanka-spat-2"); } },
+  { id: 'wheel', x: 58, y: 200, r: 28, get label() { return t("j.scene.koleso-igrat-2"); } },
+  { id: 'ham', x: 160, y: 196, r: 32, get label() { return t("j.scene.pogladit-2"); } }
 ];
 
 export class RoomScene {
